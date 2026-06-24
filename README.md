@@ -1,0 +1,97 @@
+# Bookgo Backend
+
+Node.js API for Bookgo — authentication and trainer profiles.
+
+## Stack
+
+- Express 4
+- PostgreSQL (`pg`)
+- JWT + bcrypt
+- SQL migrations with `schema_migrations` journal
+
+## Setup
+
+```bash
+cp env.example .env
+# Edit .env with your Railway DATABASE_URL and JWT_SECRET
+
+npm install
+npm run migrate
+npm run seed:admin
+npm run dev
+```
+
+## Railway
+
+1. Create a PostgreSQL service and link it to the API service.
+2. Set variables: `JWT_SECRET`, `DATABASE_SSL=true`.
+3. Deploy — `releaseCommand` runs `npm run migrate` before each deploy.
+4. Run seed once (Railway shell or locally with production `DATABASE_URL`):
+
+```bash
+npm run seed:admin
+```
+
+Set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in Railway Variables before seeding.
+
+## Migrations
+
+```bash
+npm run migrate          # apply pending migrations
+npm run migrate:status   # list applied / pending
+```
+
+Migration files live in `migrations/`. Applied migrations are recorded in `schema_migrations`. Never edit applied files — add a new numbered SQL file instead.
+
+## API
+
+All responses use:
+
+```json
+{
+  "success": true,
+  "message": "Localized message",
+  "data": {}
+}
+```
+
+Pass `Accept-Language: ru` or `Accept-Language: en` for localized messages.
+
+### Endpoints
+
+| Method | Path | Auth | Body |
+|--------|------|------|------|
+| GET | `/health` | — | — |
+| POST | `/auth/login` | — | `{ "email", "password" }` |
+| POST | `/auth/logout` | Bearer | — |
+| GET | `/profile/info` | Bearer | — |
+| PATCH | `/profile/edit` | Bearer | `{ "name", "phone", "avatar", "bio", "city", "timezone", "lang" }` |
+| PUT | `/profile/change-password` | Bearer | `{ "new_password", "password_confirm" }` |
+
+### Examples
+
+Login:
+
+```bash
+curl -s -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -H "Accept-Language: ru" \
+  -d '{"email":"admin@example.com","password":"your-password"}'
+```
+
+Profile:
+
+```bash
+curl -s http://localhost:8080/profile/info \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Accept-Language: en"
+```
+
+Change password:
+
+```bash
+curl -s -X PUT http://localhost:8080/profile/change-password \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"new_password":"newpass123","password_confirm":"newpass123"}'
+```
