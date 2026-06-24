@@ -1,0 +1,405 @@
+{
+  "info": {
+    "_postman_id": "bookgo-api-v1",
+    "name": "Bookgo API v1",
+    "description": "HTTP-контракт Bookgo API v1: health, auth, profile, pages.\n\nИсточник правды для ручных запросов и Newman.\nНе копировать в frontend — только вызывать через HTTP.\n\nПеременные коллекции:\n- `baseUrl` — URL API\n- `token` — JWT (после Login)\n- `acceptLanguage` — `en` | `ru`\n- `pageId`, `pageSlug` — после POST /pages\n\nДокументация: docs/README.md",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://bookgo-backend.up.railway.app" },
+    { "key": "token", "value": "" },
+    { "key": "acceptLanguage", "value": "ru" },
+    { "key": "adminEmail", "value": "hello@dodotap.com" },
+    { "key": "adminPassword", "value": "" },
+    { "key": "pageId", "value": "" },
+    { "key": "pageSlug", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('success', () => pm.expect(json.success).to.eql(true));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/health"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.test('success is true', () => pm.expect(json.success).to.eql(true));",
+                  "pm.test('token present', () => pm.expect(json.data.token).to.be.a('string'));",
+                  "if (json.data && json.data.token) {",
+                  "  pm.collectionVariables.set('token', json.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /auth/logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/auth/logout"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "GET /profile/info",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('user email', () => pm.expect(json.data.user.email).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/profile/info"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /profile/edit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"city\": \"Warsaw\",\n  \"timezone\": \"Europe/Warsaw\",\n  \"lang\": \"ru\"\n}"
+            },
+            "url": "{{baseUrl}}/profile/edit"
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /profile/change-password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_password\": \"new-password-8chars\",\n  \"password_confirm\": \"new-password-8chars\"\n}"
+            },
+            "url": "{{baseUrl}}/profile/change-password"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pages",
+      "item": [
+        {
+          "name": "GET /pages",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('pages array', () => pm.expect(json.data.pages).to.be.an('array'));",
+                  "if (json.data.pages.length > 0) {",
+                  "  pm.collectionVariables.set('pageId', json.data.pages[0].id);",
+                  "  pm.collectionVariables.set('pageSlug', json.data.pages[0].slug);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test('page id', () => pm.expect(json.data.page.id).to.be.a('string'));",
+                  "pm.test('settings present', () => pm.expect(json.data.page.settings).to.be.an('object'));",
+                  "if (json.data && json.data.page) {",
+                  "  pm.collectionVariables.set('pageId', json.data.page.id);",
+                  "  pm.collectionVariables.set('pageSlug', json.data.page.slug);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"demo-coaching-page\"\n}"
+            },
+            "url": "{{baseUrl}}/pages"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /pages/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('profile in settings', () => pm.expect(json.data.page.settings.profile).to.be.an('object'));",
+                  "pm.test('blocks array', () => pm.expect(json.data.page.settings.blocks).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('updated profile name', () => pm.expect(json.data.page.settings.profile.name).to.eql('Max Volkov'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settings\": {\n    \"profile\": {\n      \"name\": \"Max Volkov\",\n      \"role\": \"Strength Coach\",\n      \"bio\": \"Certified coach.\",\n      \"city\": \"Warsaw\",\n      \"timezone\": \"Europe/Warsaw\",\n      \"avatarUrl\": \"\",\n      \"email\": \"coach@example.com\",\n      \"phone\": \"+48123456789\"\n    },\n    \"services\": {\n      \"useCategories\": false,\n      \"categories\": [],\n      \"services\": [\n        {\n          \"id\": \"00000000-0000-4000-8000-000000000001\",\n          \"title\": \"Personal Training\",\n          \"subtitle\": \"60 min session\",\n          \"durationMinutes\": 60,\n          \"priceAmount\": 15000,\n          \"currency\": \"PLN\",\n          \"priceHidden\": false,\n          \"categoryId\": null,\n          \"isActive\": true,\n          \"photoUrl\": \"\"\n        }\n      ]\n    },\n    \"availability\": {\n      \"timezone\": \"Europe/Warsaw\",\n      \"bufferBeforeMinutes\": 0,\n      \"bufferAfterMinutes\": 15,\n      \"minNoticeHours\": 4,\n      \"maxDaysAhead\": 60,\n      \"days\": [\n        {\n          \"weekday\": 1,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        }\n      ]\n    }\n  }\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/publish",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('published', () => pm.expect(json.data.page.published).to.eql(true));",
+                  "} else if (pm.response.code === 400) {",
+                  "  pm.test('validation errors', () => pm.expect(json.data.validation.errors).to.be.an('array'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/publish"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/unpublish",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('unpublished', () => pm.expect(json.data.page.published).to.eql(false));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/unpublish"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/set-default",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/set-default"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /public/pages/:slug",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.test('published page', () => pm.expect(json.data.page.published).to.eql(true));",
+                  "  pm.test('settings', () => pm.expect(json.data.page.settings).to.be.an('object'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/public/pages/{{pageSlug}}"
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /pages/:id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

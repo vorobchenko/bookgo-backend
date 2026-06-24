@@ -1,0 +1,139 @@
+# Pages — схема БД и API (v1)
+
+Гибридная модель: мета на `pages`, profile/theme/availability 1:1, services реляционно, контент-блоки в `page_blocks.data` JSONB.
+
+API собирает объект `PageSettings` как в bookgo-app.
+
+---
+
+## Таблицы
+
+| Таблица | Связь с `pages` | Назначение |
+|---------|-----------------|------------|
+| `pages` | — | slug, published, section_layout, флаги |
+| `page_profiles` | 1:1 (`page_id` PK) | ProfileSettings |
+| `page_themes` | 1:1 | ThemeSettings |
+| `page_availability` | 1:1 | AvailabilitySettings (days в JSONB) |
+| `page_service_categories` | 1:N | Категории услуг |
+| `page_service_items` | 1:N | Услуги |
+| `page_blocks` | 1:N (UNIQUE page_id+type) | FAQ, gallery, contacts… |
+
+Миграции: `002`–`007` в [`migrations/`](../migrations/).
+
+---
+
+## `pages`
+
+```sql
+slug VARCHAR(64) UNIQUE
+published, published_at, is_default, settings_version
+services_use_categories BOOLEAN
+section_layout JSONB  -- PageBlock[] (enabled/required/status)
+```
+
+---
+
+## `page_profiles`
+
+`name`, `role`, `bio`, `city`, `timezone`, `avatar_url`, `email`, `phone`
+
+При `POST /pages` — copy-on-create из `users`.
+
+---
+
+## `page_themes`
+
+`preset` (neon|pastel|bold), `accent_color`, `mode` (light|dark|auto)
+
+---
+
+## `page_availability`
+
+Скаляры: `timezone`, `buffer_before_minutes`, `buffer_after_minutes`, `min_notice_hours`, `max_days_ahead`
+
+`days` JSONB — массив без `label`/`letter` (добавляются API при чтении):
+
+```json
+[{ "weekday": 1, "working": true, "bookable": true, "ranges": [{ "id": "...", "start": "09:00", "end": "17:00" }] }]
+```
+
+---
+
+## Services
+
+**`page_service_categories`:** `id`, `page_id`, `title`, `sort_order`
+
+**`page_service_items`:** `id`, `page_id`, `category_id`, `title`, `subtitle`, `duration_minutes`, `price_amount` (minor units), `currency`, `price_hidden`, `photo_url`, `is_active`, `sort_order`
+
+---
+
+## `page_blocks`
+
+Типы: `stories`, `gallery`, `video`, `location`, `contacts`, `reviews`, `faq`, `cancellationPolicy`, `customQuestions`
+
+| type | `data` |
+|------|--------|
+| `reviews`, `faq`, `customQuestions` | `{ "items": [...] }` |
+| `cancellationPolicy` | `{ "policyText", "cutoffHours" }` |
+| остальные | объект 1:1 с фронтом |
+
+---
+
+## API
+
+### Admin (JWT)
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| GET | `/pages` | Список страниц user (preview без full settings) |
+| POST | `/pages` | Создать страницу `{ slug?, is_default? }` |
+| GET | `/pages/:id` | Полная страница + `settings` |
+| PATCH | `/pages/:id` | `{ slug?, settings?: partial PageSettings }` |
+| POST | `/pages/:id/publish` | Валидация + publish |
+| POST | `/pages/:id/unpublish` | Снять публикацию |
+| POST | `/pages/:id/set-default` | Страница по умолчанию |
+| DELETE | `/pages/:id` | Удалить страницу |
+
+### Public
+
+| Метод | Путь |
+|-------|------|
+| GET | `/public/pages/:slug` | Только `published=true` |
+
+### Ответ `GET /pages/:id`
+
+```json
+{
+  "success": true,
+  "message": "...",
+  "data": {
+    "page": {
+      "id": "uuid",
+      "user_id": "uuid",
+      "slug": "max-volkov",
+      "published": false,
+      "published_at": null,
+      "is_default": true,
+      "settings_version": 1,
+      "created_at": "...",
+      "updated_at": "...",
+      "settings": { }
+    }
+  }
+}
+```
+
+`settings` = полный `PageSettings` из bookgo-app.
+
+---
+
+## Slug
+
+- lowercase, `[a-z0-9-]`, 3–48 символов
+- глобально уникален
+
+---
+
+## Phase 2 (не в v1)
+
+Multi-staff: `page_staff`, `page_staff_service`, availability per staff.

@@ -1,6 +1,6 @@
 # Bookgo Backend
 
-Node.js API for Bookgo — authentication and trainer profiles.
+Node.js API for Bookgo — authentication, profiles, and booking pages.
 
 ## Stack
 
@@ -43,6 +43,19 @@ npm run migrate:status   # list applied / pending
 
 Migration files live in `migrations/`. Applied migrations are recorded in `schema_migrations`. Never edit applied files — add a new numbered SQL file instead.
 
+## Postman
+
+Коллекция и окружения в [`postman/`](postman/) — JSON в git, импорт в Postman или запуск через Newman. См. [`postman/README.md`](postman/README.md).
+
+## Documentation
+
+Полная документация для фронта и контракт API: [`docs/`](docs/)
+
+- [Frontend integration (auth)](docs/frontend_auth_integration.md) — TypeScript, AuthContext
+- [Frontend integration (pages)](docs/frontend_pages_integration.md) — PageSettings, builder, publish
+- [Pages API](docs/pages_api.md) — CRUD, publish, public slug
+- [Auth API](docs/auth_api.md) — login, logout
+
 ## API
 
 All responses use:
@@ -67,6 +80,15 @@ Pass `Accept-Language: ru` or `Accept-Language: en` for localized messages.
 | GET | `/profile/info` | Bearer | — |
 | PATCH | `/profile/edit` | Bearer | `{ "name", "phone", "avatar", "bio", "city", "timezone", "lang" }` |
 | PUT | `/profile/change-password` | Bearer | `{ "new_password", "password_confirm" }` |
+| GET | `/pages` | Bearer | — |
+| POST | `/pages` | Bearer | `{ "slug?", "is_default?" }` |
+| GET | `/pages/:id` | Bearer | — |
+| PATCH | `/pages/:id` | Bearer | `{ "slug?", "settings?" }` |
+| POST | `/pages/:id/publish` | Bearer | — |
+| POST | `/pages/:id/unpublish` | Bearer | — |
+| POST | `/pages/:id/set-default` | Bearer | — |
+| DELETE | `/pages/:id` | Bearer | — |
+| GET | `/public/pages/:slug` | — | — |
 
 ### Examples
 

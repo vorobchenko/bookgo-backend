@@ -39,6 +39,52 @@ export default {
     emailAndPasswordRequired: 'Email and password are required',
     emailInvalid: 'Invalid email format'
   },
+  pages: {
+    list: {
+      success: 'Pages retrieved successfully',
+      error: 'Error fetching pages'
+    },
+    create: {
+      success: 'Page created successfully',
+      error: 'Error creating page',
+      userNotFound: 'User not found'
+    },
+    get: {
+      success: 'Page retrieved successfully',
+      notFound: 'Page not found',
+      error: 'Error fetching page'
+    },
+    patch: {
+      success: 'Page updated successfully',
+      error: 'Error updating page'
+    },
+    publish: {
+      success: 'Page published successfully',
+      validationFailed: 'Page is not ready to publish',
+      error: 'Error publishing page'
+    },
+    unpublish: {
+      success: 'Page unpublished successfully',
+      error: 'Error unpublishing page'
+    },
+    delete: {
+      success: 'Page deleted successfully',
+      error: 'Error deleting page'
+    },
+    setDefault: {
+      success: 'Default page updated successfully',
+      error: 'Error updating default page'
+    },
+    public: {
+      success: 'Public page retrieved successfully',
+      notFound: 'Published page not found',
+      error: 'Error fetching public page'
+    },
+    validation: {
+      slugInvalid: 'Slug must be 3–48 characters: lowercase letters, numbers, and hyphens only',
+      slugTaken: 'This slug is already taken'
+    }
+  },
   errors: {
     tokenMissing: 'Access token not provided',
     tokenInvalid: 'Invalid or expired token',
