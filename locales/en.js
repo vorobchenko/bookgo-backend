@@ -97,6 +97,40 @@ export default {
       deleteError: 'Error removing page photo',
       urlInvalid: 'Photo URL must point to Bookgo storage',
       storageNotConfigured: 'Photo storage is not configured on the server'
+    },
+    services: {
+      listSuccess: 'Services retrieved successfully',
+      listError: 'Error fetching services',
+      createSuccess: 'Service created successfully',
+      createError: 'Error creating service',
+      updateSuccess: 'Service updated successfully',
+      updateError: 'Error updating service',
+      deleteSuccess: 'Service deleted successfully',
+      deleteError: 'Error deleting service',
+      activateSuccess: 'Service activated successfully',
+      deactivateSuccess: 'Service deactivated successfully',
+      notFound: 'Service not found',
+      categoryNotFound: 'Service category not found',
+      categoryCreateSuccess: 'Service category created successfully',
+      categoryCreateError: 'Error creating service category',
+      categoryUpdateSuccess: 'Service category updated successfully',
+      categoryUpdateError: 'Error updating service category',
+      categoryDeleteSuccess: 'Service category deleted successfully',
+      categoryDeleteError: 'Error deleting service category',
+      settingsUpdateSuccess: 'Services settings updated successfully',
+      settingsUpdateError: 'Error updating services settings',
+      validation: {
+        invalid: 'Invalid service data',
+        TITLE_REQUIRED: 'Service title is required',
+        TITLE_TOO_LONG: 'Title must be 200 characters or fewer',
+        DURATION_INVALID: 'Duration must be a positive number of minutes',
+        PRICE_INVALID: 'Price must be a non-negative integer in minor units',
+        CURRENCY_INVALID: 'Currency must be a 3-letter ISO code',
+        CATEGORY_INVALID: 'Category ID must be a valid UUID',
+        BODY_INVALID: 'Request body must be a JSON object',
+        BODY_EMPTY: 'At least one field is required',
+        SORT_ORDER_INVALID: 'Sort order must be a non-negative integer'
+      }
     }
   },
   errors: {

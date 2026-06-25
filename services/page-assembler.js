@@ -110,6 +110,21 @@ function mapAvailabilityRow(row) {
   };
 }
 
+export function mapServiceItemRow(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    subtitle: item.subtitle ?? '',
+    durationMinutes: item.duration_minutes,
+    priceAmount: item.price_amount,
+    currency: item.currency?.trim() || 'PLN',
+    priceHidden: Boolean(item.price_hidden),
+    categoryId: item.category_id,
+    isActive: Boolean(item.is_active),
+    photoUrl: item.photo_url ?? ''
+  };
+}
+
 function mapServices(pageRow, categoryRows, itemRows) {
   return {
     useCategories: Boolean(pageRow?.services_use_categories),
@@ -117,19 +132,12 @@ function mapServices(pageRow, categoryRows, itemRows) {
       id: cat.id,
       title: cat.title
     })),
-    services: itemRows.map((item) => ({
-      id: item.id,
-      title: item.title,
-      subtitle: item.subtitle ?? '',
-      durationMinutes: item.duration_minutes,
-      priceAmount: item.price_amount,
-      currency: item.currency?.trim() || 'PLN',
-      priceHidden: Boolean(item.price_hidden),
-      categoryId: item.category_id,
-      isActive: Boolean(item.is_active),
-      photoUrl: item.photo_url ?? ''
-    }))
+    services: itemRows.map((item) => mapServiceItemRow(item))
   };
+}
+
+export function assembleServicesSettings(pageRow, categoryRows, itemRows) {
+  return mapServices(pageRow, categoryRows, itemRows);
 }
 
 function blockDataToSettings(type, data) {

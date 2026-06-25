@@ -14,6 +14,7 @@
 | [profile_api.md](./profile_api.md) | Контракт | Info, edit, change-password |
 | [pages_api.md](./pages_api.md) | Контракт | CRUD pages, publish, public slug |
 | [pages_avatar_api.md](./pages_avatar_api.md) | Контракт | Фото профиля страницы (upload/delete) |
+| [pages_services_api.md](./pages_services_api.md) | Контракт | Услуги: CRUD, activate/deactivate, категории |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
 | [supabase_setup.md](./supabase_setup.md) | DevOps | Supabase, GitHub auto-migrations, Railway |
@@ -42,6 +43,11 @@ https://bookgo-backend.up.railway.app
 
 - `GET /pages`, `POST /pages`
 - `GET /pages/:id`, `PATCH /pages/:id`
+- `GET /pages/:id/services`, `POST/PATCH/DELETE /pages/:id/services/:serviceId`
+- `POST /pages/:id/services/:serviceId/activate|deactivate`
+- `POST/PATCH/DELETE /pages/:id/service-categories/:categoryId`
+- `PATCH /pages/:id/services/settings`
+- `POST /pages/:id/avatar`, `DELETE /pages/:id/avatar`
 - `POST /pages/:id/publish`, `POST /pages/:id/unpublish`
 - `POST /pages/:id/set-default`, `DELETE /pages/:id`
 - `GET /public/pages/:slug`

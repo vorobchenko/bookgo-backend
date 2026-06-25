@@ -97,6 +97,40 @@ export default {
       deleteError: 'Ошибка удаления фото страницы',
       urlInvalid: 'URL фото должен указывать на хранилище Bookgo',
       storageNotConfigured: 'Хранилище фото не настроено на сервере'
+    },
+    services: {
+      listSuccess: 'Услуги успешно получены',
+      listError: 'Ошибка получения услуг',
+      createSuccess: 'Услуга создана',
+      createError: 'Ошибка создания услуги',
+      updateSuccess: 'Услуга обновлена',
+      updateError: 'Ошибка обновления услуги',
+      deleteSuccess: 'Услуга удалена',
+      deleteError: 'Ошибка удаления услуги',
+      activateSuccess: 'Услуга активирована',
+      deactivateSuccess: 'Услуга деактивирована',
+      notFound: 'Услуга не найдена',
+      categoryNotFound: 'Категория услуг не найдена',
+      categoryCreateSuccess: 'Категория услуг создана',
+      categoryCreateError: 'Ошибка создания категории услуг',
+      categoryUpdateSuccess: 'Категория услуг обновлена',
+      categoryUpdateError: 'Ошибка обновления категории услуг',
+      categoryDeleteSuccess: 'Категория услуг удалена',
+      categoryDeleteError: 'Ошибка удаления категории услуг',
+      settingsUpdateSuccess: 'Настройки услуг обновлены',
+      settingsUpdateError: 'Ошибка обновления настроек услуг',
+      validation: {
+        invalid: 'Некорректные данные услуги',
+        TITLE_REQUIRED: 'Название услуги обязательно',
+        TITLE_TOO_LONG: 'Название не длиннее 200 символов',
+        DURATION_INVALID: 'Длительность — целое число минут больше 0',
+        PRICE_INVALID: 'Цена — неотрицательное целое в минорных единицах',
+        CURRENCY_INVALID: 'Валюта — трёхбуквенный ISO-код',
+        CATEGORY_INVALID: 'ID категории должен быть UUID',
+        BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
+        BODY_EMPTY: 'Нужно передать хотя бы одно поле',
+        SORT_ORDER_INVALID: 'Порядок сортировки — неотрицательное целое'
+      }
     }
   },
   errors: {

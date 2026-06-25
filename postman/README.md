@@ -25,7 +25,9 @@ POST /auth/login           → token
 GET /profile/info
 GET /pages                 → pageId (если есть)
 POST /pages                → pageId, pageSlug (если список пуст)
-PATCH /pages/:id           → заполнить profile, services, availability
+POST /pages                → pageId, pageSlug (если список пуст)
+POST /pages/:id/services   → serviceId
+PATCH /pages/:id/services/:serviceId
 POST /pages/:id/avatar     → выбрать файл в поле avatar (JPEG/PNG/WebP/GIF)
 POST /pages/:id/publish
 GET /public/pages/:slug
@@ -39,6 +41,7 @@ POST /auth/logout
 
 - `pageId` — UUID страницы
 - `pageSlug` — slug для публичного URL
+- `serviceId` — UUID услуги (после `POST /pages/:id/services`)
 
 ## Правила обновления
 

@@ -59,6 +59,10 @@ Partial merge — only provided keys are updated.
 
 When `settings.services` is sent, categories and items are **replaced** for that page.
 
+For single-service operations (create, edit, delete, activate/deactivate), prefer dedicated routes:
+
+**Full contract:** [pages_services_api.md](./pages_services_api.md)
+
 ---
 
 ## POST /pages/:id/avatar

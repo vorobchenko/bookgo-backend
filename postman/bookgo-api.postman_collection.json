@@ -12,7 +12,8 @@
     { "key": "adminEmail", "value": "hello@dodotap.com" },
     { "key": "adminPassword", "value": "" },
     { "key": "pageId", "value": "" },
-    { "key": "pageSlug", "value": "" }
+    { "key": "pageSlug", "value": "" },
+    { "key": "serviceId", "value": "" }
   ],
   "item": [
     {
@@ -355,6 +356,127 @@
             "method": "DELETE",
             "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
             "url": "{{baseUrl}}/pages/{{pageId}}/avatar"
+          },
+          "response": []
+        },
+        {
+          "name": "GET /pages/:id/services",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('services block', () => pm.expect(json.data.services.services).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/services"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/services",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "if (json.data?.service?.id) {",
+                  "  pm.collectionVariables.set('serviceId', json.data.service.id);",
+                  "}",
+                  "pm.test('service returned', () => pm.expect(json.data.service.title).to.eql('Personal Training'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Personal Training\",\n  \"subtitle\": \"60 min\",\n  \"durationMinutes\": 60,\n  \"priceAmount\": 15000,\n  \"currency\": \"PLN\",\n  \"isActive\": true\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/services"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id/services/:serviceId",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priceAmount\": 18000\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/services/:serviceId/deactivate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/deactivate"
+          },
+          "response": []
+        },
+        {
+          "name": "POST /pages/:id/services/:serviceId/activate",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/activate"
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /pages/:id/services/:serviceId",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}"
           },
           "response": []
         },

@@ -304,6 +304,29 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 
 ---
 
+## Услуги (Services)
+
+Точечные операции — отдельные эндпоинты (не обязательно слать весь `settings.services` через `PATCH`):
+
+| Method | Path | Назначение |
+|--------|------|------------|
+| `GET` | `/pages/:id/services` | Список услуг и категорий |
+| `POST` | `/pages/:id/services` | Создать услугу |
+| `PATCH` | `/pages/:id/services/:serviceId` | Редактировать |
+| `DELETE` | `/pages/:id/services/:serviceId` | Удалить |
+| `POST` | `/pages/:id/services/:serviceId/deactivate` | Скрыть с витрины |
+| `POST` | `/pages/:id/services/:serviceId/activate` | Вернуть на витрину |
+| `PATCH` | `/pages/:id/services/settings` | `{ "useCategories": true }` |
+| `POST` | `/pages/:id/service-categories` | Создать категорию |
+| `PATCH` | `/pages/:id/service-categories/:categoryId` | Редактировать категорию |
+| `DELETE` | `/pages/:id/service-categories/:categoryId` | Удалить категорию |
+
+Контракт: [pages_services_api.md](./pages_services_api.md)
+
+После любой мутации синхронизируй `settings.services` из `data.services` в ответе.
+
+---
+
 ## Маппинг полей (БД ↔ фронт)
 
 | API `settings` | Примечание |
