@@ -316,6 +316,8 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 | `DELETE` | `/pages/:id/services/:serviceId` | Удалить |
 | `POST` | `/pages/:id/services/:serviceId/deactivate` | Скрыть с витрины |
 | `POST` | `/pages/:id/services/:serviceId/activate` | Вернуть на витрину |
+| `POST` | `/pages/:id/services/:serviceId/photo` | Загрузить фото (`multipart`, поле `photo`) |
+| `DELETE` | `/pages/:id/services/:serviceId/photo` | Удалить фото |
 | `PATCH` | `/pages/:id/services/settings` | `{ "useCategories": true }` |
 | `POST` | `/pages/:id/service-categories` | Создать категорию |
 | `PATCH` | `/pages/:id/service-categories/:categoryId` | Редактировать категорию |
@@ -324,6 +326,26 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 Контракт: [pages_services_api.md](./pages_services_api.md)
 
 После любой мутации синхронизируй `settings.services` из `data.services` в ответе.
+
+```typescript
+export async function uploadServicePhoto(token: string, pageId: string, serviceId: string, file: File) {
+  const formData = new FormData()
+  formData.append('photo', file)
+
+  const res = await apiRequest<{
+    photoUrl: string
+    service: ServiceItem
+    services: ServicesSettings
+  }>(`/pages/${pageId}/services/${serviceId}/photo`, {
+    method: 'POST',
+    token,
+    body: formData,
+  })
+  return res.data
+}
+```
+
+Клик по плейсхолдеру слева в списке услуг → выбор файла → `uploadServicePhoto` → обновить `photoUrl` у услуги в стейте.
 
 ---
 

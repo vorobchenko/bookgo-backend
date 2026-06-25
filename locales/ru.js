@@ -119,6 +119,17 @@ export default {
       categoryDeleteError: 'Ошибка удаления категории услуг',
       settingsUpdateSuccess: 'Настройки услуг обновлены',
       settingsUpdateError: 'Ошибка обновления настроек услуг',
+      photo: {
+        uploadSuccess: 'Фото услуги загружено',
+        deleteSuccess: 'Фото услуги удалено',
+        fileRequired: 'Нужно выбрать файл фото',
+        fileTooLarge: 'Фото должно быть не больше 5 МБ',
+        fileTypeInvalid: 'Фото должно быть в формате JPEG, PNG, WebP или GIF',
+        uploadInvalid: 'Некорректная загрузка фото',
+        uploadError: 'Ошибка загрузки фото услуги',
+        deleteError: 'Ошибка удаления фото услуги',
+        storageNotConfigured: 'Хранилище фото не настроено на сервере'
+      },
       validation: {
         invalid: 'Некорректные данные услуги',
         TITLE_REQUIRED: 'Название услуги обязательно',
@@ -129,7 +140,8 @@ export default {
         CATEGORY_INVALID: 'ID категории должен быть UUID',
         BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
         BODY_EMPTY: 'Нужно передать хотя бы одно поле',
-        SORT_ORDER_INVALID: 'Порядок сортировки — неотрицательное целое'
+        SORT_ORDER_INVALID: 'Порядок сортировки — неотрицательное целое',
+        PHOTO_URL_INVALID: 'URL фото должен указывать на хранилище Bookgo'
       }
     }
   },

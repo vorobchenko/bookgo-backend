@@ -1,3 +1,4 @@
+import { deleteAvatarByUrl } from './avatar-storage.js';
 import { query, withTransaction } from '../utils/db.js';
 import { coerceUuid } from '../utils/slug.js';
 import { assembleServicesSettings, mapServiceItemRow } from './page-assembler.js';
@@ -206,6 +207,10 @@ export async function deletePageServiceItem(pageId, serviceId) {
     const existing = await getServiceItemRow(client, pageId, serviceId);
     if (!existing) {
       return { notFound: true };
+    }
+
+    if (existing.photo_url) {
+      await deleteAvatarByUrl(existing.photo_url);
     }
 
     await client.query(`DELETE FROM page_service_items WHERE id = $1 AND page_id = $2`, [

@@ -1,5 +1,5 @@
 import { authenticateToken } from '../../middleware/auth.js';
-import { handleAvatarUpload } from '../../middleware/upload-avatar.js';
+import { handleAvatarUpload, handleServicePhotoUpload } from '../../middleware/upload-avatar.js';
 import {
   createPage,
   deletePageHandler,
@@ -25,6 +25,10 @@ import {
   patchPageServiceHandler,
   patchPageServicesSettingsHandler
 } from '../pages/services-handlers.js';
+import {
+  deleteServicePhotoHandler,
+  uploadServicePhotoHandler
+} from '../pages/service-photo.js';
 
 export default function registerPageRoutes(router) {
   router.get('/pages', authenticateToken, listPages);
@@ -46,6 +50,17 @@ export default function registerPageRoutes(router) {
     '/pages/:id/services/:serviceId/deactivate',
     authenticateToken,
     deactivatePageServiceHandler
+  );
+  router.post(
+    '/pages/:id/services/:serviceId/photo',
+    authenticateToken,
+    handleServicePhotoUpload,
+    uploadServicePhotoHandler
+  );
+  router.delete(
+    '/pages/:id/services/:serviceId/photo',
+    authenticateToken,
+    deleteServicePhotoHandler
   );
   router.patch('/pages/:id/services/:serviceId', authenticateToken, patchPageServiceHandler);
   router.delete('/pages/:id/services/:serviceId', authenticateToken, deletePageServiceHandler);

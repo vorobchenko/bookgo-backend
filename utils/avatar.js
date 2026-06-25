@@ -87,6 +87,35 @@ export function pageAvatarObjectPath(pageId, extension) {
   return `pages/${pageId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
 }
 
+export function servicePhotoObjectPath(pageId, serviceId, extension) {
+  const safeExt = extension.replace(/^\./, '').toLowerCase();
+  return `pages/${pageId}/services/${serviceId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
+}
+
+export function isAllowedServicePhotoUrl(url) {
+  if (!url || typeof url !== 'string') {
+    return true;
+  }
+
+  const trimmed = url.trim();
+  if (!trimmed) {
+    return true;
+  }
+
+  try {
+    const parsed = new URL(trimmed);
+    const expectedHost = new URL(getSupabasePublicUrl()).host;
+    if (parsed.host !== expectedHost) {
+      return false;
+    }
+
+    const path = avatarStoragePathFromUrl(trimmed);
+    return path !== null && /^pages\/[^/]+\/services\/[^/]+\//.test(path);
+  } catch {
+    return false;
+  }
+}
+
 export function extensionForMime(mimeType) {
   switch (mimeType) {
     case 'image/jpeg':

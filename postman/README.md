@@ -6,9 +6,21 @@
 
 | Файл | Назначение |
 |------|------------|
-| `bookgo-api.postman_collection.json` | Все эндпоинты v1 (health, auth, profile, pages) |
+| `bookgo-api.postman_collection.json` | Все эндпоинты v1 |
 | `bookgo-local.postman_environment.json` | `http://localhost:8080` |
 | `bookgo-production.postman_environment.json` | Railway production |
+
+## Структура коллекции
+
+| Папка | Эндпоинты |
+|-------|-----------|
+| **Health** | `GET /health` |
+| **Auth** | login, logout |
+| **Profile** | info, edit, change-password |
+| **Pages** | CRUD, publish, unpublish, set-default |
+| **Page Avatar** | upload, delete |
+| **Page Services** | services CRUD, activate/deactivate, categories, settings |
+| **Public** | `GET /public/pages/:slug` |
 
 ## Импорт в Postman
 
@@ -17,44 +29,54 @@
 3. В environment задать `adminPassword` (секрет, не коммитить)
 4. Запустить **POST /auth/login** — `token` сохранится автоматически
 
-## Порядок запросов (smoke test)
+Коллекция использует **Bearer auth на уровне коллекции** — Login/Health/Public переопределяют `noauth`.
+
+## Smoke test (Run Collection)
+
+Рекомендуемый порядок папок:
 
 ```
-GET /health
-POST /auth/login           → token
-GET /profile/info
-GET /pages                 → pageId (если есть)
-POST /pages                → pageId, pageSlug (если список пуст)
-POST /pages                → pageId, pageSlug (если список пуст)
-POST /pages/:id/services   → serviceId
-PATCH /pages/:id/services/:serviceId
-POST /pages/:id/avatar     → выбрать файл в поле avatar (JPEG/PNG/WebP/GIF)
-POST /pages/:id/publish
-GET /public/pages/:slug
-POST /pages/:id/unpublish
-POST /auth/logout
+Health
+Auth          → Login (token)
+Profile       → GET /profile/info
+Pages         → GET /pages → POST /pages → GET /pages/:id → PATCH /pages/:id
+Page Services → GET services → settings → category → POST service → PATCH → activate
+Pages         → POST /pages/:id/publish
+Public        → GET /public/pages/:slug
+Pages         → POST /pages/:id/unpublish
+Auth          → Logout
 ```
 
-## Pages — переменные
+Опционально: **Page Avatar** (нужен файл в поле `avatar`).
 
-После `POST /pages` или `GET /pages` автоматически выставляются:
+Пропустите **DELETE /pages/:id** и **DELETE service** в smoke, если не хотите удалять тестовые данные.
 
-- `pageId` — UUID страницы
-- `pageSlug` — slug для публичного URL
-- `serviceId` — UUID услуги (после `POST /pages/:id/services`)
+## Переменные
 
-## Правила обновления
-
-1. Новый эндпоинт на бэкенде → request в коллекцию + строка в `docs/*_api.md`
-2. Для pages — синхронизировать с `docs/pages_api.md` и `docs/frontend_pages_integration.md`
-3. Не дублировать route-handlers — только HTTP в коллекции
+| Переменная | Откуда |
+|------------|--------|
+| `token` | POST /auth/login |
+| `pageId`, `pageSlug` | GET/POST /pages, GET /pages/:id |
+| `serviceId` | starter service при POST /pages, или POST /pages/:id/services |
+| `categoryId` | POST /pages/:id/service-categories |
 
 ## CLI (Newman)
 
 ```bash
 npx newman run postman/bookgo-api.postman_collection.json \
   -e postman/bookgo-production.postman_environment.json \
-  --env-var "adminPassword=YOUR_PASSWORD"
+  --env-var "adminPassword=YOUR_PASSWORD" \
+  --folder "Health" \
+  --folder "Auth" \
+  --folder "Profile" \
+  --folder "Pages" \
+  --folder "Page Services" \
+  --folder "Public"
 ```
+
+## Правила обновления
+
+1. Новый эндпоинт → request в нужную папку + `docs/*_api.md`
+2. Не дублировать route-handlers — только HTTP в коллекции
 
 См. [`../docs/README.md`](../docs/README.md).

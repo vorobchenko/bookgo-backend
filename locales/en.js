@@ -119,6 +119,17 @@ export default {
       categoryDeleteError: 'Error deleting service category',
       settingsUpdateSuccess: 'Services settings updated successfully',
       settingsUpdateError: 'Error updating services settings',
+      photo: {
+        uploadSuccess: 'Service photo uploaded successfully',
+        deleteSuccess: 'Service photo removed successfully',
+        fileRequired: 'Photo file is required',
+        fileTooLarge: 'Photo must be 5 MB or smaller',
+        fileTypeInvalid: 'Photo must be a JPEG, PNG, WebP, or GIF image',
+        uploadInvalid: 'Invalid photo upload',
+        uploadError: 'Error uploading service photo',
+        deleteError: 'Error removing service photo',
+        storageNotConfigured: 'Photo storage is not configured on the server'
+      },
       validation: {
         invalid: 'Invalid service data',
         TITLE_REQUIRED: 'Service title is required',
@@ -129,7 +140,8 @@ export default {
         CATEGORY_INVALID: 'Category ID must be a valid UUID',
         BODY_INVALID: 'Request body must be a JSON object',
         BODY_EMPTY: 'At least one field is required',
-        SORT_ORDER_INVALID: 'Sort order must be a non-negative integer'
+        SORT_ORDER_INVALID: 'Sort order must be a non-negative integer',
+        PHOTO_URL_INVALID: 'Photo URL must point to Bookgo storage'
       }
     }
   },

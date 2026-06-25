@@ -21,30 +21,44 @@ const upload = multer({
   }
 });
 
-export function handleAvatarUpload(req, res, next) {
-  upload.single('avatar')(req, res, (error) => {
-    if (!error) {
-      next();
-      return;
-    }
+function createUploadHandler(fieldName, messages) {
+  return function handleUpload(req, res, next) {
+    upload.single(fieldName)(req, res, (error) => {
+      if (!error) {
+        next();
+        return;
+      }
 
-    if (error.code === 'LIMIT_FILE_SIZE') {
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({
+          success: false,
+          message: req.t(messages.fileTooLarge)
+        });
+      }
+
+      if (error.code === 'INVALID_FILE_TYPE') {
+        return res.status(400).json({
+          success: false,
+          message: req.t(messages.fileTypeInvalid)
+        });
+      }
+
       return res.status(400).json({
         success: false,
-        message: req.t('pages.avatar.fileTooLarge')
+        message: req.t(messages.uploadInvalid)
       });
-    }
-
-    if (error.code === 'INVALID_FILE_TYPE') {
-      return res.status(400).json({
-        success: false,
-        message: req.t('pages.avatar.fileTypeInvalid')
-      });
-    }
-
-    return res.status(400).json({
-      success: false,
-      message: req.t('pages.avatar.uploadInvalid')
     });
-  });
+  };
 }
+
+export const handleAvatarUpload = createUploadHandler('avatar', {
+  fileTooLarge: 'pages.avatar.fileTooLarge',
+  fileTypeInvalid: 'pages.avatar.fileTypeInvalid',
+  uploadInvalid: 'pages.avatar.uploadInvalid'
+});
+
+export const handleServicePhotoUpload = createUploadHandler('photo', {
+  fileTooLarge: 'pages.services.photo.fileTooLarge',
+  fileTypeInvalid: 'pages.services.photo.fileTypeInvalid',
+  uploadInvalid: 'pages.services.photo.uploadInvalid'
+});

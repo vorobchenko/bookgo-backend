@@ -1,3 +1,4 @@
+import { isAllowedServicePhotoUrl } from '../utils/avatar.js';
 import { isUuid } from './slug.js';
 
 const TITLE_MAX = 200;
@@ -41,6 +42,11 @@ export function parseServiceCreateBody(body) {
     return { ok: false, code: 'CATEGORY_INVALID' };
   }
 
+  const photoUrl = trimString(body?.photoUrl);
+  if (photoUrl && !isAllowedServicePhotoUrl(photoUrl)) {
+    return { ok: false, code: 'PHOTO_URL_INVALID' };
+  }
+
   return {
     ok: true,
     value: {
@@ -53,7 +59,7 @@ export function parseServiceCreateBody(body) {
       priceHidden: Boolean(body?.priceHidden),
       categoryId: categoryId || null,
       isActive: body?.isActive !== false,
-      photoUrl: trimString(body?.photoUrl),
+      photoUrl,
       sortOrder: Number.isInteger(body?.sortOrder) ? body.sortOrder : undefined
     }
   };
@@ -140,9 +146,14 @@ export function parseServicePatchBody(body) {
       case 'isActive':
         patch.isActive = Boolean(body.isActive);
         break;
-      case 'photoUrl':
-        patch.photoUrl = trimString(body.photoUrl);
+      case 'photoUrl': {
+        const photoUrl = trimString(body.photoUrl);
+        if (photoUrl && !isAllowedServicePhotoUrl(photoUrl)) {
+          return { ok: false, code: 'PHOTO_URL_INVALID' };
+        }
+        patch.photoUrl = photoUrl;
         break;
+      }
       case 'sortOrder': {
         const sortOrder = Number(body.sortOrder);
         if (!Number.isInteger(sortOrder) || sortOrder < 0) {

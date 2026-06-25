@@ -29,7 +29,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `priceHidden` | boolean | Скрыть цену на витрине |
 | `categoryId` | UUID \| null | Категория (если `useCategories: true`) |
 | `isActive` | boolean | Активна для бронирования |
-| `photoUrl` | string | URL фото (загрузка файла — отдельно, пока только строка) |
+| `photoUrl` | string | URL фото в Supabase Storage (`pages/{pageId}/services/{serviceId}/...`) |
 
 ### `ServiceCategory`
 
@@ -133,7 +133,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `priceHidden` | нет | `false` |
 | `categoryId` | нет | `null` |
 | `isActive` | нет | `true` |
-| `photoUrl` | нет | `""` |
+| `photoUrl` | нет | `""` (загружайте файл через `POST .../photo`) |
 | `id` | нет | сервер сгенерирует UUID (можно передать временный UUID с фронта) |
 | `sortOrder` | нет | в конец списка |
 
@@ -237,6 +237,74 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
 Вернуть услугу на витрину (`isActive: true`).
 
 Тело запроса не требуется.
+
+---
+
+## POST /pages/:id/services/:serviceId/photo
+
+Загрузить фото услуги (превью слева в списке «Your services»). При повторной загрузке предыдущий файл удаляется из Storage.
+
+Путь в bucket `files`: `pages/{pageId}/services/{serviceId}/{timestamp}-{id}.jpg`
+
+### Request body
+
+`Content-Type: multipart/form-data`
+
+| Поле | Тип | Обязательно | Описание |
+|------|-----|-------------|----------|
+| `photo` | file | да | JPEG, PNG, WebP или GIF, максимум **5 MB** |
+
+### Пример (fetch)
+
+```typescript
+const formData = new FormData()
+formData.append('photo', file)
+
+const res = await fetch(`${API_BASE}/pages/${pageId}/services/${serviceId}/photo`, {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Accept-Language': 'ru',
+  },
+  body: formData,
+})
+
+const json = await res.json()
+// json.data.photoUrl
+// json.data.service.photoUrl — тот же URL
+setServices(json.data.services)
+```
+
+### Ответ 200
+
+```json
+{
+  "success": true,
+  "message": "Фото услуги загружено",
+  "data": {
+    "photoUrl": "https://....supabase.co/storage/v1/object/public/files/pages/PAGE_ID/services/SERVICE_ID/....png",
+    "service": {
+      "id": "...",
+      "title": "Session",
+      "photoUrl": "https://....png",
+      "isActive": true
+    },
+    "services": { "useCategories": false, "categories": [], "services": [] }
+  }
+}
+```
+
+---
+
+## DELETE /pages/:id/services/:serviceId/photo
+
+Удалить фото услуги из Storage и очистить `photoUrl`.
+
+### Ответ 200
+
+`data.service.photoUrl` = `""`, `data.services` — обновлённый блок.
+
+**Не путать** с `DELETE .../services/:serviceId` — тот эндпоинт удаляет всю услугу (фото тоже удаляется из Storage).
 
 ---
 
