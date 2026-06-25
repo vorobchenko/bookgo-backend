@@ -203,6 +203,28 @@ export function emptyAvailabilityDays() {
   }));
 }
 
+/** Mon–Fri 09:00–17:00 for DB `page_availability.days` (no label/letter). */
+export function defaultAvailabilityDaysStored() {
+  return [1, 2, 3, 4, 5].map((weekday) => ({
+    weekday,
+    working: true,
+    bookable: true,
+    ranges: [{ id: `rng-${weekday}`, start: '09:00', end: '17:00' }]
+  }));
+}
+
+export const DEFAULT_STARTER_SERVICE = {
+  title: 'Session',
+  subtitle: '',
+  durationMinutes: 60,
+  priceAmount: 0,
+  currency: 'PLN',
+  priceHidden: false,
+  categoryId: null,
+  isActive: true,
+  photoUrl: ''
+};
+
 export function profileFromUser(user) {
   return {
     name: user.name?.trim() || '',

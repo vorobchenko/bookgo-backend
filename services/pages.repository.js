@@ -1,9 +1,12 @@
+import crypto from 'crypto';
 import { query, withTransaction } from '../utils/db.js';
 import { coerceUuid } from '../utils/slug.js';
 import {
   DEFAULT_AVAILABILITY_SCALARS,
   DEFAULT_SECTION_LAYOUT,
+  DEFAULT_STARTER_SERVICE,
   DEFAULT_THEME,
+  defaultAvailabilityDaysStored,
   profileFromUser
 } from './page-defaults.js';
 
@@ -131,6 +134,8 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
       [page.id, DEFAULT_THEME.preset, DEFAULT_THEME.accentColor, DEFAULT_THEME.mode]
     );
 
+    const availabilityTimezone = profile.timezone || DEFAULT_AVAILABILITY_SCALARS.timezone;
+
     await client.query(
       `INSERT INTO page_availability (
          page_id, timezone, buffer_before_minutes, buffer_after_minutes,
@@ -138,12 +143,32 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
        ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
       [
         page.id,
-        profile.timezone || DEFAULT_AVAILABILITY_SCALARS.timezone,
+        availabilityTimezone,
         DEFAULT_AVAILABILITY_SCALARS.bufferBeforeMinutes,
         DEFAULT_AVAILABILITY_SCALARS.bufferAfterMinutes,
         DEFAULT_AVAILABILITY_SCALARS.minNoticeHours,
         DEFAULT_AVAILABILITY_SCALARS.maxDaysAhead,
-        JSON.stringify([])
+        JSON.stringify(defaultAvailabilityDaysStored())
+      ]
+    );
+
+    const serviceId = crypto.randomUUID();
+    await client.query(
+      `INSERT INTO page_service_items (
+         id, page_id, category_id, title, subtitle, duration_minutes, price_amount,
+         currency, price_hidden, photo_url, is_active, sort_order
+       ) VALUES ($1, $2, NULL, $3, $4, $5, $6, $7, $8, $9, $10, 0)`,
+      [
+        serviceId,
+        page.id,
+        DEFAULT_STARTER_SERVICE.title,
+        DEFAULT_STARTER_SERVICE.subtitle,
+        DEFAULT_STARTER_SERVICE.durationMinutes,
+        DEFAULT_STARTER_SERVICE.priceAmount,
+        DEFAULT_STARTER_SERVICE.currency,
+        DEFAULT_STARTER_SERVICE.priceHidden,
+        DEFAULT_STARTER_SERVICE.photoUrl,
+        DEFAULT_STARTER_SERVICE.isActive
       ]
     );
 
