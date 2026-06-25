@@ -19,6 +19,11 @@ jobs:
           version: latest
 
       - name: Apply pending migrations
+        if: ${{ secrets.SUPABASE_DATABASE_URL != '' }}
         run: supabase db push --db-url "$SUPABASE_DATABASE_URL"
         env:
           SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+
+      - name: Skip (no SUPABASE_DATABASE_URL secret)
+        if: ${{ secrets.SUPABASE_DATABASE_URL == '' }}
+        run: echo "Skipping — set SUPABASE_DATABASE_URL in repo secrets, or use Supabase GitHub integration."
