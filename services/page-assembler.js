@@ -5,6 +5,7 @@ import {
   DEFAULT_THEME,
   isAboutBlockEnabled,
   isAboutNestedBlockType,
+  PAGE_PROFILE_LANGS,
   WEEKDAY_META
 } from './page-defaults.js';
 import { isValidEmailOrEmpty, normalizeEmail } from '../utils/email.js';
@@ -59,7 +60,7 @@ function mapProfileRow(row) {
       role: '',
       bio: '',
       city: '',
-      timezone: 'UTC',
+      lang: 'en',
       avatarUrl: '',
       email: '',
       phone: ''
@@ -71,7 +72,7 @@ function mapProfileRow(row) {
     role: row.role ?? '',
     bio: row.bio ?? '',
     city: row.city ?? '',
-    timezone: row.timezone ?? 'UTC',
+    lang: PAGE_PROFILE_LANGS.includes(row.lang) ? row.lang : 'en',
     avatarUrl: row.avatar_url ?? '',
     email: row.email ?? '',
     phone: row.phone ?? ''
@@ -372,10 +373,10 @@ export function validatePublish(settings) {
     errors.push('Add your full name in Profile');
   }
 
-  if (settings.profile.timezone?.trim()) {
+  if (PAGE_PROFILE_LANGS.includes(settings.profile.lang)) {
     coreComplete += 1;
   } else {
-    errors.push('Set a timezone in Profile');
+    errors.push('Set a language in Profile');
   }
 
   const profileEmail = normalizeEmail(settings.profile.email);
@@ -453,7 +454,7 @@ export function disassemblePagePatch(settingsPatch) {
       role: p.role ?? '',
       bio: p.bio ?? '',
       city: p.city ?? '',
-      timezone: p.timezone ?? 'UTC',
+      lang: PAGE_PROFILE_LANGS.includes(p.lang) ? p.lang : 'en',
       avatar_url: p.avatarUrl ?? '',
       email: p.email?.trim() ? normalizeEmail(p.email) : '',
       phone: p.phone ?? ''

@@ -19,6 +19,7 @@ import {
 } from '../../services/pages.repository.js';
 import { query } from '../../utils/db.js';
 import { isValidSlug, slugify } from '../../utils/slug.js';
+import { PAGE_PROFILE_LANGS } from '../../services/page-defaults.js';
 import { isValidEmailOrEmpty, normalizeEmail } from '../../utils/email.js';
 import { isAllowedPageAvatarUrl } from '../../utils/avatar.js';
 
@@ -216,6 +217,17 @@ export async function patchPage(req, res) {
         });
       }
       patch.profileFields.email = email;
+    }
+
+    if (patch.profileFields?.lang !== undefined) {
+      const lang = patch.profileFields.lang;
+      if (!PAGE_PROFILE_LANGS.includes(lang)) {
+        return res.status(400).json({
+          success: false,
+          message: req.t('pages.validation.languageInvalid'),
+          valid_languages: PAGE_PROFILE_LANGS
+        });
+      }
     }
 
     if (patch.profileFields?.avatar_url !== undefined) {

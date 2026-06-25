@@ -225,13 +225,15 @@ export const DEFAULT_STARTER_SERVICE = {
   photoUrl: ''
 };
 
+export const PAGE_PROFILE_LANGS = ['en', 'ru'];
+
 export function profileFromUser(user) {
   return {
     name: user.name?.trim() || '',
     role: '',
     bio: user.bio?.trim() || '',
     city: user.city?.trim() || '',
-    timezone: user.timezone?.trim() || 'UTC',
+    lang: PAGE_PROFILE_LANGS.includes(user.lang) ? user.lang : 'en',
     avatarUrl: user.avatar?.trim() || '',
     email: user.email?.trim() || '',
     phone: user.phone?.trim() || ''

@@ -35,7 +35,7 @@ section_layout JSONB  -- PageBlock[] (enabled/required/status)
 
 ## `page_profiles`
 
-`name`, `role`, `bio`, `city`, `timezone`, `avatar_url`, `email`, `phone`
+`name`, `role`, `bio`, `city`, `lang`, `avatar_url`, `email`, `phone`
 
 При `POST /pages` — copy-on-create из `users`.
 

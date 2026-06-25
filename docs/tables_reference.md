@@ -79,7 +79,7 @@ users 1 ──< N pages
 
 | Ключ | Содержимое |
 |------|------------|
-| `profile` | name, role, bio, city, avatarUrl, email, phone |
+| `profile` | name, role, bio, city, lang, avatarUrl, email, phone |
 | `availability` | timezone, days, ranges, buffers |
 | `services` | categories + services |
 | `blocks` | какие секции включены |

@@ -84,7 +84,7 @@ const json = await res.json()
           "avatarUrl": "https://byttvudgaibixzarzeol.supabase.co/storage/v1/object/public/files/pages/.../....png",
           "bio": "",
           "city": "",
-          "timezone": "Europe/Warsaw",
+          "lang": "en",
           "email": "hello@dodotap.com",
           "phone": ""
         }

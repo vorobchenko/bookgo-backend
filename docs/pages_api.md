@@ -45,7 +45,7 @@ Full page with assembled `settings` (`PageSettings`).
 {
   "slug": "new-slug",
   "settings": {
-    "profile": { "name": "..." },
+    "profile": { "name": "...", "lang": "en" },
     "services": { "useCategories": true, "categories": [], "services": [] },
     "availability": { "timezone": "Europe/Warsaw", "days": [] },
     "blocks": [],
@@ -79,7 +79,7 @@ Remove page profile photo from storage and clear `avatarUrl`.
 
 ## POST /pages/:id/publish
 
-Runs publish validation (name, timezone, active service, bookable hours). Returns `400` with `data.validation.errors` if invalid.
+Runs publish validation (name, language, active service, bookable hours). Returns `400` with `data.validation.errors` if invalid.
 
 ---
 
@@ -99,6 +99,6 @@ No auth. Only published pages. Same response shape as `GET /pages/:id`.
 
 | Status | When |
 |--------|------|
-| 400 | Invalid slug, email, avatar URL, publish validation failed |
+| 400 | Invalid slug, email, language, avatar URL, publish validation failed |
 | 404 | Page not found / not published (public) |
 | 409 | Slug already taken |

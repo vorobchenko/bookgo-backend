@@ -113,7 +113,7 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
 
     await client.query(
       `INSERT INTO page_profiles (
-         page_id, name, role, bio, city, timezone, avatar_url, email, phone
+         page_id, name, role, bio, city, lang, avatar_url, email, phone
        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         page.id,
@@ -121,7 +121,7 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
         profile.role,
         profile.bio,
         profile.city,
-        profile.timezone,
+        profile.lang,
         profile.avatarUrl,
         profile.email,
         profile.phone
@@ -134,7 +134,7 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
       [page.id, DEFAULT_THEME.preset, DEFAULT_THEME.accentColor, DEFAULT_THEME.mode]
     );
 
-    const availabilityTimezone = profile.timezone || DEFAULT_AVAILABILITY_SCALARS.timezone;
+    const availabilityTimezone = user.timezone?.trim() || DEFAULT_AVAILABILITY_SCALARS.timezone;
 
     await client.query(
       `INSERT INTO page_availability (
@@ -233,14 +233,14 @@ async function upsertProfile(client, pageId, fields) {
   if (!fields) return;
   await client.query(
     `INSERT INTO page_profiles (
-       page_id, name, role, bio, city, timezone, avatar_url, email, phone
+       page_id, name, role, bio, city, lang, avatar_url, email, phone
      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      ON CONFLICT (page_id) DO UPDATE SET
        name = EXCLUDED.name,
        role = EXCLUDED.role,
        bio = EXCLUDED.bio,
        city = EXCLUDED.city,
-       timezone = EXCLUDED.timezone,
+       lang = EXCLUDED.lang,
        avatar_url = EXCLUDED.avatar_url,
        email = EXCLUDED.email,
        phone = EXCLUDED.phone,
@@ -251,7 +251,7 @@ async function upsertProfile(client, pageId, fields) {
       fields.role,
       fields.bio,
       fields.city,
-      fields.timezone,
+      fields.lang,
       fields.avatar_url,
       fields.email,
       fields.phone

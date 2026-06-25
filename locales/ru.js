@@ -83,7 +83,8 @@ export default {
     validation: {
       slugInvalid: 'Slug: 3–48 символов, только строчные латинские буквы, цифры и дефис',
       slugTaken: 'Этот slug уже занят',
-      emailInvalid: 'Некорректный формат email'
+      emailInvalid: 'Некорректный формат email',
+      languageInvalid: 'Некорректный код языка'
     },
     avatar: {
       uploadSuccess: 'Фото страницы успешно загружено',

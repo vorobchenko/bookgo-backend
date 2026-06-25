@@ -253,7 +253,7 @@ await patchPage(token, pageId, {
 4. При 200 — обновить settings из data.page
 ```
 
-Валидация на бэке совпадает с `validatePublish` на фронте (имя, timezone, активная услуга, bookable hours).
+Валидация на бэке совпадает с `validatePublish` на фронте (имя, язык, активная услуга, bookable hours).
 
 ### 4. Публичная страница `bookgo.app/t/:slug`
 
@@ -308,6 +308,7 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 
 | API `settings` | Примечание |
 |----------------|------------|
+| `profile.lang` | колонка `lang` (`en` \| `ru`) |
 | `profile.avatarUrl` | колонка `avatar_url` |
 | `theme.accentColor` | колонка `accent_color` |
 | `availability.bufferBeforeMinutes` | `buffer_before_minutes` |
@@ -371,7 +372,7 @@ try {
 4. `publish` → `publishPage`.
 5. localStorage оставить как offline fallback **только если нет сети** (опционально).
 
-При `POST /pages` профиль витрины копируется из `users` (name, email, phone, avatar, bio, city, timezone). Поле `role` пустое — заполнить в builder.
+При `POST /pages` профиль витрины копируется из `users` (name, email, phone, avatar, bio, city, **lang**). Поле `role` пустое — заполнить в builder. **Timezone** только в секции Schedule (`availability.timezone`).
 
 ---
 
