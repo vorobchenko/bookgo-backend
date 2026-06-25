@@ -226,6 +226,47 @@ export async function setPageServiceActive(pageId, serviceId, isActive) {
   return updatePageServiceItem(pageId, serviceId, { isActive });
 }
 
+export async function reorderPageServices(pageId, orderedIds) {
+  return withTransaction(async (client) => {
+    const page = await loadPageRow(client, pageId);
+    if (!page) {
+      return null;
+    }
+
+    const result = await client.query(
+      `SELECT id FROM page_service_items WHERE page_id = $1`,
+      [pageId]
+    );
+    const existingIds = new Set(result.rows.map((row) => row.id));
+
+    if (orderedIds.length !== existingIds.size) {
+      const error = new Error('Order must include every service on the page');
+      error.code = 'ORDER_INCOMPLETE';
+      throw error;
+    }
+
+    for (const id of orderedIds) {
+      if (!existingIds.has(id)) {
+        const error = new Error('Unknown service in order');
+        error.code = 'ORDER_INVALID';
+        throw error;
+      }
+    }
+
+    for (let i = 0; i < orderedIds.length; i += 1) {
+      await client.query(
+        `UPDATE page_service_items
+         SET sort_order = $1, updated_at = now()
+         WHERE id = $2 AND page_id = $3`,
+        [i, orderedIds[i], pageId]
+      );
+    }
+
+    await touchPage(pageId, client);
+    return buildServicesResponse(client, pageId);
+  });
+}
+
 export async function updatePageServicesSettings(pageId, settings) {
   return withTransaction(async (client) => {
     const page = await loadPageRow(client, pageId);

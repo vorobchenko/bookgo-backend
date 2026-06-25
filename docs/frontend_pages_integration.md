@@ -5,7 +5,8 @@
 Перед началом: [INTEGRATION_RULES.md](./INTEGRATION_RULES.md), [API_CONVENTIONS.md](./API_CONVENTIONS.md)
 
 Контракт: [pages_api.md](./pages_api.md)  
-Схема БД: [pages_schema_draft.md](./pages_schema_draft.md)
+Схема БД: [pages_schema_draft.md](./pages_schema_draft.md)  
+Услуги (Your services): [frontend_services_integration.md](./frontend_services_integration.md)
 
 ---
 
@@ -306,46 +307,11 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 
 ## Услуги (Services)
 
-Точечные операции — отдельные эндпоинты (не обязательно слать весь `settings.services` через `PATCH`):
+Полная интеграция секции **Your services**: типы, archive/restore, порядок, фото, чеклист.
 
-| Method | Path | Назначение |
-|--------|------|------------|
-| `GET` | `/pages/:id/services` | Список услуг и категорий |
-| `POST` | `/pages/:id/services` | Создать услугу |
-| `PATCH` | `/pages/:id/services/:serviceId` | Редактировать |
-| `DELETE` | `/pages/:id/services/:serviceId` | Удалить |
-| `POST` | `/pages/:id/services/:serviceId/deactivate` | Скрыть с витрины |
-| `POST` | `/pages/:id/services/:serviceId/activate` | Вернуть на витрину |
-| `POST` | `/pages/:id/services/:serviceId/photo` | Загрузить фото (`multipart`, поле `photo`) |
-| `DELETE` | `/pages/:id/services/:serviceId/photo` | Удалить фото |
-| `PATCH` | `/pages/:id/services/settings` | `{ "useCategories": true }` |
-| `POST` | `/pages/:id/service-categories` | Создать категорию |
-| `PATCH` | `/pages/:id/service-categories/:categoryId` | Редактировать категорию |
-| `DELETE` | `/pages/:id/service-categories/:categoryId` | Удалить категорию |
+**→ [frontend_services_integration.md](./frontend_services_integration.md)**
 
-Контракт: [pages_services_api.md](./pages_services_api.md)
-
-После любой мутации синхронизируй `settings.services` из `data.services` в ответе.
-
-```typescript
-export async function uploadServicePhoto(token: string, pageId: string, serviceId: string, file: File) {
-  const formData = new FormData()
-  formData.append('photo', file)
-
-  const res = await apiRequest<{
-    photoUrl: string
-    service: ServiceItem
-    services: ServicesSettings
-  }>(`/pages/${pageId}/services/${serviceId}/photo`, {
-    method: 'POST',
-    token,
-    body: formData,
-  })
-  return res.data
-}
-```
-
-Клик по плейсхолдеру слева в списке услуг → выбор файла → `uploadServicePhoto` → обновить `photoUrl` у услуги в стейте.
+Кратко: не удаляй услуги — `POST .../archive`; порядок — `PUT .../services/order`; фото — `POST .../photo` (поле `photo`). После мутаций обновляй `settings.services` из `data.services`.
 
 ---
 

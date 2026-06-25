@@ -241,3 +241,24 @@ export function parseServicesSettingsPatch(body) {
     }
   };
 }
+
+export function parseServicesOrderBody(body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return { ok: false, code: 'BODY_INVALID' };
+  }
+
+  const order = body.order;
+  if (!Array.isArray(order) || order.length === 0) {
+    return { ok: false, code: 'ORDER_REQUIRED' };
+  }
+
+  if (!order.every((id) => isUuid(id))) {
+    return { ok: false, code: 'ORDER_INVALID' };
+  }
+
+  if (new Set(order).size !== order.length) {
+    return { ok: false, code: 'ORDER_DUPLICATE' };
+  }
+
+  return { ok: true, value: { order } };
+}

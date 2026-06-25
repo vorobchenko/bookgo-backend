@@ -346,7 +346,7 @@ async function replaceServices(client, pageId, services) {
         Boolean(item.priceHidden),
         item.photoUrl ?? '',
         item.isActive !== false,
-        i
+        Number.isInteger(item.sortOrder) ? item.sortOrder : i
       ]
     );
   }

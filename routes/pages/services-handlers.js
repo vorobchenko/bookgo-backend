@@ -5,6 +5,7 @@ import {
   deletePageServiceCategory,
   deletePageServiceItem,
   getPageServicesSettings,
+  reorderPageServices,
   setPageServiceActive,
   updatePageServiceCategory,
   updatePageServiceItem,
@@ -16,6 +17,7 @@ import {
   parseCategoryPatchBody,
   parseServiceCreateBody,
   parseServicePatchBody,
+  parseServicesOrderBody,
   parseServicesSettingsPatch
 } from '../../utils/page-service-validation.js';
 
@@ -72,11 +74,35 @@ function handleRepositoryError(req, res, error, fallbackKey) {
     });
   }
 
+  if (error?.code === 'ORDER_INCOMPLETE') {
+    return res.status(400).json({
+      success: false,
+      message: req.t('pages.services.validation.ORDER_INCOMPLETE')
+    });
+  }
+
+  if (error?.code === 'ORDER_INVALID') {
+    return res.status(400).json({
+      success: false,
+      message: req.t('pages.services.validation.ORDER_INVALID')
+    });
+  }
+
   console.error(fallbackKey, error);
   return res.status(500).json({
     success: false,
     message: req.t(fallbackKey)
   });
+}
+
+function servicesMeta(services) {
+  const items = services?.services ?? [];
+  const activeCount = items.filter((item) => item.isActive).length;
+  return {
+    activeCount,
+    archivedCount: items.length - activeCount,
+    totalCount: items.length
+  };
 }
 
 export async function listPageServicesHandler(req, res) {
@@ -95,7 +121,10 @@ export async function listPageServicesHandler(req, res) {
     return res.status(200).json({
       success: true,
       message: req.t('pages.services.listSuccess'),
-      data: { services }
+      data: {
+        services,
+        meta: servicesMeta(services)
+      }
     });
   } catch (error) {
     return handleRepositoryError(req, res, error, 'pages.services.listError');
@@ -198,6 +227,40 @@ export async function patchPageServiceHandler(req, res) {
   }
 }
 
+export async function reorderPageServicesHandler(req, res) {
+  try {
+    const page = await requireOwnedPage(req, res);
+    if (!page) return;
+
+    const parsed = parseServicesOrderBody(req.body);
+    if (!parsed.ok) {
+      return res.status(400).json({
+        success: false,
+        message: validationMessage(req, parsed.code)
+      });
+    }
+
+    const result = await reorderPageServices(page.id, parsed.value.order);
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: req.t('pages.get.notFound')
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: req.t('pages.services.reorderSuccess'),
+      data: {
+        ...result,
+        meta: servicesMeta(result.services)
+      }
+    });
+  } catch (error) {
+    return handleRepositoryError(req, res, error, 'pages.services.reorderError');
+  }
+}
+
 export async function deletePageServiceHandler(req, res) {
   try {
     const page = await requireOwnedPage(req, res);
@@ -221,6 +284,64 @@ export async function deletePageServiceHandler(req, res) {
     });
   } catch (error) {
     return handleRepositoryError(req, res, error, 'pages.services.deleteError');
+  }
+}
+
+export async function archivePageServiceHandler(req, res) {
+  try {
+    const page = await requireOwnedPage(req, res);
+    if (!page) return;
+
+    const serviceId = requireServiceId(req, res);
+    if (!serviceId) return;
+
+    const result = await setPageServiceActive(page.id, serviceId, false);
+    if (result?.notFound) {
+      return res.status(404).json({
+        success: false,
+        message: req.t('pages.services.notFound')
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: req.t('pages.services.archiveSuccess'),
+      data: {
+        ...result,
+        meta: servicesMeta(result.services)
+      }
+    });
+  } catch (error) {
+    return handleRepositoryError(req, res, error, 'pages.services.updateError');
+  }
+}
+
+export async function restorePageServiceHandler(req, res) {
+  try {
+    const page = await requireOwnedPage(req, res);
+    if (!page) return;
+
+    const serviceId = requireServiceId(req, res);
+    if (!serviceId) return;
+
+    const result = await setPageServiceActive(page.id, serviceId, true);
+    if (result?.notFound) {
+      return res.status(404).json({
+        success: false,
+        message: req.t('pages.services.notFound')
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: req.t('pages.services.restoreSuccess'),
+      data: {
+        ...result,
+        meta: servicesMeta(result.services)
+      }
+    });
+  } catch (error) {
+    return handleRepositoryError(req, res, error, 'pages.services.updateError');
   }
 }
 

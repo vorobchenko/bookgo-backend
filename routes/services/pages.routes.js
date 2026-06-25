@@ -14,16 +14,17 @@ import {
 import { deletePageAvatarHandler } from '../pages/delete-avatar.js';
 import { uploadPageAvatarHandler } from '../pages/upload-avatar.js';
 import {
-  activatePageServiceHandler,
+  archivePageServiceHandler,
   createPageServiceCategoryHandler,
   createPageServiceHandler,
-  deactivatePageServiceHandler,
   deletePageServiceCategoryHandler,
   deletePageServiceHandler,
   listPageServicesHandler,
   patchPageServiceCategoryHandler,
   patchPageServiceHandler,
-  patchPageServicesSettingsHandler
+  patchPageServicesSettingsHandler,
+  reorderPageServicesHandler,
+  restorePageServiceHandler
 } from '../pages/services-handlers.js';
 import {
   deleteServicePhotoHandler,
@@ -40,16 +41,27 @@ export default function registerPageRoutes(router) {
 
   router.get('/pages/:id/services', authenticateToken, listPageServicesHandler);
   router.patch('/pages/:id/services/settings', authenticateToken, patchPageServicesSettingsHandler);
+  router.put('/pages/:id/services/order', authenticateToken, reorderPageServicesHandler);
   router.post('/pages/:id/services', authenticateToken, createPageServiceHandler);
+  router.post(
+    '/pages/:id/services/:serviceId/archive',
+    authenticateToken,
+    archivePageServiceHandler
+  );
+  router.post(
+    '/pages/:id/services/:serviceId/restore',
+    authenticateToken,
+    restorePageServiceHandler
+  );
   router.post(
     '/pages/:id/services/:serviceId/activate',
     authenticateToken,
-    activatePageServiceHandler
+    restorePageServiceHandler
   );
   router.post(
     '/pages/:id/services/:serviceId/deactivate',
     authenticateToken,
-    deactivatePageServiceHandler
+    archivePageServiceHandler
   );
   router.post(
     '/pages/:id/services/:serviceId/photo',

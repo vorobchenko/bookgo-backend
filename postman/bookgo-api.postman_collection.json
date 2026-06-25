@@ -437,8 +437,9 @@
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
                   "pm.test('services block', () => pm.expect(json.data.services.services).to.be.an('array'));",
-                  "const first = json.data.services?.services?.[0];",
-                  "if (first?.id) pm.collectionVariables.set('serviceId', first.id);"
+                  "const ids = json.data.services.services.map((s) => s.id);",
+                  "if (ids.length) pm.collectionVariables.set('serviceOrderIds', JSON.stringify(ids));",
+                  "if (ids.length) pm.collectionVariables.set('serviceId', ids[0]);"
                 ]
               }
             }
@@ -653,13 +654,33 @@
           "response": []
         },
         {
-          "name": "POST /pages/:id/services/:serviceId/deactivate",
+          "name": "PUT /pages/:id/services/order",
           "request": {
-            "method": "POST",
-            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
-            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/deactivate"
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": [\"{{serviceId}}\"]\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/order"
           },
           "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Set order from last GET /services response if available",
+                  "const ids = pm.collectionVariables.get('serviceOrderIds');",
+                  "if (ids) {",
+                  "  pm.request.body.raw = JSON.stringify({ order: JSON.parse(ids) });",
+                  "}"
+                ]
+              }
+            },
             {
               "listen": "test",
               "script": {
@@ -667,7 +688,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('deactivated', () => pm.expect(json.data.service.isActive).to.eql(false));"
+                  "pm.test('meta present', () => pm.expect(json.data.meta.totalCount).to.be.a('number'));"
                 ]
               }
             }
@@ -675,11 +696,11 @@
           "response": []
         },
         {
-          "name": "POST /pages/:id/services/:serviceId/activate",
+          "name": "POST /pages/:id/services/:serviceId/archive",
           "request": {
             "method": "POST",
             "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
-            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/activate"
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/archive"
           },
           "event": [
             {
@@ -689,7 +710,8 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('activated', () => pm.expect(json.data.service.isActive).to.eql(true));"
+                  "pm.test('archived', () => pm.expect(json.data.service.isActive).to.eql(false));",
+                  "pm.test('meta archived', () => pm.expect(json.data.meta.archivedCount).to.be.above(0));"
                 ]
               }
             }
@@ -697,11 +719,11 @@
           "response": []
         },
         {
-          "name": "DELETE /pages/:id/services/:serviceId",
+          "name": "POST /pages/:id/services/:serviceId/restore",
           "request": {
-            "method": "DELETE",
+            "method": "POST",
             "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
-            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}"
+            "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}/restore"
           },
           "event": [
             {
@@ -711,7 +733,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('services block', () => pm.expect(json.data.services.services).to.be.an('array'));"
+                  "pm.test('restored', () => pm.expect(json.data.service.isActive).to.eql(true));"
                 ]
               }
             }

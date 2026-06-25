@@ -1,10 +1,18 @@
 # Page services API
 
-CRUD для **услуг страницы** (builder → секция Services): создание, редактирование, удаление, активация/деактивация, категории и флаг `useCategories`.
+Управление **услугами страницы** (builder → Your services): создание, редактирование, **архив** (active/inactive), **порядок**, фото, категории.
 
-Данные хранятся в `page_service_items` / `page_service_categories` и собираются в `settings.services` при `GET /pages/:id`.
+**Удаление в UI не используется** — вместо delete услугу отправляют в архив (`isActive: false`).
 
-**Альтернатива:** по-прежнему можно менять весь блок `settings.services` через `PATCH /pages/:id` (полная замена). Для точечных операций в UI удобнее эндпоинты ниже.
+| UI | API |
+|----|-----|
+| ACTIVE | `isActive: true` |
+| ARCHIVED | `isActive: false` |
+| Порядок в списке | `sortOrder` + `PUT .../services/order` |
+
+Данные в `page_service_items` / `page_service_categories` → `settings.services` при `GET /pages/:id`.
+
+**Альтернатива:** полная замена блока через `PATCH /pages/:id` с `settings.services`.
 
 Base URL: `https://bookgo-backend.up.railway.app`
 
@@ -26,10 +34,19 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `durationMinutes` | integer | Длительность в минутах (> 0) |
 | `priceAmount` | integer | Цена в **минорных единицах** (15000 = 150.00) |
 | `currency` | string | ISO 4217, 3 буквы (`PLN`, `EUR`, …) |
-| `priceHidden` | boolean | Скрыть цену на витрине |
+| `priceHidden` | boolean | Скрыть цену на витрине (`On request`) |
 | `categoryId` | UUID \| null | Категория (если `useCategories: true`) |
-| `isActive` | boolean | Активна для бронирования |
-| `photoUrl` | string | URL фото в Supabase Storage (`pages/{pageId}/services/{serviceId}/...`) |
+| `isActive` | boolean | `true` = ACTIVE, `false` = ARCHIVED |
+| `photoUrl` | string | URL фото в Supabase Storage |
+| `sortOrder` | integer | Порядок отображения (0 = первый) |
+
+### `ServicesMeta`
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `activeCount` | integer | Число активных услуг |
+| `archivedCount` | integer | Число в архиве |
+| `totalCount` | integer | Всего услуг |
 
 ### `ServiceCategory`
 
@@ -50,17 +67,25 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 ### Ответ мутаций
 
-После create/update/delete/activate/deactivate в `data` возвращается:
+После create/update/archive/reorder в `data` возвращается:
 
 ```json
 {
-  "service": { /* только для операций с одной услугой */ },
-  "category": { /* только для операций с одной категорией */ },
-  "services": { /* полный блок ServicesSettings */ }
+  "service": { },
+  "category": { },
+  "services": { },
+  "meta": { "activeCount": 3, "archivedCount": 2, "totalCount": 5 }
 }
 ```
 
-Обновите локальный стейт builder из `data.services` (или замените только `data.service`).
+Список в `services.services` отсортирован по `sortOrder` ASC. На фронте разбей на секции:
+
+```typescript
+const active = services.services.filter((s) => s.isActive)
+const archived = services.services.filter((s) => !s.isActive)
+```
+
+Обновляй стейт builder из `data.services`.
 
 ---
 
@@ -81,17 +106,23 @@ Base URL: `https://bookgo-backend.up.railway.app`
       "services": [
         {
           "id": "550e8400-e29b-41d4-a716-446655440001",
-          "title": "Session",
+          "title": "Web development",
           "subtitle": "",
           "durationMinutes": 60,
-          "priceAmount": 0,
-          "currency": "PLN",
+          "priceAmount": 10000,
+          "currency": "EUR",
           "priceHidden": false,
           "categoryId": null,
           "isActive": true,
-          "photoUrl": ""
+          "photoUrl": "https://...",
+          "sortOrder": 0
         }
       ]
+    },
+    "meta": {
+      "activeCount": 3,
+      "archivedCount": 2,
+      "totalCount": 5
     }
   }
 }
@@ -114,6 +145,53 @@ Base URL: `https://bookgo-backend.up.railway.app`
 ### Ответ 200
 
 `data.services` — обновлённый блок (категории и услуги без изменений).
+
+---
+
+## PUT /pages/:id/services/order
+
+Задать **порядок всех услуг** на странице (drag-and-drop в ACTIVE и ARCHIVED).
+
+Массив `order` — UUID услуг **сверху вниз**, как в UI. Должен включать **каждую** услугу страницы ровно один раз.
+
+### Request body
+
+```json
+{
+  "order": [
+    "uuid-active-1",
+    "uuid-active-2",
+    "uuid-active-3",
+    "uuid-archived-1",
+    "uuid-archived-2"
+  ]
+}
+```
+
+Типичный сценарий: пользователь перетащил карточки только в секции ACTIVE — отправь новый порядок active-элементов + archived в прежнем порядке в конце.
+
+### Пример (fetch)
+
+```typescript
+await fetch(`${API}/pages/${pageId}/services/order`, {
+  method: 'PUT',
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ order: reorderedIds }),
+})
+```
+
+### Ответ 200
+
+`data.services` с обновлёнными `sortOrder` (0, 1, 2, …) + `data.meta`.
+
+### Ошибки
+
+| HTTP | `message` (смысл) |
+|------|-------------------|
+| 400 | Пустой order, дубликаты, не все услуги, чужой UUID |
 
 ---
 
@@ -211,32 +289,37 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
 
 ---
 
-## POST /pages/:id/services/:serviceId/deactivate
+## POST /pages/:id/services/:serviceId/archive
 
-Скрыть услугу с витрины (`isActive: false`). Удобная обёртка над `PATCH` с `{ "isActive": false }`.
+Отправить услугу в **архив** (`isActive: false`). Кнопка «Archive» в UI.
 
-Не блокирует деактивацию последней активной услуги — публикация страницы всё равно потребует ≥1 активной услуги.
+Алиас: `POST .../deactivate` (то же поведение).
+
+Тело запроса не требуется.
 
 ### Ответ 200
 
 ```json
 {
   "success": true,
-  "message": "Услуга деактивирована",
+  "message": "Услуга отправлена в архив",
   "data": {
     "service": { "id": "...", "isActive": false },
-    "services": { "...": "..." }
+    "services": { "...": "..." },
+    "meta": { "activeCount": 2, "archivedCount": 3, "totalCount": 5 }
   }
 }
 ```
 
+Архивные услуги **не показываются** на публичной витрине для бронирования.
+
 ---
 
-## POST /pages/:id/services/:serviceId/activate
+## POST /pages/:id/services/:serviceId/restore
 
-Вернуть услугу на витрину (`isActive: true`).
+Вернуть услугу из архива в **ACTIVE** (`isActive: true`). Кнопка «Restore» в UI.
 
-Тело запроса не требуется.
+Алиас: `POST .../activate` (то же поведение).
 
 ---
 
@@ -306,15 +389,15 @@ setServices(json.data.services)
 
 **Не путать** с `DELETE .../services/:serviceId` — тот эндпоинт удаляет всю услугу (фото тоже удаляется из Storage).
 
+**Не путать** с архивом: `DELETE .../services/:serviceId` физически удаляет запись (в UI не используется).
+
 ---
 
-## DELETE /pages/:id/services/:serviceId
+## DELETE /pages/:id/services/:serviceId (legacy)
 
-Удалить услугу безвозвратно.
+Физическое удаление услуги. **В builder не нужно** — используйте archive.
 
-### Ответ 200
-
-`data.services` — блок без удалённой услуги. Поля `service` / `category` отсутствуют.
+Оставлено для админских сценариев. При удалении фото в Storage тоже удаляется.
 
 ---
 
@@ -357,42 +440,13 @@ setServices(json.data.services)
 
 ## Интеграция на фронте
 
-```typescript
-// Создание
-const res = await fetch(`${API}/pages/${pageId}/services`, {
-  method: 'POST',
-  headers: {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-    'Accept-Language': 'ru',
-  },
-  body: JSON.stringify({
-    title: 'Consultation',
-    durationMinutes: 30,
-    priceAmount: 5000,
-    currency: 'PLN',
-  }),
-})
-const { data } = await res.json()
-setServices(data.services) // синхронизировать стейт builder
-
-// Деактивация
-await fetch(`${API}/pages/${pageId}/services/${serviceId}/deactivate`, {
-  method: 'POST',
-  headers: { Authorization: `Bearer ${token}` },
-})
-```
-
-Рекомендуемый порядок в UI:
-
-1. `GET /pages/:id` при открытии builder (услуги уже в `settings.services`).
-2. Точечные изменения — эндпоинты из этого документа.
-3. Массовый импорт / синхронизация всего блока — `PATCH /pages/:id`.
+**→ [frontend_services_integration.md](./frontend_services_integration.md)** — типы TypeScript, API client, сценарии UI (ACTIVE/ARCHIVED, drag-and-drop, фото), changelog.
 
 ---
 
 ## Связанные документы
 
+- [frontend_services_integration.md](./frontend_services_integration.md) — **интеграция для bookgo-app**
 - [pages_api.md](./pages_api.md) — CRUD страницы, publish
 - [pages_schema_draft.md](./pages_schema_draft.md) — схема БД
 - Postman: `postman/bookgo-api.postman_collection.json`

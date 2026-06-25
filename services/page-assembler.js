@@ -121,7 +121,8 @@ export function mapServiceItemRow(item) {
     priceHidden: Boolean(item.price_hidden),
     categoryId: item.category_id,
     isActive: Boolean(item.is_active),
-    photoUrl: item.photo_url ?? ''
+    photoUrl: item.photo_url ?? '',
+    sortOrder: item.sort_order ?? 0
   };
 }
 

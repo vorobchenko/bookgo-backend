@@ -109,6 +109,10 @@ export default {
       deleteError: 'Ошибка удаления услуги',
       activateSuccess: 'Услуга активирована',
       deactivateSuccess: 'Услуга деактивирована',
+      archiveSuccess: 'Услуга отправлена в архив',
+      restoreSuccess: 'Услуга восстановлена из архива',
+      reorderSuccess: 'Порядок услуг обновлён',
+      reorderError: 'Ошибка изменения порядка услуг',
       notFound: 'Услуга не найдена',
       categoryNotFound: 'Категория услуг не найдена',
       categoryCreateSuccess: 'Категория услуг создана',
@@ -141,7 +145,11 @@ export default {
         BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
         BODY_EMPTY: 'Нужно передать хотя бы одно поле',
         SORT_ORDER_INVALID: 'Порядок сортировки — неотрицательное целое',
-        PHOTO_URL_INVALID: 'URL фото должен указывать на хранилище Bookgo'
+        PHOTO_URL_INVALID: 'URL фото должен указывать на хранилище Bookgo',
+        ORDER_REQUIRED: 'Нужен массив order с ID услуг',
+        ORDER_INVALID: 'В order есть неверные или чужие ID услуг',
+        ORDER_DUPLICATE: 'В order не должно быть повторяющихся ID',
+        ORDER_INCOMPLETE: 'В order должны быть все услуги страницы'
       }
     }
   },

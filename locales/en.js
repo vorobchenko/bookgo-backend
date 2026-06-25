@@ -109,6 +109,10 @@ export default {
       deleteError: 'Error deleting service',
       activateSuccess: 'Service activated successfully',
       deactivateSuccess: 'Service deactivated successfully',
+      archiveSuccess: 'Service archived successfully',
+      restoreSuccess: 'Service restored successfully',
+      reorderSuccess: 'Service order updated successfully',
+      reorderError: 'Error updating service order',
       notFound: 'Service not found',
       categoryNotFound: 'Service category not found',
       categoryCreateSuccess: 'Service category created successfully',
@@ -141,7 +145,11 @@ export default {
         BODY_INVALID: 'Request body must be a JSON object',
         BODY_EMPTY: 'At least one field is required',
         SORT_ORDER_INVALID: 'Sort order must be a non-negative integer',
-        PHOTO_URL_INVALID: 'Photo URL must point to Bookgo storage'
+        PHOTO_URL_INVALID: 'Photo URL must point to Bookgo storage',
+        ORDER_REQUIRED: 'Service order array is required',
+        ORDER_INVALID: 'Service order contains invalid or unknown IDs',
+        ORDER_DUPLICATE: 'Service order must not contain duplicate IDs',
+        ORDER_INCOMPLETE: 'Service order must include every service on the page'
       }
     }
   },
