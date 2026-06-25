@@ -58,7 +58,7 @@ export function avatarStoragePathFromUrl(url) {
   return decodeURIComponent(url.slice(idx + marker.length));
 }
 
-export function isAllowedAvatarUrl(url) {
+export function isAllowedPageAvatarUrl(url) {
   if (!url || typeof url !== 'string') {
     return true;
   }
@@ -75,15 +75,16 @@ export function isAllowedAvatarUrl(url) {
       return false;
     }
 
-    return avatarStoragePathFromUrl(trimmed) !== null;
+    const path = avatarStoragePathFromUrl(trimmed);
+    return path !== null && path.startsWith('pages/');
   } catch {
     return false;
   }
 }
 
-export function avatarObjectPath(userId, extension) {
+export function pageAvatarObjectPath(pageId, extension) {
   const safeExt = extension.replace(/^\./, '').toLowerCase();
-  return `avatars/${userId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
+  return `pages/${pageId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
 }
 
 export function extensionForMime(mimeType) {

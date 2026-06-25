@@ -33,18 +33,6 @@ export default {
       accountDeactivated: 'Аккаунт деактивирован',
       samePassword: 'Новый пароль должен отличаться от текущего пароля',
       updateError: 'Ошибка обновления пароля'
-    },
-    avatar: {
-      uploadSuccess: 'Аватар успешно загружен',
-      deleteSuccess: 'Аватар удалён',
-      fileRequired: 'Нужно выбрать файл аватара',
-      fileTooLarge: 'Аватар должен быть не больше 5 МБ',
-      fileTypeInvalid: 'Аватар должен быть в формате JPEG, PNG, WebP или GIF',
-      uploadInvalid: 'Некорректная загрузка аватара',
-      uploadError: 'Ошибка загрузки аватара',
-      deleteError: 'Ошибка удаления аватара',
-      urlInvalid: 'URL аватара должен указывать на хранилище Bookgo',
-      storageNotConfigured: 'Хранилище аватаров не настроено на сервере'
     }
   },
   validation: {
@@ -96,6 +84,18 @@ export default {
       slugInvalid: 'Slug: 3–48 символов, только строчные латинские буквы, цифры и дефис',
       slugTaken: 'Этот slug уже занят',
       emailInvalid: 'Некорректный формат email'
+    },
+    avatar: {
+      uploadSuccess: 'Фото страницы успешно загружено',
+      deleteSuccess: 'Фото страницы удалено',
+      fileRequired: 'Нужно выбрать файл фото',
+      fileTooLarge: 'Фото должно быть не больше 5 МБ',
+      fileTypeInvalid: 'Фото должно быть в формате JPEG, PNG, WebP или GIF',
+      uploadInvalid: 'Некорректная загрузка фото',
+      uploadError: 'Ошибка загрузки фото страницы',
+      deleteError: 'Ошибка удаления фото страницы',
+      urlInvalid: 'URL фото должен указывать на хранилище Bookgo',
+      storageNotConfigured: 'Хранилище фото не настроено на сервере'
     }
   },
   errors: {

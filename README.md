@@ -80,14 +80,14 @@ Pass `Accept-Language: ru` or `Accept-Language: en` for localized messages.
 | POST | `/auth/login` | — | `{ "email", "password" }` |
 | POST | `/auth/logout` | Bearer | — |
 | GET | `/profile/info` | Bearer | — |
-| PATCH | `/profile/edit` | Bearer | `{ "name", "phone", "avatar", "bio", "city", "timezone", "lang" }` |
-| POST | `/profile/avatar` | Bearer | `multipart/form-data`, field `avatar` (image, max 5 MB) |
-| DELETE | `/profile/avatar` | Bearer | — |
+| PATCH | `/profile/edit` | Bearer | `{ "name", "phone", "bio", "city", "timezone", "lang" }` |
 | PUT | `/profile/change-password` | Bearer | `{ "new_password", "password_confirm" }` |
 | GET | `/pages` | Bearer | — |
 | POST | `/pages` | Bearer | `{ "slug?", "is_default?" }` |
 | GET | `/pages/:id` | Bearer | — |
 | PATCH | `/pages/:id` | Bearer | `{ "slug?", "settings?" }` |
+| POST | `/pages/:id/avatar` | Bearer | `multipart/form-data`, field `avatar` (image, max 5 MB) |
+| DELETE | `/pages/:id/avatar` | Bearer | — |
 | POST | `/pages/:id/publish` | Bearer | — |
 | POST | `/pages/:id/unpublish` | Bearer | — |
 | POST | `/pages/:id/set-default` | Bearer | — |

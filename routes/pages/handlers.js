@@ -20,8 +20,9 @@ import {
 import { query } from '../../utils/db.js';
 import { isValidSlug, slugify } from '../../utils/slug.js';
 import { isValidEmailOrEmpty, normalizeEmail } from '../../utils/email.js';
+import { isAllowedPageAvatarUrl } from '../../utils/avatar.js';
 
-async function loadAssembledPage(page) {
+export async function loadAssembledPage(page) {
   const relations = await loadPageRelations(page.id);
   const settings = assemblePageSettings({
     page,
@@ -215,6 +216,17 @@ export async function patchPage(req, res) {
         });
       }
       patch.profileFields.email = email;
+    }
+
+    if (patch.profileFields?.avatar_url !== undefined) {
+      const avatarUrl = patch.profileFields.avatar_url?.trim() || '';
+      if (avatarUrl && !isAllowedPageAvatarUrl(avatarUrl)) {
+        return res.status(400).json({
+          success: false,
+          message: req.t('pages.avatar.urlInvalid')
+        });
+      }
+      patch.profileFields.avatar_url = avatarUrl;
     }
 
     const updated = await applyPagePatch(page.id, patch);

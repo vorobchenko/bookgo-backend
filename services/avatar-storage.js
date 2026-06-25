@@ -1,13 +1,13 @@
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import {
-  avatarObjectPath,
   avatarStoragePathFromUrl,
   buildAvatarPublicUrl,
-  extensionForMime
+  extensionForMime,
+  pageAvatarObjectPath
 } from '../utils/avatar.js';
 import { getS3Client, getStorageBucket } from '../utils/s3-storage.js';
 
-export async function uploadUserAvatar(userId, file) {
+export async function uploadPageAvatar(pageId, file) {
   const extension = extensionForMime(file.mimetype);
   if (!extension) {
     const error = new Error('INVALID_FILE_TYPE');
@@ -16,7 +16,7 @@ export async function uploadUserAvatar(userId, file) {
   }
 
   const bucket = getStorageBucket();
-  const objectPath = avatarObjectPath(userId, extension);
+  const objectPath = pageAvatarObjectPath(pageId, extension);
   const client = getS3Client();
 
   try {

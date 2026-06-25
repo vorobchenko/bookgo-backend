@@ -31,20 +31,20 @@ export function handleAvatarUpload(req, res, next) {
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        message: req.t('profile.avatar.fileTooLarge')
+        message: req.t('pages.avatar.fileTooLarge')
       });
     }
 
     if (error.code === 'INVALID_FILE_TYPE') {
       return res.status(400).json({
         success: false,
-        message: req.t('profile.avatar.fileTypeInvalid')
+        message: req.t('pages.avatar.fileTypeInvalid')
       });
     }
 
     return res.status(400).json({
       success: false,
-      message: req.t('profile.avatar.uploadInvalid')
+      message: req.t('pages.avatar.uploadInvalid')
     });
   });
 }

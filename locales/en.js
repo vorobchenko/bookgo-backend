@@ -33,18 +33,6 @@ export default {
       accountDeactivated: 'Account is deactivated',
       samePassword: 'New password must be different from current password',
       updateError: 'Error updating password'
-    },
-    avatar: {
-      uploadSuccess: 'Avatar uploaded successfully',
-      deleteSuccess: 'Avatar removed successfully',
-      fileRequired: 'Avatar file is required',
-      fileTooLarge: 'Avatar must be 5 MB or smaller',
-      fileTypeInvalid: 'Avatar must be a JPEG, PNG, WebP, or GIF image',
-      uploadInvalid: 'Invalid avatar upload',
-      uploadError: 'Error uploading avatar',
-      deleteError: 'Error removing avatar',
-      urlInvalid: 'Avatar URL must point to Bookgo storage',
-      storageNotConfigured: 'Avatar storage is not configured on the server'
     }
   },
   validation: {
@@ -96,6 +84,18 @@ export default {
       slugInvalid: 'Slug must be 3–48 characters: lowercase letters, numbers, and hyphens only',
       slugTaken: 'This slug is already taken',
       emailInvalid: 'Invalid email format'
+    },
+    avatar: {
+      uploadSuccess: 'Page photo uploaded successfully',
+      deleteSuccess: 'Page photo removed successfully',
+      fileRequired: 'Photo file is required',
+      fileTooLarge: 'Photo must be 5 MB or smaller',
+      fileTypeInvalid: 'Photo must be a JPEG, PNG, WebP, or GIF image',
+      uploadInvalid: 'Invalid photo upload',
+      uploadError: 'Error uploading page photo',
+      deleteError: 'Error removing page photo',
+      urlInvalid: 'Photo URL must point to Bookgo storage',
+      storageNotConfigured: 'Photo storage is not configured on the server'
     }
   },
   errors: {

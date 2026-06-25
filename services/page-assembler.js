@@ -8,6 +8,7 @@ import {
   WEEKDAY_META
 } from './page-defaults.js';
 import { isValidEmailOrEmpty, normalizeEmail } from '../utils/email.js';
+import { isAllowedPageAvatarUrl } from '../utils/avatar.js';
 
 function weekdayMeta(weekday) {
   return WEEKDAY_META.find((d) => d.weekday === weekday) ?? {
@@ -380,6 +381,11 @@ export function validatePublish(settings) {
   const profileEmail = normalizeEmail(settings.profile.email);
   if (profileEmail && !isValidEmailOrEmpty(profileEmail)) {
     errors.push('Enter a valid email in Profile');
+  }
+
+  const profileAvatarUrl = settings.profile.avatarUrl?.trim() || '';
+  if (profileAvatarUrl && !isAllowedPageAvatarUrl(profileAvatarUrl)) {
+    errors.push('Upload a valid photo in Profile');
   }
 
   const activeServices = settings.services.services.filter((s) => s.isActive);
