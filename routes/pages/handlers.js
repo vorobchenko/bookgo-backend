@@ -3,7 +3,7 @@ import {
   assemblePageSettings,
   disassemblePagePatch,
   validatePublish
-} from '../services/page-assembler.js';
+} from '../../services/page-assembler.js';
 import {
   applyPagePatch,
   countUserPages,
@@ -16,9 +16,9 @@ import {
   publishPage,
   setPageDefault,
   slugExists
-} from '../services/pages.repository.js';
-import { query } from '../utils/db.js';
-import { isValidSlug, slugify } from '../utils/slug.js';
+} from '../../services/pages.repository.js';
+import { query } from '../../utils/db.js';
+import { isValidSlug, slugify } from '../../utils/slug.js';
 
 async function loadAssembledPage(page) {
   const relations = await loadPageRelations(page.id);
