@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import { getPool, query } from '../utils/db.js';
+import { isValidEmail, normalizeEmail } from '../utils/email.js';
 
 dotenv.config();
 
@@ -18,16 +19,22 @@ async function main() {
     process.exit(1);
   }
 
+  const normalizedEmail = normalizeEmail(email);
+  if (!isValidEmail(normalizedEmail)) {
+    console.error('SEED_ADMIN_EMAIL is not a valid email address');
+    process.exit(1);
+  }
+
   if (password.length < 8) {
     console.error('SEED_ADMIN_PASSWORD must be at least 8 characters');
     process.exit(1);
   }
 
   try {
-    const existing = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+    const existing = await query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
 
     if (existing.rowCount > 0) {
-      console.log(`Admin user already exists: ${email}`);
+      console.log(`Admin user already exists: ${normalizedEmail}`);
       return;
     }
 
@@ -37,10 +44,10 @@ async function main() {
     await query(
       `INSERT INTO users (email, password, name, lang)
        VALUES ($1, $2, $3, $4)`,
-      [email.toLowerCase(), hashedPassword, name, process.env.SEED_ADMIN_LANG || 'en']
+      [normalizedEmail, hashedPassword, name, process.env.SEED_ADMIN_LANG || 'en']
     );
 
-    console.log(`Admin user created: ${email}`);
+    console.log(`Admin user created: ${normalizedEmail}`);
   } finally {
     await getPool().end();
   }

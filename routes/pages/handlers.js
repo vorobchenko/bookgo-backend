@@ -19,6 +19,7 @@ import {
 } from '../../services/pages.repository.js';
 import { query } from '../../utils/db.js';
 import { isValidSlug, slugify } from '../../utils/slug.js';
+import { isValidEmailOrEmpty, normalizeEmail } from '../../utils/email.js';
 
 async function loadAssembledPage(page) {
   const relations = await loadPageRelations(page.id);
@@ -203,6 +204,17 @@ export async function patchPage(req, res) {
         });
       }
       patch.pageFields.slug = slug;
+    }
+
+    if (patch.profileFields?.email !== undefined) {
+      const email = normalizeEmail(patch.profileFields.email);
+      if (!isValidEmailOrEmpty(email)) {
+        return res.status(400).json({
+          success: false,
+          message: req.t('pages.validation.emailInvalid')
+        });
+      }
+      patch.profileFields.email = email;
     }
 
     const updated = await applyPagePatch(page.id, patch);

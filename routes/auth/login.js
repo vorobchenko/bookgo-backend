@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { query } from '../../utils/db.js';
+import { isValidEmail, normalizeEmail } from '../../utils/email.js';
 import { generateToken } from '../../utils/jwt.js';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function login(req, res) {
   try {
@@ -15,9 +14,9 @@ export default async function login(req, res) {
       });
     }
 
-    const normalizedEmail = String(email).trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!EMAIL_REGEX.test(normalizedEmail)) {
+    if (!isValidEmail(normalizedEmail)) {
       return res.status(400).json({
         success: false,
         message: req.t('validation.emailInvalid')

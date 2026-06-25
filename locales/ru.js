@@ -82,7 +82,8 @@ export default {
     },
     validation: {
       slugInvalid: 'Slug: 3–48 символов, только строчные латинские буквы, цифры и дефис',
-      slugTaken: 'Этот slug уже занят'
+      slugTaken: 'Этот slug уже занят',
+      emailInvalid: 'Некорректный формат email'
     }
   },
   errors: {

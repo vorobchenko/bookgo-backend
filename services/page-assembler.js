@@ -7,6 +7,7 @@ import {
   isAboutNestedBlockType,
   WEEKDAY_META
 } from './page-defaults.js';
+import { isValidEmailOrEmpty, normalizeEmail } from '../utils/email.js';
 
 function weekdayMeta(weekday) {
   return WEEKDAY_META.find((d) => d.weekday === weekday) ?? {
@@ -376,6 +377,11 @@ export function validatePublish(settings) {
     errors.push('Set a timezone in Profile');
   }
 
+  const profileEmail = normalizeEmail(settings.profile.email);
+  if (profileEmail && !isValidEmailOrEmpty(profileEmail)) {
+    errors.push('Enter a valid email in Profile');
+  }
+
   const activeServices = settings.services.services.filter((s) => s.isActive);
   if (activeServices.length > 0) {
     coreComplete += 1;
@@ -443,7 +449,7 @@ export function disassemblePagePatch(settingsPatch) {
       city: p.city ?? '',
       timezone: p.timezone ?? 'UTC',
       avatar_url: p.avatarUrl ?? '',
-      email: p.email ?? '',
+      email: p.email?.trim() ? normalizeEmail(p.email) : '',
       phone: p.phone ?? ''
     };
   }

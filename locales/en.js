@@ -82,7 +82,8 @@ export default {
     },
     validation: {
       slugInvalid: 'Slug must be 3–48 characters: lowercase letters, numbers, and hyphens only',
-      slugTaken: 'This slug is already taken'
+      slugTaken: 'This slug is already taken',
+      emailInvalid: 'Invalid email format'
     }
   },
   errors: {
