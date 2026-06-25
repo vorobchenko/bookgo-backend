@@ -18,7 +18,7 @@ API собирает объект `PageSettings` как в bookgo-app.
 | `page_service_items` | 1:N | Услуги |
 | `page_blocks` | 1:N (UNIQUE page_id+type) | FAQ, gallery, contacts… |
 
-Миграции: `002`–`007` в [`migrations/`](../migrations/).
+Миграции: `supabase/migrations/` (см. [`docs/supabase_setup.md`](supabase_setup.md)).
 
 ---
 

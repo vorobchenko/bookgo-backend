@@ -23,13 +23,15 @@ users 1 ──< N pages
 
 ---
 
-## `schema_migrations` (служебная)
+## `supabase_migrations.schema_migrations` (служебная)
+
+Управляется Supabase CLI / GitHub integration. Не трогать вручную.
 
 | Колонка | Тип |
 |---------|-----|
-| `id` | SERIAL PK |
-| `name` | VARCHAR(255) UNIQUE |
-| `applied_at` | TIMESTAMPTZ |
+| `version` | TEXT PK |
+| `name` | TEXT |
+| `statements` | TEXT[] |
 
 ---
 

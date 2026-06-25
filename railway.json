@@ -4,7 +4,6 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "releaseCommand": "npm run migrate",
     "startCommand": "npm start"
   }
 }

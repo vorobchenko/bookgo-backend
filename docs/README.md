@@ -15,6 +15,7 @@
 | [pages_api.md](./pages_api.md) | Контракт | CRUD pages, publish, public slug |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
+| [supabase_setup.md](./supabase_setup.md) | DevOps | Supabase, GitHub auto-migrations, Railway |
 
 ## Postman
 

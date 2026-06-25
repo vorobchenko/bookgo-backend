@@ -5,15 +5,15 @@ Node.js API for Bookgo — authentication, profiles, and booking pages.
 ## Stack
 
 - Express 4
-- PostgreSQL (`pg`)
+- Supabase Postgres (`pg` + Session pooler)
 - JWT + bcrypt
-- SQL migrations with `schema_migrations` journal
+- SQL migrations in `supabase/migrations/` (Supabase CLI + GitHub integration)
 
 ## Setup
 
 ```bash
 cp env.example .env
-# Edit .env with your Railway DATABASE_URL and JWT_SECRET
+# Edit .env: Supabase Session pooler URI as DATABASE_URL, JWT_SECRET
 
 npm install
 npm run migrate
@@ -21,11 +21,13 @@ npm run seed:admin
 npm run dev
 ```
 
-## Railway
+Full Supabase + GitHub steps: [`docs/supabase_setup.md`](docs/supabase_setup.md)
 
-1. Create a PostgreSQL service and link it to the API service.
-2. Set variables: `JWT_SECRET`, `DATABASE_SSL=true`.
-3. Deploy — `releaseCommand` runs `npm run migrate` before each deploy.
+## Railway (API host)
+
+1. Create a Supabase project and copy the **Session pooler** `DATABASE_URL`.
+2. In Railway, set `DATABASE_URL` and `JWT_SECRET` on the API service.
+3. Deploy — **migrations run via Supabase GitHub integration**, not Railway `releaseCommand`.
 4. Run seed once (Railway shell or locally with production `DATABASE_URL`):
 
 ```bash
@@ -37,11 +39,11 @@ Set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in Railway Variables before see
 ## Migrations
 
 ```bash
-npm run migrate          # apply pending migrations
-npm run migrate:status   # list applied / pending
+npm run migrate          # supabase db push (local / manual)
+npm run migrate:status   # supabase migration list
 ```
 
-Migration files live in `migrations/`. Applied migrations are recorded in `schema_migrations`. Never edit applied files — add a new numbered SQL file instead.
+Migration files live in `supabase/migrations/`. Applied migrations are tracked in `supabase_migrations.schema_migrations`. Never edit applied files — add a new timestamped SQL file with `npx supabase migration new <name>`.
 
 ## Postman
 
