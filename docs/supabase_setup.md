@@ -22,6 +22,14 @@ You do **not** need a separate repository. Connect the same backend repo:
 4. Enable **Deploy to production** — new files in `supabase/migrations/` are applied on push/merge to `main`.
 5. Optional: enable **Automatic branching** for preview DBs on pull requests.
 
+If the dashboard still shows **Last Migration: No migrations** after connecting the repo, either:
+
+- **A)** Enable **Deploy to production** and push any commit to `main` (re-triggers deploy), or
+- **B)** Use the GitHub Action (`.github/workflows/supabase-migrate.yml`):
+  1. GitHub → **dodotap/bookgo-backend** → **Settings** → **Secrets and variables** → **Actions**
+  2. Add secret `SUPABASE_DATABASE_URL` = Session pooler URI from Supabase **Connect**
+  3. **Actions** → **Supabase migrations** → **Run workflow**
+
 After the first push with `supabase/migrations/`, Supabase runs all pending migrations and records them in `supabase_migrations.schema_migrations`.
 
 **Railway:** remove the old `releaseCommand: npm run migrate` — migrations are handled by Supabase, not Railway. Railway only needs `DATABASE_URL` pointing at Supabase.
