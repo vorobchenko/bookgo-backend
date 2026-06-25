@@ -33,6 +33,18 @@ export default {
       accountDeactivated: 'Account is deactivated',
       samePassword: 'New password must be different from current password',
       updateError: 'Error updating password'
+    },
+    avatar: {
+      uploadSuccess: 'Avatar uploaded successfully',
+      deleteSuccess: 'Avatar removed successfully',
+      fileRequired: 'Avatar file is required',
+      fileTooLarge: 'Avatar must be 5 MB or smaller',
+      fileTypeInvalid: 'Avatar must be a JPEG, PNG, WebP, or GIF image',
+      uploadInvalid: 'Invalid avatar upload',
+      uploadError: 'Error uploading avatar',
+      deleteError: 'Error removing avatar',
+      urlInvalid: 'Avatar URL must point to Bookgo storage',
+      storageNotConfigured: 'Avatar storage is not configured on the server'
     }
   },
   validation: {

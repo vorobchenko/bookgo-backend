@@ -33,6 +33,18 @@ export default {
       accountDeactivated: 'Аккаунт деактивирован',
       samePassword: 'Новый пароль должен отличаться от текущего пароля',
       updateError: 'Ошибка обновления пароля'
+    },
+    avatar: {
+      uploadSuccess: 'Аватар успешно загружен',
+      deleteSuccess: 'Аватар удалён',
+      fileRequired: 'Нужно выбрать файл аватара',
+      fileTooLarge: 'Аватар должен быть не больше 5 МБ',
+      fileTypeInvalid: 'Аватар должен быть в формате JPEG, PNG, WebP или GIF',
+      uploadInvalid: 'Некорректная загрузка аватара',
+      uploadError: 'Ошибка загрузки аватара',
+      deleteError: 'Ошибка удаления аватара',
+      urlInvalid: 'URL аватара должен указывать на хранилище Bookgo',
+      storageNotConfigured: 'Хранилище аватаров не настроено на сервере'
     }
   },
   validation: {

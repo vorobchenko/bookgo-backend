@@ -1,4 +1,5 @@
 import { query } from '../../utils/db.js';
+import { isAllowedAvatarUrl } from '../../utils/avatar.js';
 
 const EDITABLE_FIELDS = ['name', 'phone', 'avatar', 'bio', 'city', 'timezone', 'lang'];
 const VALID_LANGS = ['en', 'ru'];
@@ -28,6 +29,16 @@ export default async function editProfile(req, res) {
         message: req.t('profile.edit.languageInvalid'),
         valid_languages: VALID_LANGS
       });
+    }
+
+    if (body.avatar !== undefined && body.avatar !== null) {
+      const avatar = typeof body.avatar === 'string' ? body.avatar.trim() : body.avatar;
+      if (avatar && !isAllowedAvatarUrl(avatar)) {
+        return res.status(400).json({
+          success: false,
+          message: req.t('profile.avatar.urlInvalid')
+        });
+      }
     }
 
     const updates = [];

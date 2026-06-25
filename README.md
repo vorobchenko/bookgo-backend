@@ -81,6 +81,8 @@ Pass `Accept-Language: ru` or `Accept-Language: en` for localized messages.
 | POST | `/auth/logout` | Bearer | — |
 | GET | `/profile/info` | Bearer | — |
 | PATCH | `/profile/edit` | Bearer | `{ "name", "phone", "avatar", "bio", "city", "timezone", "lang" }` |
+| POST | `/profile/avatar` | Bearer | `multipart/form-data`, field `avatar` (image, max 5 MB) |
+| DELETE | `/profile/avatar` | Bearer | — |
 | PUT | `/profile/change-password` | Bearer | `{ "new_password", "password_confirm" }` |
 | GET | `/pages` | Bearer | — |
 | POST | `/pages` | Bearer | `{ "slug?", "is_default?" }` |
