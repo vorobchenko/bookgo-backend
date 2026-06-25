@@ -13,6 +13,7 @@
 | [auth_api.md](./auth_api.md) | Контракт | Login, logout |
 | [profile_api.md](./profile_api.md) | Контракт | Info, edit, change-password |
 | [pages_api.md](./pages_api.md) | Контракт | CRUD pages, publish, public slug |
+| [pages_avatar_api.md](./pages_avatar_api.md) | Контракт | Фото профиля страницы (upload/delete) |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
 | [supabase_setup.md](./supabase_setup.md) | DevOps | Supabase, GitHub auto-migrations, Railway |

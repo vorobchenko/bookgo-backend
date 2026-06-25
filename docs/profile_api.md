@@ -131,7 +131,6 @@ curl https://bookgo-backend.up.railway.app/profile/info \
 |------|-----|---------|
 | `name` | `string` | минимум 2 символа после trim |
 | `phone` | `string` | пустая строка → `null` |
-| `avatar` | `string` | URL |
 | `bio` | `string` | максимум 1000 символов |
 | `city` | `string` | |
 | `timezone` | `string` | например `Europe/Warsaw` |

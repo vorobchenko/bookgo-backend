@@ -276,6 +276,34 @@ GET /public/pages/:slug  →  page.settings для рендера витрины
 
 ---
 
+## Фото профиля (Change photo)
+
+Фото витрины **не** загружается через `PATCH /pages/:id`. Используй отдельный эндпоинт:
+
+| Method | Path | Body |
+|--------|------|------|
+| `POST` | `/pages/:id/avatar` | `multipart/form-data`, поле `avatar` |
+| `DELETE` | `/pages/:id/avatar` | — |
+
+Контракт: [pages_avatar_api.md](./pages_avatar_api.md)
+
+```typescript
+export async function uploadPageAvatar(token: string, pageId: string, file: File) {
+  const formData = new FormData()
+  formData.append('avatar', file)
+
+  const res = await apiRequest<{ avatarUrl: string; page: Page }>(
+    `/pages/${pageId}/avatar`,
+    { method: 'POST', token, body: formData }
+  )
+  return res.data
+}
+```
+
+После успеха обнови локальный state: `settings.profile.avatarUrl = data.avatarUrl`.
+
+---
+
 ## Маппинг полей (БД ↔ фронт)
 
 | API `settings` | Примечание |

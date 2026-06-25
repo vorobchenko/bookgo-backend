@@ -61,6 +61,22 @@ When `settings.services` is sent, categories and items are **replaced** for that
 
 ---
 
+## POST /pages/:id/avatar
+
+Upload page profile photo (`multipart/form-data`, field `avatar`). Updates `settings.profile.avatarUrl`.
+
+**Full contract:** [pages_avatar_api.md](./pages_avatar_api.md)
+
+---
+
+## DELETE /pages/:id/avatar
+
+Remove page profile photo from storage and clear `avatarUrl`.
+
+**Full contract:** [pages_avatar_api.md](./pages_avatar_api.md)
+
+---
+
 ## POST /pages/:id/publish
 
 Runs publish validation (name, timezone, active service, bookable hours). Returns `400` with `data.validation.errors` if invalid.
@@ -83,6 +99,6 @@ No auth. Only published pages. Same response shape as `GET /pages/:id`.
 
 | Status | When |
 |--------|------|
-| 400 | Invalid slug, publish validation failed |
+| 400 | Invalid slug, email, avatar URL, publish validation failed |
 | 404 | Page not found / not published (public) |
 | 409 | Slug already taken |

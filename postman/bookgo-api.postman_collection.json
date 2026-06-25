@@ -295,6 +295,70 @@
           "response": []
         },
         {
+          "name": "POST /pages/:id/avatar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('avatarUrl returned', () => pm.expect(json.data.avatarUrl).to.be.a('string').and.not.empty);",
+                  "pm.test('profile avatarUrl set', () => pm.expect(json.data.page.settings.profile.avatarUrl).to.eql(json.data.avatarUrl));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "description": "JPEG, PNG, WebP or GIF, max 5 MB",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/avatar"
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /pages/:id/avatar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('avatarUrl cleared', () => pm.expect(json.data.page.settings.profile.avatarUrl).to.eql(''));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/avatar"
+          },
+          "response": []
+        },
+        {
           "name": "POST /pages/:id/publish",
           "event": [
             {
