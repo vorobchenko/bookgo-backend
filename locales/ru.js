@@ -203,6 +203,18 @@ export default {
         BACKGROUND_IMAGE_URL_REQUIRED: 'Нужен image_url',
         BACKGROUND_IMAGE_URL_INVALID: 'image_url должен указывать на хранилище Bookgo'
       }
+    },
+    slots: {
+      getSuccess: 'Слоты успешно получены',
+      getError: 'Ошибка получения слотов',
+      validation: {
+        invalid: 'Некорректный запрос слотов',
+        SERVICE_ID_INVALID: 'service_id должен быть валидным UUID',
+        SERVICE_NOT_FOUND: 'Услуга не найдена или неактивна на этой странице',
+        FROM_INVALID: 'from — дата в формате YYYY-MM-DD',
+        TO_INVALID: 'to — дата в формате YYYY-MM-DD',
+        RANGE_INVALID: 'from должен быть не позже to'
+      }
     }
   },
   errors: {

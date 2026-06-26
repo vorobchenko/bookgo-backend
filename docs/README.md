@@ -13,6 +13,7 @@
 | [frontend_services_integration.md](./frontend_services_integration.md) | **bookgo-app** | Your services: архив, порядок, фото |
 | [frontend_availability_integration.md](./frontend_availability_integration.md) | **bookgo-app** | Schedule: weekly hours, booking rules |
 | [frontend_theme_integration.md](./frontend_theme_integration.md) | **bookgo-app** | Theme: fonts, element style, background |
+| [frontend_slots_integration.md](./frontend_slots_integration.md) | **bookgo-app** | Booking slots for public page |
 | [frontend_profile_copy_integration.md](./frontend_profile_copy_integration.md) | **bookgo-app** | Hero headline (`headline_line1` / `headline_line2`) |
 | [auth_api.md](./auth_api.md) | Контракт | Login, logout |
 | [profile_api.md](./profile_api.md) | Контракт | Info, edit, change-password |
@@ -21,6 +22,7 @@
 | [pages_services_api.md](./pages_services_api.md) | Контракт | Услуги: CRUD, архив, порядок, фото, категории |
 | [pages_availability_api.md](./pages_availability_api.md) | Контракт | Schedule: weekly hours, booking rules |
 | [pages_theme_api.md](./pages_theme_api.md) | Контракт | Theme: preset, fonts, element style, background |
+| [pages_slots_api.md](./pages_slots_api.md) | Контракт | Computed booking slots |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
 | [supabase_setup.md](./supabase_setup.md) | DevOps | Supabase, GitHub auto-migrations, Railway |
@@ -52,6 +54,7 @@ https://bookgo-backend.up.railway.app
 - `GET /pages/:id/services`, `POST/PATCH /pages/:id/services/:serviceId`
 - `GET /pages/:id/availability`, `PATCH /pages/:id/availability/weekly-hours|booking-rules`
 - `GET /pages/:id/theme`, `PATCH /pages/:id/theme`
+- `GET /pages/:id/slots`, `GET /public/pages/:slug/slots`
 - `PUT /pages/:id/services/order`, `POST .../archive|restore`
 - `POST/PATCH/DELETE /pages/:id/service-categories/:categoryId`
 - `PATCH /pages/:id/services/settings`

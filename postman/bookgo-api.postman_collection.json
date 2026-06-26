@@ -545,6 +545,47 @@
       ]
     },
     {
+      "name": "Page Slots",
+      "description": "Computed booking slots. Контракт: docs/pages_slots_api.md",
+      "item": [
+        {
+          "name": "GET /pages/:id/slots",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/pages/{{pageId}}/slots?service_id={{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pages", "{{pageId}}", "slots"],
+              "query": [{ "key": "service_id", "value": "{{serviceId}}" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('days', () => pm.expect(json.data.days).to.be.an('array'));",
+                  "if (json.data.days.length) {",
+                  "  pm.test('day shape', () => {",
+                  "    const day = json.data.days[0];",
+                  "    pm.expect(day.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+                  "    pm.expect(day.slots).to.be.an('array');",
+                  "    pm.expect(day.times).to.be.an('array');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Page Services",
       "description": "CRUD услуг и категорий. Контракт: docs/pages_services_api.md",
       "item": [
@@ -918,8 +959,37 @@
             }
           ],
           "response": []
+        },
+        {
+          "name": "GET /public/pages/:slug/slots",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/public/pages/{{pageSlug}}/slots?service_id={{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "pages", "{{pageSlug}}", "slots"],
+              "query": [{ "key": "service_id", "value": "{{serviceId}}" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.test('days array', () => pm.expect(json.data.days).to.be.an('array'));",
+                  "  pm.test('meta', () => {",
+                  "    pm.expect(json.data.service_id).to.be.a('string');",
+                  "    pm.expect(json.data.timezone).to.be.a('string');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
         }
-      ]
-    }
-  ]
-}

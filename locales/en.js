@@ -203,6 +203,18 @@ export default {
         BACKGROUND_IMAGE_URL_REQUIRED: 'Background image URL is required',
         BACKGROUND_IMAGE_URL_INVALID: 'Background image URL must point to Bookgo storage'
       }
+    },
+    slots: {
+      getSuccess: 'Slots retrieved successfully',
+      getError: 'Error fetching slots',
+      validation: {
+        invalid: 'Invalid slots request',
+        SERVICE_ID_INVALID: 'service_id must be a valid UUID',
+        SERVICE_NOT_FOUND: 'Service not found or inactive on this page',
+        FROM_INVALID: 'from must be a date in YYYY-MM-DD format',
+        TO_INVALID: 'to must be a date in YYYY-MM-DD format',
+        RANGE_INVALID: 'from must be on or before to'
+      }
     }
   },
   errors: {

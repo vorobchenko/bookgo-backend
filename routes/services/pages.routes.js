@@ -40,6 +40,7 @@ import {
   patchPageBookingRulesHandler,
   patchPageWeeklyHoursHandler
 } from '../pages/availability-handlers.js';
+import { getPageSlotsHandler, getPublicPageSlotsHandler } from '../pages/slots-handlers.js';
 
 export default function registerPageRoutes(router) {
   router.get('/pages', authenticateToken, listPages);
@@ -64,6 +65,8 @@ export default function registerPageRoutes(router) {
     patchPageBookingRulesHandler
   );
   router.patch('/pages/:id/availability', authenticateToken, patchPageAvailabilityHandler);
+
+  router.get('/pages/:id/slots', authenticateToken, getPageSlotsHandler);
 
   router.get('/pages/:id/services', authenticateToken, listPageServicesHandler);
   router.patch('/pages/:id/services/settings', authenticateToken, patchPageServicesSettingsHandler);
@@ -124,5 +127,6 @@ export default function registerPageRoutes(router) {
   router.post('/pages/:id/set-default', authenticateToken, setDefaultPageHandler);
   router.delete('/pages/:id', authenticateToken, deletePageHandler);
 
+  router.get('/public/pages/:slug/slots', getPublicPageSlotsHandler);
   router.get('/public/pages/:slug', getPublicPage);
 }
