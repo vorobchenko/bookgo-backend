@@ -50,7 +50,14 @@ Full page with assembled `settings` (`PageSettings`).
     "availability": { "timezone": "Europe/Warsaw", "days": [] },
     "blocks": [],
     "faq": [],
-    "theme": { "preset": "bold", "accent_color": "#c6f432", "mode": "auto" }
+    "theme": {
+      "preset": "bold",
+      "accent_color": "#c6f432",
+      "mode": "auto",
+      "font_preset": "sport",
+      "element_style": "rounded",
+      "background": { "type": "preset" }
+    }
   }
 }
 ```

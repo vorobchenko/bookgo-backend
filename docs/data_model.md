@@ -28,7 +28,7 @@ erDiagram
 
 ### `page_themes` (1:1)
 
-`preset`, `accent_color`, `mode`.
+`preset`, `accent_color`, `mode`, `font_preset`, `element_style`, `background` (JSONB).
 
 ### `page_availability` (1:1)
 
@@ -80,5 +80,6 @@ erDiagram
 | 005 | `page_service_categories`, `page_service_items` |
 | 006 | `page_availability` |
 | 007 | `page_blocks` |
+| 014 | `page_themes` — `font_preset`, `element_style`, `background` |
 
 Workspaces, `page_views` — отложены.

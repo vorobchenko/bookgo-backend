@@ -14,6 +14,7 @@ import { isValidEmailOrEmpty, normalizeEmail } from '../utils/email.js';
 import { isAllowedPageAvatarUrl } from '../utils/avatar.js';
 import { blockTypeFromApi, blockTypeToApi } from '../utils/block-types.js';
 import { jsonField } from '../utils/json-field.js';
+import { normalizeThemeBackground } from '../utils/theme-background.js';
 
 function weekdayMeta(weekday) {
   return WEEKDAY_META.find((d) => d.weekday === weekday) ?? {
@@ -84,12 +85,21 @@ function mapProfileRow(row) {
   };
 }
 
-function mapThemeRow(row) {
-  if (!row) return { ...DEFAULT_THEME };
+export function mapThemeRow(row) {
+  if (!row) {
+    return {
+      ...DEFAULT_THEME,
+      background: { ...DEFAULT_THEME.background }
+    };
+  }
+
   return {
     preset: row.preset ?? DEFAULT_THEME.preset,
     accent_color: row.accent_color ?? DEFAULT_THEME.accent_color,
-    mode: row.mode ?? DEFAULT_THEME.mode
+    mode: row.mode ?? DEFAULT_THEME.mode,
+    font_preset: row.font_preset ?? DEFAULT_THEME.font_preset,
+    element_style: row.element_style ?? DEFAULT_THEME.element_style,
+    background: normalizeThemeBackground(row.background)
   };
 }
 
@@ -503,9 +513,12 @@ export function disassemblePagePatch(settingsPatch) {
   if (settingsPatch.theme !== undefined) {
     const t = settingsPatch.theme;
     result.themeFields = {
-      preset: t.preset ?? 'bold',
-      accent_color: t.accent_color ?? '#c6f432',
-      mode: t.mode ?? 'auto'
+      preset: t.preset ?? DEFAULT_THEME.preset,
+      accent_color: t.accent_color ?? DEFAULT_THEME.accent_color,
+      mode: t.mode ?? DEFAULT_THEME.mode,
+      font_preset: t.font_preset ?? DEFAULT_THEME.font_preset,
+      element_style: t.element_style ?? DEFAULT_THEME.element_style,
+      background: normalizeThemeBackground(t.background)
     };
   }
 

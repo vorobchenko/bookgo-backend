@@ -83,7 +83,7 @@ users 1 ──< N pages
 | `availability` | timezone, days, ranges, buffers |
 | `services` | categories + services |
 | `blocks` | какие секции включены |
-| `theme` | preset, accent, mode |
+| `theme` | preset, accent_color, mode, font_preset, element_style, background |
 | `stories`, `gallery`, `video`, `location`, `contacts` | |
 | `reviews`, `faq`, `cancellation`, `custom_questions` | |
 

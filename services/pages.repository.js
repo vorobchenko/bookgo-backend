@@ -132,9 +132,18 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
     );
 
     await client.query(
-      `INSERT INTO page_themes (page_id, preset, accent_color, mode)
-       VALUES ($1, $2, $3, $4)`,
-      [page.id, DEFAULT_THEME.preset, DEFAULT_THEME.accent_color, DEFAULT_THEME.mode]
+      `INSERT INTO page_themes (
+         page_id, preset, accent_color, mode, font_preset, element_style, background
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
+      [
+        page.id,
+        DEFAULT_THEME.preset,
+        DEFAULT_THEME.accent_color,
+        DEFAULT_THEME.mode,
+        DEFAULT_THEME.font_preset,
+        DEFAULT_THEME.element_style,
+        JSON.stringify(DEFAULT_THEME.background)
+      ]
     );
 
     const availabilityTimezone = user.timezone?.trim() || DEFAULT_AVAILABILITY_SCALARS.timezone;
@@ -271,14 +280,26 @@ async function upsertProfile(client, pageId, fields) {
 async function upsertTheme(client, pageId, fields) {
   if (!fields) return;
   await client.query(
-    `INSERT INTO page_themes (page_id, preset, accent_color, mode)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO page_themes (
+       page_id, preset, accent_color, mode, font_preset, element_style, background
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
        preset = EXCLUDED.preset,
        accent_color = EXCLUDED.accent_color,
        mode = EXCLUDED.mode,
+       font_preset = EXCLUDED.font_preset,
+       element_style = EXCLUDED.element_style,
+       background = EXCLUDED.background,
        updated_at = now()`,
-    [pageId, fields.preset, fields.accent_color, fields.mode]
+    [
+      pageId,
+      fields.preset,
+      fields.accent_color,
+      fields.mode,
+      fields.font_preset ?? DEFAULT_THEME.font_preset,
+      fields.element_style ?? DEFAULT_THEME.element_style,
+      JSON.stringify(fields.background ?? DEFAULT_THEME.background)
+    ]
   );
 }
 

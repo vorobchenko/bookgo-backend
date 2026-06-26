@@ -47,7 +47,14 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 
 ## `page_themes`
 
-`preset` (neon|pastel|bold), `accent_color`, `mode` (light|dark|auto)
+| Колонка | Тип | Значения |
+|---------|-----|----------|
+| `preset` | varchar | `neon`, `pastel`, `bold` |
+| `accent_color` | varchar | `#RRGGBB` |
+| `mode` | varchar | `light`, `dark`, `auto` |
+| `font_preset` | varchar | `neutral`, `sport`, `editorial` |
+| `element_style` | varchar | `rounded`, `sharp`, `pill` |
+| `background` | jsonb | `{ type: preset \| solid \| gradient \| image, ... }` |
 
 ---
 

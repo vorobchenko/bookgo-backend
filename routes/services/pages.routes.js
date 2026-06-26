@@ -31,6 +31,10 @@ import {
   uploadServicePhotoHandler
 } from '../pages/service-photo.js';
 import {
+  getPageThemeHandler,
+  patchPageThemeHandler
+} from '../pages/theme-handlers.js';
+import {
   getPageAvailabilityHandler,
   patchPageAvailabilityHandler,
   patchPageBookingRulesHandler,
@@ -44,6 +48,9 @@ export default function registerPageRoutes(router) {
   router.patch('/pages/:id', authenticateToken, patchPage);
   router.post('/pages/:id/avatar', authenticateToken, handleAvatarUpload, uploadPageAvatarHandler);
   router.delete('/pages/:id/avatar', authenticateToken, deletePageAvatarHandler);
+
+  router.get('/pages/:id/theme', authenticateToken, getPageThemeHandler);
+  router.patch('/pages/:id/theme', authenticateToken, patchPageThemeHandler);
 
   router.get('/pages/:id/availability', authenticateToken, getPageAvailabilityHandler);
   router.patch(

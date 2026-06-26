@@ -178,6 +178,31 @@ export default {
         RANGE_TIME_INVALID: 'Время в формате HH:MM (24 часа)',
         RANGE_ORDER_INVALID: 'start должен быть раньше end'
       }
+    },
+    theme: {
+      getSuccess: 'Тема успешно получена',
+      getError: 'Ошибка получения темы',
+      updateSuccess: 'Тема обновлена',
+      updateError: 'Ошибка обновления темы',
+      validation: {
+        invalid: 'Некорректные данные темы',
+        BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
+        BODY_EMPTY: 'Нужно передать хотя бы одно поле',
+        PRESET_INVALID: 'Preset: neon, pastel или bold',
+        ACCENT_COLOR_INVALID: 'Accent color — hex, например #c6f432',
+        MODE_INVALID: 'Mode: light, dark или auto',
+        FONT_PRESET_INVALID: 'font_preset: neutral, sport или editorial',
+        ELEMENT_STYLE_INVALID: 'element_style: rounded, sharp или pill',
+        BACKGROUND_REQUIRED: 'Нужен объект background',
+        BACKGROUND_INVALID: 'background должен быть JSON-объектом',
+        BACKGROUND_TYPE_INVALID: 'type: preset, solid, gradient или image',
+        BACKGROUND_COLOR_INVALID: 'color — hex, например #0a0a0a',
+        BACKGROUND_GRADIENT_FROM_INVALID: 'gradient_from — hex',
+        BACKGROUND_GRADIENT_TO_INVALID: 'gradient_to — hex',
+        BACKGROUND_GRADIENT_ANGLE_INVALID: 'gradient_angle — целое от 0 до 360',
+        BACKGROUND_IMAGE_URL_REQUIRED: 'Нужен image_url',
+        BACKGROUND_IMAGE_URL_INVALID: 'image_url должен указывать на хранилище Bookgo'
+      }
     }
   },
   errors: {

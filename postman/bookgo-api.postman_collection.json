@@ -479,6 +479,72 @@
       ]
     },
     {
+      "name": "Page Theme",
+      "description": "Theme: preset, fonts, element style, background. Контракт: docs/pages_theme_api.md",
+      "item": [
+        {
+          "name": "GET /pages/:id/theme",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/theme"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('theme block', () => {",
+                  "  pm.expect(json.data.theme.preset).to.be.oneOf(['neon', 'pastel', 'bold']);",
+                  "  pm.expect(json.data.theme.font_preset).to.be.oneOf(['neutral', 'sport', 'editorial']);",
+                  "  pm.expect(json.data.theme.element_style).to.be.oneOf(['rounded', 'sharp', 'pill']);",
+                  "  pm.expect(json.data.theme.background.type).to.be.oneOf(['preset', 'solid', 'gradient', 'image']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id/theme",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"font_preset\": \"editorial\",\n  \"element_style\": \"pill\",\n  \"background\": {\n    \"type\": \"gradient\",\n    \"gradient_from\": \"#0a0a0a\",\n    \"gradient_to\": \"#1a1a2e\",\n    \"gradient_angle\": 180\n  }\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/theme"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('theme updated', () => {",
+                  "  pm.expect(json.data.theme.font_preset).to.eql('editorial');",
+                  "  pm.expect(json.data.theme.element_style).to.eql('pill');",
+                  "  pm.expect(json.data.theme.background.type).to.eql('gradient');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Page Services",
       "description": "CRUD услуг и категорий. Контракт: docs/pages_services_api.md",
       "item": [

@@ -178,6 +178,31 @@ export default {
         RANGE_TIME_INVALID: 'Range times must use HH:MM format (24-hour)',
         RANGE_ORDER_INVALID: 'Range start time must be before end time'
       }
+    },
+    theme: {
+      getSuccess: 'Theme retrieved successfully',
+      getError: 'Error fetching theme',
+      updateSuccess: 'Theme updated successfully',
+      updateError: 'Error updating theme',
+      validation: {
+        invalid: 'Invalid theme data',
+        BODY_INVALID: 'Request body must be a JSON object',
+        BODY_EMPTY: 'At least one field is required',
+        PRESET_INVALID: 'Preset must be neon, pastel, or bold',
+        ACCENT_COLOR_INVALID: 'Accent color must be a hex value like #c6f432',
+        MODE_INVALID: 'Mode must be light, dark, or auto',
+        FONT_PRESET_INVALID: 'Font preset must be neutral, sport, or editorial',
+        ELEMENT_STYLE_INVALID: 'Element style must be rounded, sharp, or pill',
+        BACKGROUND_REQUIRED: 'Background object is required',
+        BACKGROUND_INVALID: 'Background must be a JSON object',
+        BACKGROUND_TYPE_INVALID: 'Background type must be preset, solid, gradient, or image',
+        BACKGROUND_COLOR_INVALID: 'Background color must be a hex value like #0a0a0a',
+        BACKGROUND_GRADIENT_FROM_INVALID: 'Gradient start color must be a hex value',
+        BACKGROUND_GRADIENT_TO_INVALID: 'Gradient end color must be a hex value',
+        BACKGROUND_GRADIENT_ANGLE_INVALID: 'Gradient angle must be an integer from 0 to 360',
+        BACKGROUND_IMAGE_URL_REQUIRED: 'Background image URL is required',
+        BACKGROUND_IMAGE_URL_INVALID: 'Background image URL must point to Bookgo storage'
+      }
     }
   },
   errors: {
