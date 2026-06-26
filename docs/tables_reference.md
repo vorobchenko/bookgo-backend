@@ -79,13 +79,13 @@ users 1 ──< N pages
 
 | Ключ | Содержимое |
 |------|------------|
-| `profile` | name, role, bio, city, lang, avatarUrl, email, phone |
+| `profile` | name, role, bio, city, lang, avatar_url, email, phone |
 | `availability` | timezone, days, ranges, buffers |
 | `services` | categories + services |
 | `blocks` | какие секции включены |
 | `theme` | preset, accent, mode |
 | `stories`, `gallery`, `video`, `location`, `contacts` | |
-| `reviews`, `faq`, `cancellation`, `customQuestions` | |
+| `reviews`, `faq`, `cancellation`, `custom_questions` | |
 
 Новые блоки (header, footer) → block library в коде + новый ключ в JSON.  
 **100k страниц** → normalize при чтении, без новых таблиц.

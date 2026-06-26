@@ -53,7 +53,7 @@ export async function uploadPageAvatarHandler(req, res) {
       success: true,
       message: req.t('pages.avatar.uploadSuccess'),
       data: {
-        avatarUrl: uploaded.url,
+        avatar_url: uploaded.url,
         page: assembled
       }
     });

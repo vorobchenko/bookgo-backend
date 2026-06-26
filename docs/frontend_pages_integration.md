@@ -6,7 +6,8 @@
 
 Контракт: [pages_api.md](./pages_api.md)  
 Схема БД: [pages_schema_draft.md](./pages_schema_draft.md)  
-Услуги (Your services): [frontend_services_integration.md](./frontend_services_integration.md)
+Услуги (Your services): [frontend_services_integration.md](./frontend_services_integration.md)  
+Тексты hero-карточки: [frontend_profile_copy_integration.md](./frontend_profile_copy_integration.md)
 
 ---
 
@@ -87,8 +88,8 @@ export type Page = {
 export type PublishValidation = {
   valid: boolean
   errors: string[]
-  coreComplete: number
-  coreTotal: number
+  core_complete: number
+  core_total: number
 }
 
 export type CreatePageRequest = {
@@ -236,7 +237,7 @@ await patchPage(token, pageId, {
     reviews: settings.reviews,
     faq: settings.faq,
     cancellation: settings.cancellation,
-    customQuestions: settings.customQuestions,
+    custom_questions: settings.custom_questions,
   },
 })
 ```
@@ -293,7 +294,7 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
   const formData = new FormData()
   formData.append('avatar', file)
 
-  const res = await apiRequest<{ avatarUrl: string; page: Page }>(
+  const res = await apiRequest<{ avatar_url: string; page: Page }>(
     `/pages/${pageId}/avatar`,
     { method: 'POST', token, body: formData }
   )
@@ -301,7 +302,7 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 }
 ```
 
-После успеха обнови локальный state: `settings.profile.avatarUrl = data.avatarUrl`.
+После успеха обнови локальный state: `settings.profile.avatar_url = data.avatar_url`.
 
 ---
 
@@ -320,11 +321,13 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 | API `settings` | Примечание |
 |----------------|------------|
 | `profile.lang` | колонка `lang` (`en` \| `ru`) |
-| `profile.avatarUrl` | колонка `avatar_url` |
-| `theme.accentColor` | колонка `accent_color` |
-| `availability.bufferBeforeMinutes` | `buffer_before_minutes` |
+| `profile.avatar_url` | колонка `avatar_url` |
+| `profile.headline_line1` | колонка `headline_line1` |
+| `profile.headline_line2` | колонка `headline_line2` |
+| `theme.accent_color` | колонка `accent_color` |
+| `availability.buffer_before_minutes` | `buffer_before_minutes` |
 | `availability.days[].label/letter` | **не хранятся в БД**, бэкенд добавляет при чтении |
-| `services.useCategories` | `pages.services_use_categories` |
+| `services.use_categories` | `pages.services_use_categories` |
 | `blocks` | `pages.section_layout` + пересчёт `status` на бэке |
 
 ID услуг и категорий после первого сохранения — **UUID** из API (не `svc-personal` из mock).
@@ -362,8 +365,8 @@ try {
     "validation": {
       "valid": false,
       "errors": ["Enable at least one service"],
-      "coreComplete": 2,
-      "coreTotal": 3
+      "core_complete": 2,
+      "core_total": 3
     }
   }
 }

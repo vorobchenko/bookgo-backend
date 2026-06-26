@@ -102,7 +102,7 @@ export async function createPageServiceItem(pageId, input) {
       return null;
     }
 
-    if (input.categoryId && !(await categoryExistsOnPage(client, pageId, input.categoryId))) {
+    if (input.category_id && !(await categoryExistsOnPage(client, pageId, input.category_id))) {
       const error = new Error('Category not found');
       error.code = 'CATEGORY_NOT_FOUND';
       throw error;
@@ -110,7 +110,7 @@ export async function createPageServiceItem(pageId, input) {
 
     const id = coerceUuid(input.id);
     const sortOrder =
-      input.sortOrder ?? (await getNextSortOrder(client, 'page_service_items', pageId));
+      input.sort_order ?? (await getNextSortOrder(client, 'page_service_items', pageId));
 
     await client.query(
       `INSERT INTO page_service_items (
@@ -120,15 +120,15 @@ export async function createPageServiceItem(pageId, input) {
       [
         id,
         pageId,
-        input.categoryId,
+        input.category_id,
         input.title,
         input.subtitle,
-        input.durationMinutes,
-        input.priceAmount,
+        input.duration_minutes,
+        input.price_amount,
         input.currency,
-        input.priceHidden,
-        input.photoUrl,
-        input.isActive,
+        input.price_hidden,
+        input.photo_url,
+        input.is_active,
         sortOrder
       ]
     );
@@ -148,9 +148,9 @@ export async function updatePageServiceItem(pageId, serviceId, patch) {
     }
 
     if (
-      Object.prototype.hasOwnProperty.call(patch, 'categoryId') &&
-      patch.categoryId &&
-      !(await categoryExistsOnPage(client, pageId, patch.categoryId))
+      Object.prototype.hasOwnProperty.call(patch, 'category_id') &&
+      patch.category_id &&
+      !(await categoryExistsOnPage(client, pageId, patch.category_id))
     ) {
       const error = new Error('Category not found');
       error.code = 'CATEGORY_NOT_FOUND';
@@ -164,14 +164,14 @@ export async function updatePageServiceItem(pageId, serviceId, patch) {
     const fieldMap = {
       title: 'title',
       subtitle: 'subtitle',
-      durationMinutes: 'duration_minutes',
-      priceAmount: 'price_amount',
+      duration_minutes: 'duration_minutes',
+      price_amount: 'price_amount',
       currency: 'currency',
-      priceHidden: 'price_hidden',
-      categoryId: 'category_id',
-      isActive: 'is_active',
-      photoUrl: 'photo_url',
-      sortOrder: 'sort_order'
+      price_hidden: 'price_hidden',
+      category_id: 'category_id',
+      is_active: 'is_active',
+      photo_url: 'photo_url',
+      sort_order: 'sort_order'
     };
 
     for (const [key, column] of Object.entries(fieldMap)) {
@@ -223,7 +223,7 @@ export async function deletePageServiceItem(pageId, serviceId) {
 }
 
 export async function setPageServiceActive(pageId, serviceId, isActive) {
-  return updatePageServiceItem(pageId, serviceId, { isActive });
+  return updatePageServiceItem(pageId, serviceId, { is_active: isActive });
 }
 
 export async function reorderPageServices(pageId, orderedIds) {
@@ -278,7 +278,7 @@ export async function updatePageServicesSettings(pageId, settings) {
       `UPDATE pages
        SET services_use_categories = $2, updated_at = now()
        WHERE id = $1`,
-      [pageId, settings.useCategories]
+      [pageId, settings.use_categories]
     );
 
     return buildServicesResponse(client, pageId);
@@ -294,7 +294,7 @@ export async function createPageServiceCategory(pageId, input) {
 
     const id = coerceUuid(input.id);
     const sortOrder =
-      input.sortOrder ?? (await getNextSortOrder(client, 'page_service_categories', pageId));
+      input.sort_order ?? (await getNextSortOrder(client, 'page_service_categories', pageId));
 
     await client.query(
       `INSERT INTO page_service_categories (id, page_id, title, sort_order)
@@ -329,9 +329,9 @@ export async function updatePageServiceCategory(pageId, categoryId, patch) {
       index += 1;
     }
 
-    if (Object.prototype.hasOwnProperty.call(patch, 'sortOrder')) {
+    if (Object.prototype.hasOwnProperty.call(patch, 'sort_order')) {
       columns.push(`sort_order = $${index}`);
-      values.push(patch.sortOrder);
+      values.push(patch.sort_order);
       index += 1;
     }
 

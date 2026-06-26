@@ -37,6 +37,10 @@ section_layout JSONB  -- PageBlock[] (enabled/required/status)
 
 `name`, `role`, `bio`, `city`, `lang`, `avatar_url`, `email`, `phone`
 
+Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headline_line1`, `profile.headline_line2`
+
+→ [frontend_profile_copy_integration.md](./frontend_profile_copy_integration.md)
+
 При `POST /pages` — copy-on-create из `users`.
 
 ---
@@ -69,12 +73,12 @@ section_layout JSONB  -- PageBlock[] (enabled/required/status)
 
 ## `page_blocks`
 
-Типы: `stories`, `gallery`, `video`, `location`, `contacts`, `reviews`, `faq`, `cancellationPolicy`, `customQuestions`
+Типы: `stories`, `gallery`, `video`, `location`, `contacts`, `reviews`, `faq`, `cancellation_policy`, `custom_questions`
 
 | type | `data` |
 |------|--------|
-| `reviews`, `faq`, `customQuestions` | `{ "items": [...] }` |
-| `cancellationPolicy` | `{ "policyText", "cutoffHours" }` |
+| `reviews`, `faq`, `custom_questions` | `{ "items": [...] }` |
+| `cancellation_policy` | `{ "policy_text", "cutoff_hours" }` |
 | остальные | объект 1:1 с фронтом |
 
 ---

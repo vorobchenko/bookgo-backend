@@ -1,4 +1,5 @@
 import { isAllowedServicePhotoUrl } from '../utils/avatar.js';
+import { jsonField } from './json-field.js';
 import { isUuid } from './slug.js';
 
 const TITLE_MAX = 200;
@@ -22,12 +23,12 @@ export function parseServiceCreateBody(body) {
     return { ok: false, code: 'TITLE_TOO_LONG' };
   }
 
-  const durationMinutes = Number(body?.durationMinutes);
+  const durationMinutes = Number(jsonField(body, 'duration_minutes', 'durationMinutes'));
   if (!Number.isInteger(durationMinutes) || durationMinutes <= 0) {
     return { ok: false, code: 'DURATION_INVALID' };
   }
 
-  const priceAmount = Number(body?.priceAmount ?? 0);
+  const priceAmount = Number(jsonField(body, 'price_amount', 'priceAmount') ?? 0);
   if (!Number.isInteger(priceAmount) || priceAmount < 0) {
     return { ok: false, code: 'PRICE_INVALID' };
   }
@@ -37,15 +38,18 @@ export function parseServiceCreateBody(body) {
     return { ok: false, code: 'CURRENCY_INVALID' };
   }
 
-  const categoryId = body?.categoryId ?? null;
+  const categoryId = jsonField(body, 'category_id', 'categoryId') ?? null;
   if (categoryId !== null && categoryId !== undefined && categoryId !== '' && !isUuid(categoryId)) {
     return { ok: false, code: 'CATEGORY_INVALID' };
   }
 
-  const photoUrl = trimString(body?.photoUrl);
+  const photoUrl = trimString(jsonField(body, 'photo_url', 'photoUrl'));
   if (photoUrl && !isAllowedServicePhotoUrl(photoUrl)) {
     return { ok: false, code: 'PHOTO_URL_INVALID' };
   }
+
+  const isActiveRaw = jsonField(body, 'is_active', 'isActive');
+  const sortOrderRaw = jsonField(body, 'sort_order', 'sortOrder');
 
   return {
     ok: true,
@@ -53,14 +57,14 @@ export function parseServiceCreateBody(body) {
       id: body?.id,
       title,
       subtitle: trimString(body?.subtitle),
-      durationMinutes,
-      priceAmount,
+      duration_minutes: durationMinutes,
+      price_amount: priceAmount,
       currency,
-      priceHidden: Boolean(body?.priceHidden),
-      categoryId: categoryId || null,
-      isActive: body?.isActive !== false,
-      photoUrl,
-      sortOrder: Number.isInteger(body?.sortOrder) ? body.sortOrder : undefined
+      price_hidden: Boolean(jsonField(body, 'price_hidden', 'priceHidden')),
+      category_id: categoryId || null,
+      is_active: isActiveRaw !== false,
+      photo_url: photoUrl,
+      sort_order: Number.isInteger(sortOrderRaw) ? sortOrderRaw : undefined
     }
   };
 }
@@ -73,25 +77,47 @@ export function parseServicePatchBody(body) {
   const allowed = [
     'title',
     'subtitle',
-    'durationMinutes',
-    'priceAmount',
+    'duration_minutes',
+    'price_amount',
     'currency',
-    'priceHidden',
-    'categoryId',
-    'isActive',
-    'photoUrl',
-    'sortOrder'
+    'price_hidden',
+    'category_id',
+    'is_active',
+    'photo_url',
+    'sort_order'
   ];
   const patch = {};
 
   for (const key of allowed) {
-    if (!Object.prototype.hasOwnProperty.call(body, key)) {
+    const legacyKey =
+      key === 'duration_minutes'
+        ? 'durationMinutes'
+        : key === 'price_amount'
+          ? 'priceAmount'
+          : key === 'price_hidden'
+            ? 'priceHidden'
+            : key === 'category_id'
+              ? 'categoryId'
+              : key === 'is_active'
+                ? 'isActive'
+                : key === 'photo_url'
+                  ? 'photoUrl'
+                  : key === 'sort_order'
+                    ? 'sortOrder'
+                    : null;
+
+    if (
+      !Object.prototype.hasOwnProperty.call(body, key) &&
+      !(legacyKey && Object.prototype.hasOwnProperty.call(body, legacyKey))
+    ) {
       continue;
     }
 
+    const raw = jsonField(body, key, legacyKey);
+
     switch (key) {
       case 'title': {
-        const title = trimString(body.title);
+        const title = trimString(raw);
         if (!title) {
           return { ok: false, code: 'TITLE_REQUIRED' };
         }
@@ -102,64 +128,64 @@ export function parseServicePatchBody(body) {
         break;
       }
       case 'subtitle':
-        patch.subtitle = trimString(body.subtitle);
+        patch.subtitle = trimString(raw);
         break;
-      case 'durationMinutes': {
-        const durationMinutes = Number(body.durationMinutes);
+      case 'duration_minutes': {
+        const durationMinutes = Number(raw);
         if (!Number.isInteger(durationMinutes) || durationMinutes <= 0) {
           return { ok: false, code: 'DURATION_INVALID' };
         }
-        patch.durationMinutes = durationMinutes;
+        patch.duration_minutes = durationMinutes;
         break;
       }
-      case 'priceAmount': {
-        const priceAmount = Number(body.priceAmount);
+      case 'price_amount': {
+        const priceAmount = Number(raw);
         if (!Number.isInteger(priceAmount) || priceAmount < 0) {
           return { ok: false, code: 'PRICE_INVALID' };
         }
-        patch.priceAmount = priceAmount;
+        patch.price_amount = priceAmount;
         break;
       }
       case 'currency': {
-        const currency = normalizeCurrency(body.currency);
+        const currency = normalizeCurrency(raw);
         if (!CURRENCY_RE.test(currency)) {
           return { ok: false, code: 'CURRENCY_INVALID' };
         }
         patch.currency = currency;
         break;
       }
-      case 'priceHidden':
-        patch.priceHidden = Boolean(body.priceHidden);
+      case 'price_hidden':
+        patch.price_hidden = Boolean(raw);
         break;
-      case 'categoryId': {
-        const categoryId = body.categoryId;
+      case 'category_id': {
+        const categoryId = raw;
         if (categoryId === null || categoryId === '') {
-          patch.categoryId = null;
+          patch.category_id = null;
           break;
         }
         if (!isUuid(categoryId)) {
           return { ok: false, code: 'CATEGORY_INVALID' };
         }
-        patch.categoryId = categoryId;
+        patch.category_id = categoryId;
         break;
       }
-      case 'isActive':
-        patch.isActive = Boolean(body.isActive);
+      case 'is_active':
+        patch.is_active = Boolean(raw);
         break;
-      case 'photoUrl': {
-        const photoUrl = trimString(body.photoUrl);
+      case 'photo_url': {
+        const photoUrl = trimString(raw);
         if (photoUrl && !isAllowedServicePhotoUrl(photoUrl)) {
           return { ok: false, code: 'PHOTO_URL_INVALID' };
         }
-        patch.photoUrl = photoUrl;
+        patch.photo_url = photoUrl;
         break;
       }
-      case 'sortOrder': {
-        const sortOrder = Number(body.sortOrder);
+      case 'sort_order': {
+        const sortOrder = Number(raw);
         if (!Number.isInteger(sortOrder) || sortOrder < 0) {
           return { ok: false, code: 'SORT_ORDER_INVALID' };
         }
-        patch.sortOrder = sortOrder;
+        patch.sort_order = sortOrder;
         break;
       }
       default:
@@ -183,12 +209,14 @@ export function parseCategoryCreateBody(body) {
     return { ok: false, code: 'TITLE_TOO_LONG' };
   }
 
+  const sortOrderRaw = jsonField(body, 'sort_order', 'sortOrder');
+
   return {
     ok: true,
     value: {
       id: body?.id,
       title,
-      sortOrder: Number.isInteger(body?.sortOrder) ? body.sortOrder : undefined
+      sort_order: Number.isInteger(sortOrderRaw) ? sortOrderRaw : undefined
     }
   };
 }
@@ -210,12 +238,16 @@ export function parseCategoryPatchBody(body) {
     patch.title = title;
   }
 
-  if (Object.prototype.hasOwnProperty.call(body, 'sortOrder')) {
-    const sortOrder = Number(body.sortOrder);
+  const sortOrderRaw = jsonField(body, 'sort_order', 'sortOrder');
+  if (
+    Object.prototype.hasOwnProperty.call(body, 'sort_order') ||
+    Object.prototype.hasOwnProperty.call(body, 'sortOrder')
+  ) {
+    const sortOrder = Number(sortOrderRaw);
     if (!Number.isInteger(sortOrder) || sortOrder < 0) {
       return { ok: false, code: 'SORT_ORDER_INVALID' };
     }
-    patch.sortOrder = sortOrder;
+    patch.sort_order = sortOrder;
   }
 
   if (Object.keys(patch).length === 0) {
@@ -230,14 +262,15 @@ export function parseServicesSettingsPatch(body) {
     return { ok: false, code: 'BODY_INVALID' };
   }
 
-  if (!Object.prototype.hasOwnProperty.call(body, 'useCategories')) {
+  const useCategories = jsonField(body, 'use_categories', 'useCategories');
+  if (useCategories === undefined) {
     return { ok: false, code: 'BODY_EMPTY' };
   }
 
   return {
     ok: true,
     value: {
-      useCategories: Boolean(body.useCategories)
+      use_categories: Boolean(useCategories)
     }
   };
 }

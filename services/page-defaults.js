@@ -130,33 +130,33 @@ export const DEFAULT_SECTION_LAYOUT = [
 
 export const DEFAULT_THEME = {
   preset: 'bold',
-  accentColor: '#c6f432',
+  accent_color: '#c6f432',
   mode: 'auto'
 };
 
 export const DEFAULT_AVAILABILITY_SCALARS = {
   timezone: 'UTC',
-  bufferBeforeMinutes: 0,
-  bufferAfterMinutes: 15,
-  minNoticeHours: 4,
-  maxDaysAhead: 60
+  buffer_before_minutes: 0,
+  buffer_after_minutes: 15,
+  min_notice_hours: 4,
+  max_days_ahead: 60
 };
 
 export const DEFAULT_BLOCK_CONTENT = {
   stories: { body: '' },
   gallery: { items: [] },
-  video: { videoUrl: '', title: '' },
-  location: { address: '', showMap: true, directions: '' },
+  video: { video_url: '', title: '' },
+  location: { address: '', show_map: true, directions: '' },
   contacts: {
     instagram: '',
     telegram: '',
     whatsapp: '',
-    publicPhone: '',
+    public_phone: '',
     website: ''
   },
   reviews: { items: [] },
   faq: { items: [] },
-  cancellationPolicy: { policyText: '', cutoffHours: 24 },
+  cancellationPolicy: { policy_text: '', cutoff_hours: 24 },
   customQuestions: { items: [] }
 };
 
@@ -216,16 +216,21 @@ export function defaultAvailabilityDaysStored() {
 export const DEFAULT_STARTER_SERVICE = {
   title: 'Session',
   subtitle: '',
-  durationMinutes: 60,
-  priceAmount: 0,
+  duration_minutes: 60,
+  price_amount: 0,
   currency: 'PLN',
-  priceHidden: false,
-  categoryId: null,
-  isActive: true,
-  photoUrl: ''
+  price_hidden: false,
+  category_id: null,
+  is_active: true,
+  photo_url: ''
 };
 
 export const PAGE_PROFILE_LANGS = ['en', 'ru'];
+
+export const DEFAULT_PROFILE_HEADLINE = {
+  headline_line1: 'BOOK YOUR',
+  headline_line2: 'NEXT SESSION'
+};
 
 export function profileFromUser(user) {
   return {
@@ -234,15 +239,16 @@ export function profileFromUser(user) {
     bio: user.bio?.trim() || '',
     city: user.city?.trim() || '',
     lang: PAGE_PROFILE_LANGS.includes(user.lang) ? user.lang : 'en',
-    avatarUrl: user.avatar?.trim() || '',
+    avatar_url: user.avatar?.trim() || '',
     email: user.email?.trim() || '',
-    phone: user.phone?.trim() || ''
+    phone: user.phone?.trim() || '',
+    ...DEFAULT_PROFILE_HEADLINE
   };
 }
 
 export function defaultServicesSettings() {
   return {
-    useCategories: false,
+    use_categories: false,
     categories: [],
     services: []
   };

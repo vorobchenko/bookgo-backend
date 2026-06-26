@@ -11,6 +11,7 @@
 | [frontend_auth_integration.md](./frontend_auth_integration.md) | **bookgo-app** | Auth, profile, AuthContext |
 | [frontend_pages_integration.md](./frontend_pages_integration.md) | **bookgo-app** | Pages API, PageSettings, builder |
 | [frontend_services_integration.md](./frontend_services_integration.md) | **bookgo-app** | Your services: архив, порядок, фото |
+| [frontend_profile_copy_integration.md](./frontend_profile_copy_integration.md) | **bookgo-app** | Hero headline (`headline_line1` / `headline_line2`) |
 | [auth_api.md](./auth_api.md) | Контракт | Login, logout |
 | [profile_api.md](./profile_api.md) | Контракт | Info, edit, change-password |
 | [pages_api.md](./pages_api.md) | Контракт | CRUD pages, publish, public slug |

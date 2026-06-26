@@ -1,6 +1,7 @@
 import {
   BLOCK_TYPES,
   DEFAULT_BLOCK_CONTENT,
+  DEFAULT_PROFILE_HEADLINE,
   DEFAULT_SECTION_LAYOUT,
   DEFAULT_THEME,
   isAboutBlockEnabled,
@@ -10,6 +11,8 @@ import {
 } from './page-defaults.js';
 import { isValidEmailOrEmpty, normalizeEmail } from '../utils/email.js';
 import { isAllowedPageAvatarUrl } from '../utils/avatar.js';
+import { blockTypeFromApi, blockTypeToApi } from '../utils/block-types.js';
+import { jsonField } from '../utils/json-field.js';
 
 function weekdayMeta(weekday) {
   return WEEKDAY_META.find((d) => d.weekday === weekday) ?? {
@@ -61,9 +64,10 @@ function mapProfileRow(row) {
       bio: '',
       city: '',
       lang: 'en',
-      avatarUrl: '',
+      avatar_url: '',
       email: '',
-      phone: ''
+      phone: '',
+      ...DEFAULT_PROFILE_HEADLINE
     };
   }
 
@@ -73,9 +77,11 @@ function mapProfileRow(row) {
     bio: row.bio ?? '',
     city: row.city ?? '',
     lang: PAGE_PROFILE_LANGS.includes(row.lang) ? row.lang : 'en',
-    avatarUrl: row.avatar_url ?? '',
+    avatar_url: row.avatar_url ?? '',
     email: row.email ?? '',
-    phone: row.phone ?? ''
+    phone: row.phone ?? '',
+    headline_line1: row.headline_line1 ?? DEFAULT_PROFILE_HEADLINE.headline_line1,
+    headline_line2: row.headline_line2 ?? DEFAULT_PROFILE_HEADLINE.headline_line2
   };
 }
 
@@ -83,7 +89,7 @@ function mapThemeRow(row) {
   if (!row) return { ...DEFAULT_THEME };
   return {
     preset: row.preset ?? DEFAULT_THEME.preset,
-    accentColor: row.accent_color ?? DEFAULT_THEME.accentColor,
+    accent_color: row.accent_color ?? DEFAULT_THEME.accent_color,
     mode: row.mode ?? DEFAULT_THEME.mode
   };
 }
@@ -92,20 +98,20 @@ function mapAvailabilityRow(row) {
   if (!row) {
     return {
       timezone: 'UTC',
-      bufferBeforeMinutes: 0,
-      bufferAfterMinutes: 15,
-      minNoticeHours: 4,
-      maxDaysAhead: 60,
+      buffer_before_minutes: 0,
+      buffer_after_minutes: 15,
+      min_notice_hours: 4,
+      max_days_ahead: 60,
       days: enrichAvailabilityDays([])
     };
   }
 
   return {
     timezone: row.timezone ?? 'UTC',
-    bufferBeforeMinutes: row.buffer_before_minutes ?? 0,
-    bufferAfterMinutes: row.buffer_after_minutes ?? 0,
-    minNoticeHours: row.min_notice_hours ?? 0,
-    maxDaysAhead: row.max_days_ahead ?? 60,
+    buffer_before_minutes: row.buffer_before_minutes ?? 0,
+    buffer_after_minutes: row.buffer_after_minutes ?? 0,
+    min_notice_hours: row.min_notice_hours ?? 0,
+    max_days_ahead: row.max_days_ahead ?? 60,
     days: enrichAvailabilityDays(row.days)
   };
 }
@@ -115,20 +121,20 @@ export function mapServiceItemRow(item) {
     id: item.id,
     title: item.title,
     subtitle: item.subtitle ?? '',
-    durationMinutes: item.duration_minutes,
-    priceAmount: item.price_amount,
+    duration_minutes: item.duration_minutes,
+    price_amount: item.price_amount,
     currency: item.currency?.trim() || 'PLN',
-    priceHidden: Boolean(item.price_hidden),
-    categoryId: item.category_id,
-    isActive: Boolean(item.is_active),
-    photoUrl: item.photo_url ?? '',
-    sortOrder: item.sort_order ?? 0
+    price_hidden: Boolean(item.price_hidden),
+    category_id: item.category_id,
+    is_active: Boolean(item.is_active),
+    photo_url: item.photo_url ?? '',
+    sort_order: item.sort_order ?? 0
   };
 }
 
 function mapServices(pageRow, categoryRows, itemRows) {
   return {
-    useCategories: Boolean(pageRow?.services_use_categories),
+    use_categories: Boolean(pageRow?.services_use_categories),
     categories: categoryRows.map((cat) => ({
       id: cat.id,
       title: cat.title
@@ -152,7 +158,7 @@ function blockDataToSettings(type, data) {
     case 'video':
       return {
         video: {
-          videoUrl: payload.videoUrl ?? '',
+          video_url: jsonField(payload, 'video_url', 'videoUrl') ?? '',
           title: payload.title ?? ''
         }
       };
@@ -160,7 +166,7 @@ function blockDataToSettings(type, data) {
       return {
         location: {
           address: payload.address ?? '',
-          showMap: payload.showMap !== false,
+          show_map: jsonField(payload, 'show_map', 'showMap') !== false,
           directions: payload.directions ?? ''
         }
       };
@@ -170,7 +176,7 @@ function blockDataToSettings(type, data) {
           instagram: payload.instagram ?? '',
           telegram: payload.telegram ?? '',
           whatsapp: payload.whatsapp ?? '',
-          publicPhone: payload.publicPhone ?? '',
+          public_phone: jsonField(payload, 'public_phone', 'publicPhone') ?? '',
           website: payload.website ?? ''
         }
       };
@@ -181,13 +187,13 @@ function blockDataToSettings(type, data) {
     case 'cancellationPolicy':
       return {
         cancellation: {
-          policyText: payload.policyText ?? '',
-          cutoffHours: payload.cutoffHours ?? 24
+          policy_text: jsonField(payload, 'policy_text', 'policyText') ?? '',
+          cutoff_hours: jsonField(payload, 'cutoff_hours', 'cutoffHours') ?? 24
         }
       };
     case 'customQuestions':
       return {
-        customQuestions: Array.isArray(payload.items) ? payload.items : []
+        custom_questions: Array.isArray(payload.items) ? payload.items : []
       };
     default:
       return {};
@@ -202,13 +208,13 @@ function settingsToBlockData(type, settings) {
       return { items: settings.gallery?.items ?? [] };
     case 'video':
       return {
-        videoUrl: settings.video?.videoUrl ?? '',
+        video_url: settings.video?.video_url ?? '',
         title: settings.video?.title ?? ''
       };
     case 'location':
       return {
         address: settings.location?.address ?? '',
-        showMap: settings.location?.showMap !== false,
+        show_map: settings.location?.show_map !== false,
         directions: settings.location?.directions ?? ''
       };
     case 'contacts':
@@ -219,11 +225,11 @@ function settingsToBlockData(type, settings) {
       return { items: settings.faq ?? [] };
     case 'cancellationPolicy':
       return {
-        policyText: settings.cancellation?.policyText ?? '',
-        cutoffHours: settings.cancellation?.cutoffHours ?? 24
+        policy_text: settings.cancellation?.policy_text ?? '',
+        cutoff_hours: settings.cancellation?.cutoff_hours ?? 24
       };
     case 'customQuestions':
-      return { items: settings.customQuestions ?? [] };
+      return { items: settings.custom_questions ?? [] };
     default:
       return {};
   }
@@ -236,13 +242,18 @@ function mergeSectionLayout(saved) {
 
   return DEFAULT_SECTION_LAYOUT.map((def) => {
     const existing = savedByType.get(def.type);
-    if (!existing) return { ...def };
+    const block = existing
+      ? {
+          ...def,
+          id: existing.id ?? def.id,
+          enabled: existing.enabled ?? def.enabled,
+          required: existing.required ?? def.required,
+          status: existing.status ?? def.status
+        }
+      : { ...def };
     return {
-      ...def,
-      id: existing.id ?? def.id,
-      enabled: existing.enabled ?? def.enabled,
-      required: existing.required ?? def.required,
-      status: existing.status ?? def.status
+      ...block,
+      type: blockTypeToApi(block.type)
     };
   });
 }
@@ -252,18 +263,19 @@ function isContactsFilled(contacts) {
     contacts.instagram?.trim() ||
       contacts.telegram?.trim() ||
       contacts.whatsapp?.trim() ||
-      contacts.publicPhone?.trim() ||
+      contacts.public_phone?.trim() ||
       contacts.website?.trim()
   );
 }
 
 function syncBlockStatuses(settings) {
   const statusFor = (type) => {
-    switch (type) {
+    const internalType = blockTypeFromApi(type);
+    switch (internalType) {
       case 'profile':
         return settings.profile.name?.trim() ? 'filled' : 'empty';
       case 'services':
-        return settings.services.services.some((s) => s.isActive) ? 'filled' : 'empty';
+        return settings.services.services.some((s) => s.is_active) ? 'filled' : 'empty';
       case 'availability': {
         const hasBookable = settings.availability.days.some(
           (d) => d.bookable && d.ranges.length > 0
@@ -277,7 +289,7 @@ function syncBlockStatuses(settings) {
       case 'gallery':
         return settings.gallery.items.some((m) => m.url?.trim()) ? 'filled' : 'empty';
       case 'video':
-        return settings.video.videoUrl?.trim() ? 'filled' : 'empty';
+        return settings.video.video_url?.trim() ? 'filled' : 'empty';
       case 'location':
         return settings.location.address?.trim() ? 'filled' : 'empty';
       case 'contacts':
@@ -291,17 +303,18 @@ function syncBlockStatuses(settings) {
           ? 'filled'
           : 'empty';
       case 'cancellationPolicy':
-        return settings.cancellation.policyText?.trim() ? 'filled' : 'empty';
+        return settings.cancellation.policy_text?.trim() ? 'filled' : 'empty';
       case 'customQuestions':
-        return settings.customQuestions.some((q) => q.label?.trim()) ? 'filled' : 'empty';
+        return settings.custom_questions.some((q) => q.label?.trim()) ? 'filled' : 'empty';
       default:
         return 'empty';
     }
   };
 
   return settings.blocks.map((block) => {
+    const internalType = blockTypeFromApi(block.type);
     const aboutOn = isAboutBlockEnabled(settings.blocks);
-    if (isAboutNestedBlockType(block.type) && !aboutOn) {
+    if (isAboutNestedBlockType(internalType) && !aboutOn) {
       return { ...block, status: 'disabled' };
     }
     if (!block.enabled) return { ...block, status: 'disabled' };
@@ -334,20 +347,20 @@ export function assemblePageSettings({
     blocks: mergeSectionLayout(page.section_layout),
     stories: contentFromBlocks.stories ?? { body: '' },
     gallery: contentFromBlocks.gallery ?? { items: [] },
-    video: contentFromBlocks.video ?? { videoUrl: '', title: '' },
+    video: contentFromBlocks.video ?? { video_url: '', title: '' },
     location: contentFromBlocks.location ?? {
       address: '',
-      showMap: true,
+      show_map: true,
       directions: ''
     },
     contacts: contentFromBlocks.contacts ?? { ...DEFAULT_BLOCK_CONTENT.contacts },
     reviews: contentFromBlocks.reviews ?? [],
     faq: contentFromBlocks.faq ?? [],
     cancellation: contentFromBlocks.cancellation ?? {
-      policyText: '',
-      cutoffHours: 24
+      policy_text: '',
+      cutoff_hours: 24
     },
-    customQuestions: contentFromBlocks.customQuestions ?? [],
+    custom_questions: contentFromBlocks.custom_questions ?? [],
     published: Boolean(page.published),
     slug: page.slug
   };
@@ -373,17 +386,17 @@ export function assemblePageResponse(page, settings) {
 
 export function validatePublish(settings) {
   const errors = [];
-  let coreComplete = 0;
-  const coreTotal = 3;
+  let core_complete = 0;
+  const core_total = 3;
 
   if (settings.profile.name?.trim()) {
-    coreComplete += 1;
+    core_complete += 1;
   } else {
     errors.push('Add your full name in Profile');
   }
 
   if (PAGE_PROFILE_LANGS.includes(settings.profile.lang)) {
-    coreComplete += 1;
+    core_complete += 1;
   } else {
     errors.push('Set a language in Profile');
   }
@@ -393,14 +406,14 @@ export function validatePublish(settings) {
     errors.push('Enter a valid email in Profile');
   }
 
-  const profileAvatarUrl = settings.profile.avatarUrl?.trim() || '';
+  const profileAvatarUrl = settings.profile.avatar_url?.trim() || '';
   if (profileAvatarUrl && !isAllowedPageAvatarUrl(profileAvatarUrl)) {
     errors.push('Upload a valid photo in Profile');
   }
 
-  const activeServices = settings.services.services.filter((s) => s.isActive);
+  const activeServices = settings.services.services.filter((s) => s.is_active);
   if (activeServices.length > 0) {
-    coreComplete += 1;
+    core_complete += 1;
   } else {
     errors.push('Enable at least one service');
   }
@@ -413,9 +426,10 @@ export function validatePublish(settings) {
   }
 
   const aboutOn = isAboutBlockEnabled(settings.blocks);
-  const enabledOptional = settings.blocks.filter(
-    (b) => b.enabled && !b.required && aboutOn && isAboutNestedBlockType(b.type)
-  );
+  const enabledOptional = settings.blocks.filter((b) => {
+    const internalType = blockTypeFromApi(b.type);
+    return b.enabled && !b.required && aboutOn && isAboutNestedBlockType(internalType);
+  });
 
   const synced = syncBlockStatuses(settings);
   for (const block of enabledOptional) {
@@ -428,9 +442,20 @@ export function validatePublish(settings) {
   return {
     valid: errors.length === 0,
     errors,
-    coreComplete,
-    coreTotal
+    core_complete,
+    core_total
   };
+}
+
+function normalizeBlocksForStorage(blocks) {
+  if (!Array.isArray(blocks)) {
+    return blocks;
+  }
+
+  return blocks.map((block) => ({
+    ...block,
+    type: blockTypeFromApi(block.type)
+  }));
 }
 
 export function disassemblePagePatch(settingsPatch) {
@@ -453,7 +478,7 @@ export function disassemblePagePatch(settingsPatch) {
   }
 
   if (settingsPatch.blocks !== undefined) {
-    result.sectionLayout = settingsPatch.blocks;
+    result.sectionLayout = normalizeBlocksForStorage(settingsPatch.blocks);
   }
 
   if (settingsPatch.profile !== undefined) {
@@ -464,9 +489,11 @@ export function disassemblePagePatch(settingsPatch) {
       bio: p.bio ?? '',
       city: p.city ?? '',
       lang: PAGE_PROFILE_LANGS.includes(p.lang) ? p.lang : 'en',
-      avatar_url: p.avatarUrl ?? '',
+      avatar_url: p.avatar_url ?? '',
       email: p.email?.trim() ? normalizeEmail(p.email) : '',
-      phone: p.phone ?? ''
+      phone: p.phone ?? '',
+      headline_line1: p.headline_line1 ?? DEFAULT_PROFILE_HEADLINE.headline_line1,
+      headline_line2: p.headline_line2 ?? DEFAULT_PROFILE_HEADLINE.headline_line2
     };
   }
 
@@ -474,7 +501,7 @@ export function disassemblePagePatch(settingsPatch) {
     const t = settingsPatch.theme;
     result.themeFields = {
       preset: t.preset ?? 'bold',
-      accent_color: t.accentColor ?? '#c6f432',
+      accent_color: t.accent_color ?? '#c6f432',
       mode: t.mode ?? 'auto'
     };
   }
@@ -483,17 +510,17 @@ export function disassemblePagePatch(settingsPatch) {
     const a = settingsPatch.availability;
     result.availabilityFields = {
       timezone: a.timezone ?? 'UTC',
-      buffer_before_minutes: a.bufferBeforeMinutes ?? 0,
-      buffer_after_minutes: a.bufferAfterMinutes ?? 0,
-      min_notice_hours: a.minNoticeHours ?? 0,
-      max_days_ahead: a.maxDaysAhead ?? 60,
+      buffer_before_minutes: a.buffer_before_minutes ?? 0,
+      buffer_after_minutes: a.buffer_after_minutes ?? 0,
+      min_notice_hours: a.min_notice_hours ?? 0,
+      max_days_ahead: a.max_days_ahead ?? 60,
       days: stripDayLabels(a.days)
     };
   }
 
   if (settingsPatch.services !== undefined) {
     result.services = settingsPatch.services;
-    result.pageFields.services_use_categories = Boolean(settingsPatch.services.useCategories);
+    result.pageFields.services_use_categories = Boolean(settingsPatch.services.use_categories);
   }
 
   for (const type of BLOCK_TYPES) {
@@ -507,7 +534,7 @@ export function disassemblePagePatch(settingsPatch) {
       (type === 'reviews' && settingsPatch.reviews !== undefined) ||
       (type === 'faq' && settingsPatch.faq !== undefined) ||
       (type === 'cancellationPolicy' && settingsPatch.cancellation !== undefined) ||
-      (type === 'customQuestions' && settingsPatch.customQuestions !== undefined);
+      (type === 'customQuestions' && settingsPatch.custom_questions !== undefined);
 
     if (hasContentKey) {
       result.blockUpdates.push({ type, data });

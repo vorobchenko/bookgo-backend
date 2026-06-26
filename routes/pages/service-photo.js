@@ -65,7 +65,7 @@ export async function uploadServicePhotoHandler(req, res) {
     const uploaded = await uploadServicePhoto(page.id, serviceId, req.file);
 
     const result = await updatePageServiceItem(page.id, serviceId, {
-      photoUrl: uploaded.url
+      photo_url: uploaded.url
     });
 
     if (currentUrl && currentUrl !== uploaded.url) {
@@ -76,7 +76,7 @@ export async function uploadServicePhotoHandler(req, res) {
       success: true,
       message: req.t('pages.services.photo.uploadSuccess'),
       data: {
-        photoUrl: uploaded.url,
+        photo_url: uploaded.url,
         ...result
       }
     });
@@ -127,7 +127,7 @@ export async function deleteServicePhotoHandler(req, res) {
       await deleteAvatarByUrl(currentUrl);
     }
 
-    const result = await updatePageServiceItem(page.id, serviceId, { photoUrl: '' });
+    const result = await updatePageServiceItem(page.id, serviceId, { photo_url: '' });
 
     return res.status(200).json({
       success: true,

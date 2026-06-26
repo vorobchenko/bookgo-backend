@@ -46,11 +46,11 @@ Full page with assembled `settings` (`PageSettings`).
   "slug": "new-slug",
   "settings": {
     "profile": { "name": "...", "lang": "en" },
-    "services": { "useCategories": true, "categories": [], "services": [] },
+    "services": { "use_categories": true, "categories": [], "services": [] },
     "availability": { "timezone": "Europe/Warsaw", "days": [] },
     "blocks": [],
     "faq": [],
-    "theme": { "preset": "bold", "accentColor": "#c6f432", "mode": "auto" }
+    "theme": { "preset": "bold", "accent_color": "#c6f432", "mode": "auto" }
   }
 }
 ```
@@ -67,7 +67,7 @@ For single-service operations (create, edit, delete, activate/deactivate), prefe
 
 ## POST /pages/:id/avatar
 
-Upload page profile photo (`multipart/form-data`, field `avatar`). Updates `settings.profile.avatarUrl`.
+Upload page profile photo (`multipart/form-data`, field `avatar`). Updates `settings.profile.avatar_url`.
 
 **Full contract:** [pages_avatar_api.md](./pages_avatar_api.md)
 
@@ -75,7 +75,7 @@ Upload page profile photo (`multipart/form-data`, field `avatar`). Updates `sett
 
 ## DELETE /pages/:id/avatar
 
-Remove page profile photo from storage and clear `avatarUrl`.
+Remove page profile photo from storage and clear `avatar_url`.
 
 **Full contract:** [pages_avatar_api.md](./pages_avatar_api.md)
 

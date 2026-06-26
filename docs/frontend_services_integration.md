@@ -14,10 +14,10 @@ HTTP-контракт: [pages_services_api.md](./pages_services_api.md)
 | Было | Стало |
 |------|--------|
 | Только `PATCH /pages/:id` с полным `settings.services` | Отдельные эндпоинты на каждое действие |
-| Удаление услуги | **Архив** — `isActive: false`, запись остаётся |
-| Порядок неявный (индекс в массиве при PATCH) | Поле **`sortOrder`** + **`PUT .../services/order`** |
-| `photoUrl` только строкой | **`POST .../photo`** — загрузка файла в Storage |
-| Нет счётчиков | **`meta.activeCount` / `archivedCount`** в ответах |
+| Удаление услуги | **Архив** — `is_active: false`, запись остаётся |
+| Порядок неявный (индекс в массиве при PATCH) | Поле **`sort_order`** + **`PUT .../services/order`** |
+| `photo_url` только строкой | **`POST .../photo`** — загрузка файла в Storage |
+| Нет счётчиков | **`meta.active_count` / `archived_count`** в ответах |
 
 `PATCH /pages/:id` с `settings.services` по-прежнему работает (полная замена), но **в UI builder используйте эндпоинты ниже**.
 
@@ -29,8 +29,8 @@ HTTP-контракт: [pages_services_api.md](./pages_services_api.md)
 Your services                    API
 ─────────────────────────────────────────────────
 "3 active · 2 archived"    →     data.meta
-секция ACTIVE              →     services.filter(s => s.isActive)
-секция ARCHIVED            →     services.filter(s => !s.isActive)
+секция ACTIVE              →     services.filter(s => s.is_active)
+секция ARCHIVED            →     services.filter(s => !s.is_active)
 кнопка Archive             →     POST .../archive
 кнопка Restore             →     POST .../restore
 drag-and-drop порядка      →     PUT .../services/order
@@ -52,14 +52,14 @@ export type ServiceItem = {
   id: string
   title: string
   subtitle: string
-  durationMinutes: number
-  priceAmount: number       // минорные единицы: 15000 = 150.00
+  duration_minutes: number
+  price_amount: number       // минорные единицы: 15000 = 150.00
   currency: string          // "PLN" | "EUR" | ...
-  priceHidden: boolean      // true → "On request" в UI
+  price_hidden: boolean      // true → "On request" в UI
   categoryId: string | null
-  isActive: boolean         // true = ACTIVE, false = ARCHIVED
-  photoUrl: string
-  sortOrder: number         // NEW: порядок в списке
+  is_active: boolean         // true = ACTIVE, false = ARCHIVED
+  photo_url: string
+  sort_order: number         // NEW: порядок в списке
 }
 
 export type ServiceCategory = {
@@ -68,15 +68,15 @@ export type ServiceCategory = {
 }
 
 export type ServicesSettings = {
-  useCategories: boolean
+  use_categories: boolean
   categories: ServiceCategory[]
   services: ServiceItem[]
 }
 
 export type ServicesMeta = {
-  activeCount: number
-  archivedCount: number
-  totalCount: number
+  active_count: number
+  archived_count: number
+  total_count: number
 }
 
 /** Ответ GET /pages/:id/services */
@@ -91,11 +91,11 @@ export type ServiceMutationResponse = {
   category?: ServiceCategory
   services: ServicesSettings
   meta?: ServicesMeta
-  photoUrl?: string
+  photo_url?: string
 }
 ```
 
-Обновить `PageSettings.services` в `settings.ts`: у каждого элемента `services[]` должны быть `sortOrder` и актуальный `photoUrl`.
+Обновить `PageSettings.services` в `settings.ts`: у каждого элемента `services[]` должны быть `sort_order` и актуальный `photo_url`.
 
 ---
 
@@ -125,8 +125,8 @@ export async function fetchPageServices(pageId: string) {
 
 export async function createService(
   pageId: string,
-  body: Pick<ServiceItem, 'title' | 'durationMinutes'> &
-    Partial<Omit<ServiceItem, 'id' | 'title' | 'durationMinutes'>>
+  body: Pick<ServiceItem, 'title' | 'duration_minutes'> &
+    Partial<Omit<ServiceItem, 'id' | 'title' | 'duration_minutes'>>
 ) {
   const res = await apiRequest<ServiceMutationResponse>(`/pages/${pageId}/services`, {
     method: 'POST',
@@ -216,10 +216,10 @@ setMeta(data.meta) // для "3 active · 2 archived"
 
 ```typescript
 function splitServices(services: ServicesSettings) {
-  const sorted = [...services.services].sort((a, b) => a.sortOrder - b.sortOrder)
+  const sorted = [...services.services].sort((a, b) => a.sort_order - b.sort_order)
   return {
-    active: sorted.filter((s) => s.isActive),
-    archived: sorted.filter((s) => !s.isActive),
+    active: sorted.filter((s) => s.is_active),
+    archived: sorted.filter((s) => !s.is_active),
   }
 }
 ```
@@ -235,7 +235,7 @@ function splitServices(services: ServicesSettings) {
 
 ### Add service
 
-1. `POST /pages/:id/services` с `title`, `durationMinutes`, …
+1. `POST /pages/:id/services` с `title`, `duration_minutes`, …
 2. В ответе `data.service.id` — **серверный UUID**, сохранить в стейт
 3. Только после этого можно загружать фото
 
@@ -246,8 +246,8 @@ function splitServices(services: ServicesSettings) {
 ```typescript
 await updateService(pageId, serviceId, {
   title: 'PT Session',
-  priceAmount: 18000,
-  priceHidden: false,
+  price_amount: 18000,
+  price_hidden: false,
 })
 ```
 
@@ -293,14 +293,14 @@ async function onPhotoPick(serviceId: string, file: File) {
 
 - Поле формы: **`photo`**
 - Форматы: JPEG, PNG, WebP, GIF, до 5 MB
-- Превью: `service.photoUrl` (публичный URL Supabase)
+- Превью: `service.photo_url` (публичный URL Supabase)
 
 ### Цена в UI
 
 ```typescript
 function formatPrice(s: ServiceItem) {
-  if (s.priceHidden) return 'On request'
-  const major = s.priceAmount / 100
+  if (s.price_hidden) return 'On request'
+  const major = s.price_amount / 100
   return `${s.currency} ${major}`
 }
 ```
@@ -322,7 +322,7 @@ function formatPrice(s: ServiceItem) {
 
 ## Publish
 
-Для публикации нужна **≥1 услуга с `isActive: true`**. Все в архиве → `POST /pages/:id/publish` вернёт `400 validationFailed`.
+Для публикации нужна **≥1 услуга с `is_active: true`**. Все в архиве → `POST /pages/:id/publish` вернёт `400 validationFailed`.
 
 Архивные услуги на публичной витрине для бронирования не показываются.
 
@@ -330,9 +330,9 @@ function formatPrice(s: ServiceItem) {
 
 ## Чеклист интеграции
 
-- [ ] Типы `ServiceItem` + `sortOrder`, `ServicesMeta`
-- [ ] Секции ACTIVE / ARCHIVED по `isActive`
-- [ ] Счётчик `meta.activeCount · meta.archivedCount`
+- [ ] Типы `ServiceItem` + `sort_order`, `ServicesMeta`
+- [ ] Секции ACTIVE / ARCHIVED по `is_active`
+- [ ] Счётчик `meta.active_count · meta.archived_count`
 - [ ] Archive / Restore вместо delete
 - [ ] `PUT .../services/order` после drag-and-drop
 - [ ] `POST .../photo` с полем `photo` после сохранения услуги

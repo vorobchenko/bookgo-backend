@@ -113,8 +113,9 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
 
     await client.query(
       `INSERT INTO page_profiles (
-         page_id, name, role, bio, city, lang, avatar_url, email, phone
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+         page_id, name, role, bio, city, lang, avatar_url, email, phone,
+         headline_line1, headline_line2
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
       [
         page.id,
         profile.name,
@@ -122,16 +123,18 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
         profile.bio,
         profile.city,
         profile.lang,
-        profile.avatarUrl,
+        profile.avatar_url,
         profile.email,
-        profile.phone
+        profile.phone,
+        profile.headline_line1,
+        profile.headline_line2
       ]
     );
 
     await client.query(
       `INSERT INTO page_themes (page_id, preset, accent_color, mode)
        VALUES ($1, $2, $3, $4)`,
-      [page.id, DEFAULT_THEME.preset, DEFAULT_THEME.accentColor, DEFAULT_THEME.mode]
+      [page.id, DEFAULT_THEME.preset, DEFAULT_THEME.accent_color, DEFAULT_THEME.mode]
     );
 
     const availabilityTimezone = user.timezone?.trim() || DEFAULT_AVAILABILITY_SCALARS.timezone;
@@ -144,10 +147,10 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
       [
         page.id,
         availabilityTimezone,
-        DEFAULT_AVAILABILITY_SCALARS.bufferBeforeMinutes,
-        DEFAULT_AVAILABILITY_SCALARS.bufferAfterMinutes,
-        DEFAULT_AVAILABILITY_SCALARS.minNoticeHours,
-        DEFAULT_AVAILABILITY_SCALARS.maxDaysAhead,
+        DEFAULT_AVAILABILITY_SCALARS.buffer_before_minutes,
+        DEFAULT_AVAILABILITY_SCALARS.buffer_after_minutes,
+        DEFAULT_AVAILABILITY_SCALARS.min_notice_hours,
+        DEFAULT_AVAILABILITY_SCALARS.max_days_ahead,
         JSON.stringify(defaultAvailabilityDaysStored())
       ]
     );
@@ -163,12 +166,12 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
         page.id,
         DEFAULT_STARTER_SERVICE.title,
         DEFAULT_STARTER_SERVICE.subtitle,
-        DEFAULT_STARTER_SERVICE.durationMinutes,
-        DEFAULT_STARTER_SERVICE.priceAmount,
+        DEFAULT_STARTER_SERVICE.duration_minutes,
+        DEFAULT_STARTER_SERVICE.price_amount,
         DEFAULT_STARTER_SERVICE.currency,
-        DEFAULT_STARTER_SERVICE.priceHidden,
-        DEFAULT_STARTER_SERVICE.photoUrl,
-        DEFAULT_STARTER_SERVICE.isActive
+        DEFAULT_STARTER_SERVICE.price_hidden,
+        DEFAULT_STARTER_SERVICE.photo_url,
+        DEFAULT_STARTER_SERVICE.is_active
       ]
     );
 
@@ -233,8 +236,9 @@ async function upsertProfile(client, pageId, fields) {
   if (!fields) return;
   await client.query(
     `INSERT INTO page_profiles (
-       page_id, name, role, bio, city, lang, avatar_url, email, phone
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       page_id, name, role, bio, city, lang, avatar_url, email, phone,
+       headline_line1, headline_line2
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      ON CONFLICT (page_id) DO UPDATE SET
        name = EXCLUDED.name,
        role = EXCLUDED.role,
@@ -244,6 +248,8 @@ async function upsertProfile(client, pageId, fields) {
        avatar_url = EXCLUDED.avatar_url,
        email = EXCLUDED.email,
        phone = EXCLUDED.phone,
+       headline_line1 = EXCLUDED.headline_line1,
+       headline_line2 = EXCLUDED.headline_line2,
        updated_at = now()`,
     [
       pageId,
@@ -254,7 +260,9 @@ async function upsertProfile(client, pageId, fields) {
       fields.lang,
       fields.avatar_url,
       fields.email,
-      fields.phone
+      fields.phone,
+      fields.headline_line1,
+      fields.headline_line2
     ]
   );
 }
@@ -325,8 +333,9 @@ async function replaceServices(client, pageId, services) {
   for (let i = 0; i < items.length; i += 1) {
     const item = items[i];
     const id = coerceUuid(item.id);
-    const categoryId = item.categoryId
-      ? categoryIdMap.get(item.categoryId) ?? null
+    const categoryId = item.category_id ?? item.categoryId;
+    const resolvedCategoryId = categoryId
+      ? categoryIdMap.get(categoryId) ?? null
       : null;
 
     await client.query(
@@ -337,16 +346,18 @@ async function replaceServices(client, pageId, services) {
       [
         id,
         pageId,
-        categoryId,
+        resolvedCategoryId,
         item.title ?? '',
         item.subtitle ?? '',
-        Number(item.durationMinutes) || 0,
-        Number(item.priceAmount) || 0,
+        Number(item.duration_minutes ?? item.durationMinutes) || 0,
+        Number(item.price_amount ?? item.priceAmount) || 0,
         (item.currency ?? 'PLN').toString().slice(0, 3),
-        Boolean(item.priceHidden),
-        item.photoUrl ?? '',
-        item.isActive !== false,
-        Number.isInteger(item.sortOrder) ? item.sortOrder : i
+        Boolean(item.price_hidden ?? item.priceHidden),
+        item.photo_url ?? item.photoUrl ?? '',
+        (item.is_active ?? item.isActive) !== false,
+        Number.isInteger(item.sort_order ?? item.sortOrder)
+          ? (item.sort_order ?? item.sortOrder)
+          : i
       ]
     );
   }

@@ -97,11 +97,11 @@ function handleRepositoryError(req, res, error, fallbackKey) {
 
 function servicesMeta(services) {
   const items = services?.services ?? [];
-  const activeCount = items.filter((item) => item.isActive).length;
+  const activeCount = items.filter((item) => item.is_active).length;
   return {
-    activeCount,
-    archivedCount: items.length - activeCount,
-    totalCount: items.length
+    active_count: activeCount,
+    archived_count: items.length - activeCount,
+    total_count: items.length
   };
 }
 

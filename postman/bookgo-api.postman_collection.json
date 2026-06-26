@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "bookgo-api-v1",
     "name": "Bookgo API v1",
-    "description": "HTTP-контракт Bookgo API v1: health, auth, profile, pages, avatar, services.\n\nИсточник правды для ручных запросов и Newman.\nНе копировать во frontend — только вызывать через HTTP.\n\n## Переменные коллекции\n\n| Переменная | Когда заполняется |\n|------------|-------------------|\n| `token` | POST /auth/login |\n| `pageId`, `pageSlug` | GET /pages, POST /pages, GET /pages/:id |\n| `serviceId` | GET /pages/:id, POST /pages/:id/services |\n| `categoryId` | POST /pages/:id/service-categories |\n\nЗадайте `adminPassword` в environment перед Login.\n\n## Smoke test (порядок папок)\n\n1. Health → Auth (Login) → Profile\n2. Pages → Page Services → Page Avatar (опционально)\n3. Pages (Publish) → Public → Auth (Logout)\n\nДокументация: `docs/README.md`",
+    "description": "HTTP-контракт Bookgo API v1: health, auth, profile, pages, avatar, services.\n\nИсточник правды для ручных запросов и Newman.\nНе копировать во frontend — только вызывать через HTTP.\n\n## Переменные коллекции\n\n| Переменная | Когда заполняется |\n|------------|-------------------|\n| `token` | POST /auth/login |\n| `pageId`, `pageSlug` | GET /pages, POST /pages, GET /pages/:id |\n| `serviceId` | GET /pages/:id, POST /pages/:id/services |\n| `category_id` | POST /pages/:id/service-categories |\n\nЗадайте `adminPassword` в environment перед Login.\n\n## Smoke test (порядок папок)\n\n1. Health → Auth (Login) → Profile\n2. Pages → Page Services → Page Avatar (опционально)\n3. Pages (Publish) → Public → Auth (Logout)\n\nДокументация: `docs/README.md`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -14,7 +14,7 @@
     { "key": "pageId", "value": "" },
     { "key": "pageSlug", "value": "" },
     { "key": "serviceId", "value": "" },
-    { "key": "categoryId", "value": "" }
+    { "key": "category_id", "value": "" }
   ],
   "auth": {
     "type": "bearer",
@@ -269,7 +269,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"settings\": {\n    \"profile\": {\n      \"name\": \"Max Volkov\",\n      \"role\": \"Strength Coach\",\n      \"bio\": \"Certified coach.\",\n      \"city\": \"Warsaw\",\n      \"lang\": \"en\",\n      \"avatarUrl\": \"\",\n      \"email\": \"coach@example.com\",\n      \"phone\": \"+48123456789\"\n    },\n    \"availability\": {\n      \"timezone\": \"Europe/Warsaw\",\n      \"bufferBeforeMinutes\": 0,\n      \"bufferAfterMinutes\": 15,\n      \"minNoticeHours\": 4,\n      \"maxDaysAhead\": 60,\n      \"days\": [\n        {\n          \"weekday\": 1,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 2,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-2\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 3,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-3\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 4,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-4\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 5,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-5\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        }\n      ]\n    }\n  }\n}"
+              "raw": "{\n  \"settings\": {\n    \"profile\": {\n      \"name\": \"Max Volkov\",\n      \"role\": \"Strength Coach\",\n      \"bio\": \"Certified coach.\",\n      \"city\": \"Warsaw\",\n      \"lang\": \"en\",\n      \"avatar_url\": \"\",\n      \"email\": \"coach@example.com\",\n      \"phone\": \"+48123456789\"\n    },\n    \"availability\": {\n      \"timezone\": \"Europe/Warsaw\",\n      \"buffer_before_minutes\": 0,\n      \"buffer_after_minutes\": 15,\n      \"min_notice_hours\": 4,\n      \"max_days_ahead\": 60,\n      \"days\": [\n        {\n          \"weekday\": 1,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 2,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-2\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 3,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-3\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 4,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-4\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 5,\n          \"working\": true,\n          \"bookable\": true,\n          \"ranges\": [{ \"id\": \"rng-5\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        }\n      ]\n    }\n  }\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}"
           },
@@ -385,8 +385,8 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('avatarUrl returned', () => pm.expect(json.data.avatarUrl).to.be.a('string').and.not.empty);",
-                  "pm.test('profile avatarUrl set', () => pm.expect(json.data.page.settings.profile.avatarUrl).to.eql(json.data.avatarUrl));"
+                  "pm.test('avatar_url returned', () => pm.expect(json.data.avatar_url).to.be.a('string').and.not.empty);",
+                  "pm.test('profile avatar_url set', () => pm.expect(json.data.page.settings.profile.avatar_url).to.eql(json.data.avatar_url));"
                 ]
               }
             }
@@ -408,7 +408,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('avatarUrl cleared', () => pm.expect(json.data.page.settings.profile.avatarUrl).to.eql(''));"
+                  "pm.test('avatar_url cleared', () => pm.expect(json.data.page.settings.profile.avatar_url).to.eql(''));"
                 ]
               }
             }
@@ -456,7 +456,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"useCategories\": true\n}"
+              "raw": "{\n  \"use_categories\": true\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}/services/settings"
           },
@@ -468,7 +468,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('useCategories', () => pm.expect(json.data.services.useCategories).to.eql(true));"
+                  "pm.test('use_categories', () => pm.expect(json.data.services.use_categories).to.eql(true));"
                 ]
               }
             }
@@ -499,7 +499,7 @@
                   "const json = pm.response.json();",
                   "pm.test('category returned', () => pm.expect(json.data.category.title).to.eql('Coaching'));",
                   "if (json.data?.category?.id) {",
-                  "  pm.collectionVariables.set('categoryId', json.data.category.id);",
+                  "  pm.collectionVariables.set('category_id', json.data.category.id);",
                   "}"
                 ]
               }
@@ -508,7 +508,7 @@
           "response": []
         },
         {
-          "name": "PATCH /pages/:id/service-categories/:categoryId",
+          "name": "PATCH /pages/:id/service-categories/:category_id",
           "request": {
             "method": "PATCH",
             "header": [
@@ -519,7 +519,7 @@
               "mode": "raw",
               "raw": "{\n  \"title\": \"1:1 Coaching\"\n}"
             },
-            "url": "{{baseUrl}}/pages/{{pageId}}/service-categories/{{categoryId}}"
+            "url": "{{baseUrl}}/pages/{{pageId}}/service-categories/{{category_id}}"
           },
           "event": [
             {
@@ -546,7 +546,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Personal Training\",\n  \"subtitle\": \"60 min\",\n  \"durationMinutes\": 60,\n  \"priceAmount\": 15000,\n  \"currency\": \"PLN\",\n  \"isActive\": true\n}"
+              "raw": "{\n  \"title\": \"Personal Training\",\n  \"subtitle\": \"60 min\",\n  \"duration_minutes\": 60,\n  \"price_amount\": 15000,\n  \"currency\": \"PLN\",\n  \"is_active\": true\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}/services"
           },
@@ -578,7 +578,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"PT Session\",\n  \"priceAmount\": 18000,\n  \"categoryId\": \"{{categoryId}}\"\n}"
+              "raw": "{\n  \"title\": \"PT Session\",\n  \"price_amount\": 18000,\n  \"category_id\": \"{{category_id}}\"\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}/services/{{serviceId}}"
           },
@@ -590,7 +590,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('price updated', () => pm.expect(json.data.service.priceAmount).to.eql(18000));"
+                  "pm.test('price updated', () => pm.expect(json.data.service.price_amount).to.eql(18000));"
                 ]
               }
             }
@@ -623,8 +623,8 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('photoUrl returned', () => pm.expect(json.data.photoUrl).to.be.a('string').and.not.empty);",
-                  "pm.test('service photoUrl set', () => pm.expect(json.data.service.photoUrl).to.eql(json.data.photoUrl));"
+                  "pm.test('photo_url returned', () => pm.expect(json.data.photo_url).to.be.a('string').and.not.empty);",
+                  "pm.test('service photo_url set', () => pm.expect(json.data.service.photo_url).to.eql(json.data.photo_url));"
                 ]
               }
             }
@@ -646,7 +646,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('photoUrl cleared', () => pm.expect(json.data.service.photoUrl).to.eql(''));"
+                  "pm.test('photo_url cleared', () => pm.expect(json.data.service.photo_url).to.eql(''));"
                 ]
               }
             }
@@ -688,7 +688,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('meta present', () => pm.expect(json.data.meta.totalCount).to.be.a('number'));"
+                  "pm.test('meta present', () => pm.expect(json.data.meta.total_count).to.be.a('number'));"
                 ]
               }
             }
@@ -710,8 +710,8 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('archived', () => pm.expect(json.data.service.isActive).to.eql(false));",
-                  "pm.test('meta archived', () => pm.expect(json.data.meta.archivedCount).to.be.above(0));"
+                  "pm.test('archived', () => pm.expect(json.data.service.is_active).to.eql(false));",
+                  "pm.test('meta archived', () => pm.expect(json.data.meta.archived_count).to.be.above(0));"
                 ]
               }
             }
@@ -733,7 +733,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('restored', () => pm.expect(json.data.service.isActive).to.eql(true));"
+                  "pm.test('restored', () => pm.expect(json.data.service.is_active).to.eql(true));"
                 ]
               }
             }
@@ -741,11 +741,11 @@
           "response": []
         },
         {
-          "name": "DELETE /pages/:id/service-categories/:categoryId",
+          "name": "DELETE /pages/:id/service-categories/:category_id",
           "request": {
             "method": "DELETE",
             "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
-            "url": "{{baseUrl}}/pages/{{pageId}}/service-categories/{{categoryId}}"
+            "url": "{{baseUrl}}/pages/{{pageId}}/service-categories/{{category_id}}"
           },
           "event": [
             {
@@ -755,7 +755,7 @@
                 "exec": [
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
-                  "pm.test('useCategories still on', () => pm.expect(json.data.services.useCategories).to.eql(true));"
+                  "pm.test('use_categories still on', () => pm.expect(json.data.services.use_categories).to.eql(true));"
                 ]
               }
             }

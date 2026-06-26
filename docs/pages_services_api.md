@@ -2,13 +2,13 @@
 
 Управление **услугами страницы** (builder → Your services): создание, редактирование, **архив** (active/inactive), **порядок**, фото, категории.
 
-**Удаление в UI не используется** — вместо delete услугу отправляют в архив (`isActive: false`).
+**Удаление в UI не используется** — вместо delete услугу отправляют в архив (`is_active: false`).
 
 | UI | API |
 |----|-----|
-| ACTIVE | `isActive: true` |
-| ARCHIVED | `isActive: false` |
-| Порядок в списке | `sortOrder` + `PUT .../services/order` |
+| ACTIVE | `is_active: true` |
+| ARCHIVED | `is_active: false` |
+| Порядок в списке | `sort_order` + `PUT .../services/order` |
 
 Данные в `page_service_items` / `page_service_categories` → `settings.services` при `GET /pages/:id`.
 
@@ -31,22 +31,22 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `id` | UUID | ID услуги |
 | `title` | string | Название (обязательно при создании) |
 | `subtitle` | string | Подзаголовок |
-| `durationMinutes` | integer | Длительность в минутах (> 0) |
-| `priceAmount` | integer | Цена в **минорных единицах** (15000 = 150.00) |
+| `duration_minutes` | integer | Длительность в минутах (> 0) |
+| `price_amount` | integer | Цена в **минорных единицах** (15000 = 150.00) |
 | `currency` | string | ISO 4217, 3 буквы (`PLN`, `EUR`, …) |
-| `priceHidden` | boolean | Скрыть цену на витрине (`On request`) |
-| `categoryId` | UUID \| null | Категория (если `useCategories: true`) |
-| `isActive` | boolean | `true` = ACTIVE, `false` = ARCHIVED |
-| `photoUrl` | string | URL фото в Supabase Storage |
-| `sortOrder` | integer | Порядок отображения (0 = первый) |
+| `price_hidden` | boolean | Скрыть цену на витрине (`On request`) |
+| `categoryId` | UUID \| null | Категория (если `use_categories: true`) |
+| `is_active` | boolean | `true` = ACTIVE, `false` = ARCHIVED |
+| `photo_url` | string | URL фото в Supabase Storage |
+| `sort_order` | integer | Порядок отображения (0 = первый) |
 
 ### `ServicesMeta`
 
 | Поле | Тип | Описание |
 |------|-----|----------|
-| `activeCount` | integer | Число активных услуг |
-| `archivedCount` | integer | Число в архиве |
-| `totalCount` | integer | Всего услуг |
+| `active_count` | integer | Число активных услуг |
+| `archived_count` | integer | Число в архиве |
+| `total_count` | integer | Всего услуг |
 
 ### `ServiceCategory`
 
@@ -59,7 +59,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 ```json
 {
-  "useCategories": false,
+  "use_categories": false,
   "categories": [],
   "services": [ /* ServiceItem[] */ ]
 }
@@ -74,15 +74,15 @@ Base URL: `https://bookgo-backend.up.railway.app`
   "service": { },
   "category": { },
   "services": { },
-  "meta": { "activeCount": 3, "archivedCount": 2, "totalCount": 5 }
+  "meta": { "active_count": 3, "archived_count": 2, "total_count": 5 }
 }
 ```
 
-Список в `services.services` отсортирован по `sortOrder` ASC. На фронте разбей на секции:
+Список в `services.services` отсортирован по `sort_order` ASC. На фронте разбей на секции:
 
 ```typescript
-const active = services.services.filter((s) => s.isActive)
-const archived = services.services.filter((s) => !s.isActive)
+const active = services.services.filter((s) => s.is_active)
+const archived = services.services.filter((s) => !s.is_active)
 ```
 
 Обновляй стейт builder из `data.services`.
@@ -101,28 +101,28 @@ const archived = services.services.filter((s) => !s.isActive)
   "message": "Услуги успешно получены",
   "data": {
     "services": {
-      "useCategories": false,
+      "use_categories": false,
       "categories": [],
       "services": [
         {
           "id": "550e8400-e29b-41d4-a716-446655440001",
           "title": "Web development",
           "subtitle": "",
-          "durationMinutes": 60,
-          "priceAmount": 10000,
+          "duration_minutes": 60,
+          "price_amount": 10000,
           "currency": "EUR",
-          "priceHidden": false,
+          "price_hidden": false,
           "categoryId": null,
-          "isActive": true,
-          "photoUrl": "https://...",
-          "sortOrder": 0
+          "is_active": true,
+          "photo_url": "https://...",
+          "sort_order": 0
         }
       ]
     },
     "meta": {
-      "activeCount": 3,
-      "archivedCount": 2,
-      "totalCount": 5
+      "active_count": 3,
+      "archived_count": 2,
+      "total_count": 5
     }
   }
 }
@@ -138,7 +138,7 @@ const archived = services.services.filter((s) => !s.isActive)
 
 ```json
 {
-  "useCategories": true
+  "use_categories": true
 }
 ```
 
@@ -185,7 +185,7 @@ await fetch(`${API}/pages/${pageId}/services/order`, {
 
 ### Ответ 200
 
-`data.services` с обновлёнными `sortOrder` (0, 1, 2, …) + `data.meta`.
+`data.services` с обновлёнными `sort_order` (0, 1, 2, …) + `data.meta`.
 
 ### Ошибки
 
@@ -204,16 +204,16 @@ await fetch(`${API}/pages/${pageId}/services/order`, {
 | Поле | Обязательно | По умолчанию |
 |------|-------------|--------------|
 | `title` | да | — |
-| `durationMinutes` | да | — |
+| `duration_minutes` | да | — |
 | `subtitle` | нет | `""` |
-| `priceAmount` | нет | `0` |
+| `price_amount` | нет | `0` |
 | `currency` | нет | `PLN` |
-| `priceHidden` | нет | `false` |
+| `price_hidden` | нет | `false` |
 | `categoryId` | нет | `null` |
-| `isActive` | нет | `true` |
-| `photoUrl` | нет | `""` (загружайте файл через `POST .../photo`) |
+| `is_active` | нет | `true` |
+| `photo_url` | нет | `""` (загружайте файл через `POST .../photo`) |
 | `id` | нет | сервер сгенерирует UUID (можно передать временный UUID с фронта) |
-| `sortOrder` | нет | в конец списка |
+| `sort_order` | нет | в конец списка |
 
 ### Пример
 
@@ -225,10 +225,10 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
   -d '{
     "title": "Personal Training",
     "subtitle": "60 min",
-    "durationMinutes": 60,
-    "priceAmount": 15000,
+    "duration_minutes": 60,
+    "price_amount": 15000,
     "currency": "PLN",
-    "isActive": true
+    "is_active": true
   }'
 ```
 
@@ -239,8 +239,8 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
   "success": true,
   "message": "Услуга создана",
   "data": {
-    "service": { "id": "...", "title": "Personal Training", "isActive": true },
-    "services": { "useCategories": false, "categories": [], "services": [ "..."] }
+    "service": { "id": "...", "title": "Personal Training", "is_active": true },
+    "services": { "use_categories": false, "categories": [], "services": [ "..."] }
   }
 }
 ```
@@ -256,7 +256,7 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
 ```json
 {
   "title": "PT Session",
-  "priceAmount": 18000
+  "price_amount": 18000
 }
 ```
 
@@ -291,7 +291,7 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
 
 ## POST /pages/:id/services/:serviceId/archive
 
-Отправить услугу в **архив** (`isActive: false`). Кнопка «Archive» в UI.
+Отправить услугу в **архив** (`is_active: false`). Кнопка «Archive» в UI.
 
 Алиас: `POST .../deactivate` (то же поведение).
 
@@ -304,9 +304,9 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
   "success": true,
   "message": "Услуга отправлена в архив",
   "data": {
-    "service": { "id": "...", "isActive": false },
+    "service": { "id": "...", "is_active": false },
     "services": { "...": "..." },
-    "meta": { "activeCount": 2, "archivedCount": 3, "totalCount": 5 }
+    "meta": { "active_count": 2, "archived_count": 3, "total_count": 5 }
   }
 }
 ```
@@ -317,7 +317,7 @@ curl -X POST "https://bookgo-backend.up.railway.app/pages/PAGE_ID/services" \
 
 ## POST /pages/:id/services/:serviceId/restore
 
-Вернуть услугу из архива в **ACTIVE** (`isActive: true`). Кнопка «Restore» в UI.
+Вернуть услугу из архива в **ACTIVE** (`is_active: true`). Кнопка «Restore» в UI.
 
 Алиас: `POST .../activate` (то же поведение).
 
@@ -353,8 +353,8 @@ const res = await fetch(`${API_BASE}/pages/${pageId}/services/${serviceId}/photo
 })
 
 const json = await res.json()
-// json.data.photoUrl
-// json.data.service.photoUrl — тот же URL
+// json.data.photo_url
+// json.data.service.photo_url — тот же URL
 setServices(json.data.services)
 ```
 
@@ -365,14 +365,14 @@ setServices(json.data.services)
   "success": true,
   "message": "Фото услуги загружено",
   "data": {
-    "photoUrl": "https://....supabase.co/storage/v1/object/public/files/pages/PAGE_ID/services/SERVICE_ID/....png",
+    "photo_url": "https://....supabase.co/storage/v1/object/public/files/pages/PAGE_ID/services/SERVICE_ID/....png",
     "service": {
       "id": "...",
       "title": "Session",
-      "photoUrl": "https://....png",
-      "isActive": true
+      "photo_url": "https://....png",
+      "is_active": true
     },
-    "services": { "useCategories": false, "categories": [], "services": [] }
+    "services": { "use_categories": false, "categories": [], "services": [] }
   }
 }
 ```
@@ -381,11 +381,11 @@ setServices(json.data.services)
 
 ## DELETE /pages/:id/services/:serviceId/photo
 
-Удалить фото услуги из Storage и очистить `photoUrl`.
+Удалить фото услуги из Storage и очистить `photo_url`.
 
 ### Ответ 200
 
-`data.service.photoUrl` = `""`, `data.services` — обновлённый блок.
+`data.service.photo_url` = `""`, `data.services` — обновлённый блок.
 
 **Не путать** с `DELETE .../services/:serviceId` — тот эндпоинт удаляет всю услугу (фото тоже удаляется из Storage).
 
@@ -403,7 +403,7 @@ setServices(json.data.services)
 
 ## Категории услуг
 
-Нужны, когда `useCategories: true`.
+Нужны, когда `use_categories: true`.
 
 ### POST /pages/:id/service-categories
 
@@ -411,7 +411,7 @@ setServices(json.data.services)
 {
   "title": "Coaching",
   "id": "optional-client-uuid",
-  "sortOrder": 0
+  "sort_order": 0
 }
 ```
 
@@ -422,7 +422,7 @@ setServices(json.data.services)
 ```json
 {
   "title": "1:1 Coaching",
-  "sortOrder": 1
+  "sort_order": 1
 }
 ```
 
@@ -434,7 +434,7 @@ setServices(json.data.services)
 
 ## Публикация
 
-Для `POST /pages/:id/publish` нужна **хотя бы одна** услуга с `isActive: true`. После деактивации всех услуг публикация вернёт `validationFailed`.
+Для `POST /pages/:id/publish` нужна **хотя бы одна** услуга с `is_active: true`. После деактивации всех услуг публикация вернёт `validationFailed`.
 
 ---
 
