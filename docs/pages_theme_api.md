@@ -1,6 +1,6 @@
 # Page theme API
 
-Управление блоком **Theme** в builder: preset, accent, mode, шрифт, скругление элементов и фон страницы.
+Управление блоком **Theme** в builder: accent, mode, шрифт, скругление элементов и фон страницы.
 
 Данные в `page_themes` → `settings.theme` при `GET /pages/:id` и `GET /public/pages/:slug`.
 
@@ -18,7 +18,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 | Секция в UI | Поле API | Эндпоинт |
 |-------------|----------|----------|
-| Style preset | `preset` | `PATCH /pages/:id/theme` |
 | Accent color | `accent_color` | `PATCH /pages/:id/theme` |
 | Light / dark | `mode` | `PATCH /pages/:id/theme` |
 | Font | `font_preset` | `PATCH /pages/:id/theme` |
@@ -33,7 +32,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 ```json
 {
-  "preset": "bold",
   "accent_color": "#c6f432",
   "mode": "auto",
   "font_preset": "sport",
@@ -49,10 +47,9 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 | Поле | Тип | Значения | Описание |
 |------|-----|----------|----------|
-| `preset` | string | `neon`, `pastel`, `bold` | Базовая палитра / стиль |
 | `accent_color` | string | `#RRGGBB` | Акцент (кнопки, highlights) |
 | `mode` | string | `light`, `dark`, `auto` | Цветовая схема |
-| `font_preset` | string | `neutral`, `sport`, `editorial` | Набор шрифтов |
+| `font_preset` | string | произвольная строка | Идентификатор шрифта на фронте |
 | `element_style` | string | `rounded`, `sharp`, `pill` | Скругление кнопок, карточек и др. UI-элементов |
 | `background` | object | см. ниже | Фон страницы |
 
@@ -60,7 +57,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 | `type` | Поля | Описание |
 |--------|------|----------|
-| `preset` | — | Фон из style preset на фронте (по умолчанию) |
+| `preset` | — | Дефолтный фон на фронте |
 | `solid` | `color` | Сплошной цвет `#RRGGBB` |
 | `gradient` | `gradient_from`, `gradient_to`, `gradient_angle` | Линейный градиент, угол `0–360` |
 | `image` | `image_url` | URL картинки в Supabase Storage (`pages/{pageId}/background/...`) |
@@ -105,7 +102,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
   "message": "Theme retrieved successfully",
   "data": {
     "theme": {
-      "preset": "bold",
       "accent_color": "#c6f432",
       "mode": "auto",
       "font_preset": "sport",
@@ -154,10 +150,9 @@ Partial update — передаются только изменяемые пол
 |-----|-------|
 | `BODY_INVALID` | Тело не JSON-объект |
 | `BODY_EMPTY` | Ни одного поля |
-| `PRESET_INVALID` | Неверный `preset` |
 | `ACCENT_COLOR_INVALID` | Не hex `#RRGGBB` |
 | `MODE_INVALID` | Неверный `mode` |
-| `FONT_PRESET_INVALID` | Неверный `font_preset` |
+| `FONT_PRESET_INVALID` | Пустой или слишком длинный `font_preset` |
 | `ELEMENT_STYLE_INVALID` | Неверный `element_style` |
 | `BACKGROUND_*` | Ошибки в объекте `background` |
 
@@ -167,7 +162,6 @@ Partial update — передаются только изменяемые пол
 
 ```json
 {
-  "preset": "bold",
   "accent_color": "#c6f432",
   "mode": "auto",
   "font_preset": "sport",

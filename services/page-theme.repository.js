@@ -3,12 +3,11 @@ import { DEFAULT_THEME } from './page-defaults.js';
 import { query, withTransaction } from '../utils/db.js';
 
 const THEME_COLUMNS = `
-  page_id, preset, accent_color, mode, font_preset, element_style, background
+  page_id, accent_color, mode, font_preset, element_style, background
 `;
 
 function themeValues(fields) {
   return [
-    fields.preset,
     fields.accent_color,
     fields.mode,
     fields.font_preset,
@@ -34,7 +33,6 @@ async function getThemeRow(client, pageId) {
 function mergeThemeFields(row, patch) {
   const current = mapThemeRow(row);
   return {
-    preset: patch.preset ?? current.preset,
     accent_color: patch.accent_color ?? current.accent_color,
     mode: patch.mode ?? current.mode,
     font_preset: patch.font_preset ?? current.font_preset,
@@ -46,9 +44,8 @@ function mergeThemeFields(row, patch) {
 async function saveTheme(client, pageId, fields) {
   await client.query(
     `INSERT INTO page_themes (${THEME_COLUMNS})
-     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+     VALUES ($1, $2, $3, $4, $5, $6::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
-       preset = EXCLUDED.preset,
        accent_color = EXCLUDED.accent_color,
        mode = EXCLUDED.mode,
        font_preset = EXCLUDED.font_preset,

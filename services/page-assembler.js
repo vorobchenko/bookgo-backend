@@ -94,7 +94,6 @@ export function mapThemeRow(row) {
   }
 
   return {
-    preset: row.preset ?? DEFAULT_THEME.preset,
     accent_color: row.accent_color ?? DEFAULT_THEME.accent_color,
     mode: row.mode ?? DEFAULT_THEME.mode,
     font_preset: row.font_preset ?? DEFAULT_THEME.font_preset,
@@ -513,7 +512,6 @@ export function disassemblePagePatch(settingsPatch) {
   if (settingsPatch.theme !== undefined) {
     const t = settingsPatch.theme;
     result.themeFields = {
-      preset: t.preset ?? DEFAULT_THEME.preset,
       accent_color: t.accent_color ?? DEFAULT_THEME.accent_color,
       mode: t.mode ?? DEFAULT_THEME.mode,
       font_preset: t.font_preset ?? DEFAULT_THEME.font_preset,

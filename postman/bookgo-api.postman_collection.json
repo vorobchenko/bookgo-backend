@@ -480,7 +480,7 @@
     },
     {
       "name": "Page Theme",
-      "description": "Theme: preset, fonts, element style, background. Контракт: docs/pages_theme_api.md",
+      "description": "Theme: accent, fonts, element style, background. Контракт: docs/pages_theme_api.md",
       "item": [
         {
           "name": "GET /pages/:id/theme",
@@ -498,7 +498,7 @@
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
                   "pm.test('theme block', () => {",
-                  "  pm.expect(json.data.theme.preset).to.be.oneOf(['neon', 'pastel', 'bold']);",
+                  "  pm.expect(json.data.theme.accent_color).to.match(/^#[0-9A-Fa-f]{6}$/);",
                   "  pm.expect(json.data.theme.font_preset).to.be.a('string');",
                   "  pm.expect(json.data.theme.element_style).to.be.oneOf(['rounded', 'sharp', 'pill']);",
                   "  pm.expect(json.data.theme.background.type).to.be.oneOf(['preset', 'solid', 'gradient', 'image']);",

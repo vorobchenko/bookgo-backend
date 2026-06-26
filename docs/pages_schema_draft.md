@@ -49,7 +49,7 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 
 | Колонка | Тип | Значения |
 |---------|-----|----------|
-| `preset` | varchar | `neon`, `pastel`, `bold` |
+| `preset` | varchar | удалено (миграция 016) |
 | `accent_color` | varchar | `#RRGGBB` |
 | `mode` | varchar | `light`, `dark`, `auto` |
 | `font_preset` | varchar | `neutral`, `sport`, `editorial` |

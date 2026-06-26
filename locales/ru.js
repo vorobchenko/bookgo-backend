@@ -188,7 +188,6 @@ export default {
         invalid: 'Некорректные данные темы',
         BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
         BODY_EMPTY: 'Нужно передать хотя бы одно поле',
-        PRESET_INVALID: 'Preset: neon, pastel или bold',
         ACCENT_COLOR_INVALID: 'Accent color — hex, например #c6f432',
         MODE_INVALID: 'Mode: light, dark или auto',
         FONT_PRESET_INVALID: 'font_preset — непустая строка до 64 символов',

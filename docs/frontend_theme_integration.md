@@ -9,9 +9,7 @@
 ## TypeScript типы
 
 ```typescript
-export type ThemePreset = 'neon' | 'pastel' | 'bold'
 export type ThemeMode = 'light' | 'dark' | 'auto'
-export type FontPreset = 'neutral' | 'sport' | 'editorial'
 export type ElementStyle = 'rounded' | 'sharp' | 'pill'
 
 export type ThemeBackgroundPreset = { type: 'preset' }
@@ -31,10 +29,9 @@ export type ThemeBackground =
   | ThemeBackgroundImage
 
 export type ThemeSettings = {
-  preset: ThemePreset
   accent_color: string
   mode: ThemeMode
-  font_preset: FontPreset
+  font_preset: string
   element_style: ElementStyle
   background: ThemeBackground
 }
@@ -69,10 +66,9 @@ export async function patchPageTheme(pageId: string, body: ThemePatch) {
 
 | UI control | API field | Notes |
 |------------|-----------|-------|
-| Neon / Pastel / Bold | `preset` | |
 | Color picker | `accent_color` | `#RRGGBB` |
 | Light / Dark / System | `mode` | `auto` = system |
-| Font: Neutral / Sport / Editorial | `font_preset` | |
+| Font | `font_preset` | произвольный идентификатор |
 | Corners: Rounded / Sharp / Pill | `element_style` | Кнопки, инпуты, карточки |
 | Background: From preset | `background: { type: 'preset' }` | |
 | Background: Solid | `background: { type: 'solid', color }` | |
@@ -101,7 +97,7 @@ function pageBackgroundCss(background: ThemeBackground): React.CSSProperties {
         backgroundPosition: 'center'
       }
     default:
-      return {} // preset — фон из theme.preset на фронте
+      return {} // type: preset — дефолтный фон на фронте
   }
 }
 ```

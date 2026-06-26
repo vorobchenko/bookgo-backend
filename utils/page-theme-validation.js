@@ -1,8 +1,7 @@
 import { jsonField } from './json-field.js';
 import {
   THEME_ELEMENT_STYLES,
-  THEME_MODES,
-  THEME_PRESETS
+  THEME_MODES
 } from '../services/page-defaults.js';
 import { parseThemeBackgroundBody } from './theme-background.js';
 
@@ -32,7 +31,6 @@ export function parseThemePatchBody(body) {
 
   const patch = {};
   const fields = [
-    ['preset', null, 'PRESET_INVALID', THEME_PRESETS],
     ['accent_color', 'accentColor', 'ACCENT_COLOR_INVALID', null],
     ['mode', null, 'MODE_INVALID', THEME_MODES],
     ['element_style', 'elementStyle', 'ELEMENT_STYLE_INVALID', THEME_ELEMENT_STYLES]

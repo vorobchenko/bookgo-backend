@@ -21,7 +21,7 @@
 | [pages_avatar_api.md](./pages_avatar_api.md) | Контракт | Фото профиля страницы (upload/delete) |
 | [pages_services_api.md](./pages_services_api.md) | Контракт | Услуги: CRUD, архив, порядок, фото, категории |
 | [pages_availability_api.md](./pages_availability_api.md) | Контракт | Schedule: weekly hours, booking rules |
-| [pages_theme_api.md](./pages_theme_api.md) | Контракт | Theme: preset, fonts, element style, background |
+| [pages_theme_api.md](./pages_theme_api.md) | Контракт | Theme: accent, fonts, element style, background |
 | [pages_slots_api.md](./pages_slots_api.md) | Контракт | Computed booking slots |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |

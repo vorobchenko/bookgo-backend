@@ -128,7 +128,6 @@ export const DEFAULT_SECTION_LAYOUT = [
   }
 ];
 
-export const THEME_PRESETS = ['neon', 'pastel', 'bold'];
 export const THEME_MODES = ['light', 'dark', 'auto'];
 export const THEME_FONT_PRESETS = ['neutral', 'sport', 'editorial'];
 export const THEME_ELEMENT_STYLES = ['rounded', 'sharp', 'pill'];
@@ -137,7 +136,6 @@ export const THEME_BACKGROUND_TYPES = ['preset', 'solid', 'gradient', 'image'];
 export const DEFAULT_THEME_BACKGROUND = { type: 'preset' };
 
 export const DEFAULT_THEME = {
-  preset: 'bold',
   accent_color: '#c6f432',
   mode: 'auto',
   font_preset: 'sport',

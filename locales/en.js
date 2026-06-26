@@ -188,7 +188,6 @@ export default {
         invalid: 'Invalid theme data',
         BODY_INVALID: 'Request body must be a JSON object',
         BODY_EMPTY: 'At least one field is required',
-        PRESET_INVALID: 'Preset must be neon, pastel, or bold',
         ACCENT_COLOR_INVALID: 'Accent color must be a hex value like #c6f432',
         MODE_INVALID: 'Mode must be light, dark, or auto',
         FONT_PRESET_INVALID: 'font_preset must be a non-empty string up to 64 characters',

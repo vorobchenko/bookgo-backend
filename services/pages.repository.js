@@ -133,11 +133,10 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
 
     await client.query(
       `INSERT INTO page_themes (
-         page_id, preset, accent_color, mode, font_preset, element_style, background
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
+         page_id, accent_color, mode, font_preset, element_style, background
+       ) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
       [
         page.id,
-        DEFAULT_THEME.preset,
         DEFAULT_THEME.accent_color,
         DEFAULT_THEME.mode,
         DEFAULT_THEME.font_preset,
@@ -281,10 +280,9 @@ async function upsertTheme(client, pageId, fields) {
   if (!fields) return;
   await client.query(
     `INSERT INTO page_themes (
-       page_id, preset, accent_color, mode, font_preset, element_style, background
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+       page_id, accent_color, mode, font_preset, element_style, background
+     ) VALUES ($1, $2, $3, $4, $5, $6::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
-       preset = EXCLUDED.preset,
        accent_color = EXCLUDED.accent_color,
        mode = EXCLUDED.mode,
        font_preset = EXCLUDED.font_preset,
@@ -293,7 +291,6 @@ async function upsertTheme(client, pageId, fields) {
        updated_at = now()`,
     [
       pageId,
-      fields.preset,
       fields.accent_color,
       fields.mode,
       fields.font_preset ?? DEFAULT_THEME.font_preset,

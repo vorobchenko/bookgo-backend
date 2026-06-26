@@ -51,7 +51,6 @@ Full page with assembled `settings` (`PageSettings`).
     "blocks": [],
     "faq": [],
     "theme": {
-      "preset": "bold",
       "accent_color": "#c6f432",
       "mode": "auto",
       "font_preset": "sport",
