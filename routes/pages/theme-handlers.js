@@ -59,7 +59,8 @@ export async function patchPageThemeHandler(req, res) {
     const page = await requireOwnedPage(req, res);
     if (!page) return;
 
-    const parsed = parseThemePatchBody(req.body);
+    const current = await getPageTheme(page.id);
+    const parsed = parseThemePatchBody(req.body, current?.theme);
     if (!parsed.ok) {
       return res.status(400).json({
         success: false,

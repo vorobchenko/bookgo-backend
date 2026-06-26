@@ -98,6 +98,17 @@ export default {
       urlInvalid: 'Photo URL must point to Bookgo storage',
       storageNotConfigured: 'Photo storage is not configured on the server'
     },
+    background: {
+      uploadSuccess: 'Background image uploaded successfully',
+      deleteSuccess: 'Background removed successfully',
+      fileRequired: 'Background image file is required',
+      fileTooLarge: 'Background image must be 10 MB or smaller',
+      fileTypeInvalid: 'Background must be a JPEG, PNG, or WebP image',
+      uploadInvalid: 'Invalid background upload',
+      uploadError: 'Error uploading background image',
+      deleteError: 'Error removing background image',
+      storageNotConfigured: 'Photo storage is not configured on the server'
+    },
     services: {
       listSuccess: 'Services retrieved successfully',
       listError: 'Error fetching services',
@@ -189,18 +200,32 @@ export default {
         BODY_INVALID: 'Request body must be a JSON object',
         BODY_EMPTY: 'At least one field is required',
         ACCENT_COLOR_INVALID: 'Accent color must be a hex value like #c6f432',
+        SECONDARY_COLOR_INVALID: 'Secondary color must be a hex value like #3dd6b0',
+        SURFACE_COLOR_INVALID: 'Surface color must be a hex value like #1a1a1a',
+        TEXT_COLOR_INVALID: 'Text color must be a hex value like #ffffff',
+        TEXT_MUTED_COLOR_INVALID: 'Muted text color must be a hex value like #8a8a8a',
         MODE_INVALID: 'Mode must be light, dark, or auto',
         FONT_PRESET_INVALID: 'font_preset must be a non-empty string up to 64 characters',
         ELEMENT_STYLE_INVALID: 'Element style must be rounded, sharp, or pill',
+        CTA_INVALID: 'cta must be a JSON object',
+        CTA_VARIANT_INVALID: 'cta.variant must be solid, outline, or ghost',
+        CTA_SIZE_INVALID: 'cta.size must be compact, default, or large',
+        CTA_LABEL_CASE_INVALID: 'cta.label_case must be uppercase, capitalize, or none',
+        ATMOSPHERE_INVALID: 'atmosphere must be a JSON object',
+        ATMOSPHERE_GRAIN_INTENSITY_INVALID: 'atmosphere.grain_intensity must be between 0 and 1',
+        ATMOSPHERE_CARD_STYLE_INVALID: 'atmosphere.card_style must be solid or glass',
         BACKGROUND_REQUIRED: 'Background object is required',
         BACKGROUND_INVALID: 'Background must be a JSON object',
-        BACKGROUND_TYPE_INVALID: 'Background type must be preset, solid, gradient, or image',
+        BACKGROUND_TYPE_INVALID: 'Background type must be solid, gradient, or image',
         BACKGROUND_COLOR_INVALID: 'Background color must be a hex value like #0a0a0a',
+        BACKGROUND_GRADIENT_INVALID: 'Gradient requires valid gradient_from, gradient_to, and gradient_angle',
         BACKGROUND_GRADIENT_FROM_INVALID: 'Gradient start color must be a hex value',
         BACKGROUND_GRADIENT_TO_INVALID: 'Gradient end color must be a hex value',
         BACKGROUND_GRADIENT_ANGLE_INVALID: 'Gradient angle must be an integer from 0 to 360',
         BACKGROUND_IMAGE_URL_REQUIRED: 'Background image URL is required',
-        BACKGROUND_IMAGE_URL_INVALID: 'Background image URL must point to Bookgo storage'
+        BACKGROUND_IMAGE_URL_INVALID: 'Background image URL must point to Bookgo storage',
+        BACKGROUND_OVERLAY_OPACITY_INVALID: 'overlay_opacity must be between 0 and 1',
+        BACKGROUND_POSITION_INVALID: 'position must be center, top, or bottom'
       }
     },
     slots: {

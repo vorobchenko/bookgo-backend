@@ -1,5 +1,5 @@
 import { authenticateToken } from '../../middleware/auth.js';
-import { handleAvatarUpload, handleServicePhotoUpload } from '../../middleware/upload-avatar.js';
+import { handleAvatarUpload, handleBackgroundUpload, handleServicePhotoUpload } from '../../middleware/upload-avatar.js';
 import {
   createPage,
   deletePageHandler,
@@ -12,7 +12,9 @@ import {
   unpublishPageHandler
 } from '../pages/handlers.js';
 import { deletePageAvatarHandler } from '../pages/delete-avatar.js';
+import { deletePageBackgroundHandler } from '../pages/delete-background.js';
 import { uploadPageAvatarHandler } from '../pages/upload-avatar.js';
+import { uploadPageBackgroundHandler } from '../pages/upload-background.js';
 import {
   archivePageServiceHandler,
   createPageServiceCategoryHandler,
@@ -52,6 +54,13 @@ export default function registerPageRoutes(router) {
 
   router.get('/pages/:id/theme', authenticateToken, getPageThemeHandler);
   router.patch('/pages/:id/theme', authenticateToken, patchPageThemeHandler);
+  router.post(
+    '/pages/:id/background',
+    authenticateToken,
+    handleBackgroundUpload,
+    uploadPageBackgroundHandler
+  );
+  router.delete('/pages/:id/background', authenticateToken, deletePageBackgroundHandler);
 
   router.get('/pages/:id/availability', authenticateToken, getPageAvailabilityHandler);
   router.patch(

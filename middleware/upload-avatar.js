@@ -62,3 +62,49 @@ export const handleServicePhotoUpload = createUploadHandler('photo', {
   fileTypeInvalid: 'pages.services.photo.fileTypeInvalid',
   uploadInvalid: 'pages.services.photo.uploadInvalid'
 });
+
+const backgroundUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1
+  },
+  fileFilter(req, file, cb) {
+    if (['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) {
+      cb(null, true);
+      return;
+    }
+
+    const error = new Error('INVALID_FILE_TYPE');
+    error.code = 'INVALID_FILE_TYPE';
+    cb(error);
+  }
+});
+
+export function handleBackgroundUpload(req, res, next) {
+  backgroundUpload.single('background')(req, res, (error) => {
+    if (!error) {
+      next();
+      return;
+    }
+
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: req.t('pages.background.fileTooLarge')
+      });
+    }
+
+    if (error.code === 'INVALID_FILE_TYPE') {
+      return res.status(400).json({
+        success: false,
+        message: req.t('pages.background.fileTypeInvalid')
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: req.t('pages.background.uploadInvalid')
+    });
+  });
+}

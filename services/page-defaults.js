@@ -129,17 +129,44 @@ export const DEFAULT_SECTION_LAYOUT = [
 ];
 
 export const THEME_MODES = ['light', 'dark', 'auto'];
-export const THEME_FONT_PRESETS = ['neutral', 'sport', 'editorial'];
 export const THEME_ELEMENT_STYLES = ['rounded', 'sharp', 'pill'];
-export const THEME_BACKGROUND_TYPES = ['preset', 'solid', 'gradient', 'image'];
+export const THEME_BACKGROUND_TYPES = ['solid', 'gradient', 'image'];
+export const THEME_CTA_VARIANTS = ['solid', 'outline', 'ghost'];
+export const THEME_CTA_SIZES = ['compact', 'default', 'large'];
+export const THEME_CTA_LABEL_CASES = ['uppercase', 'capitalize', 'none'];
+export const THEME_BACKGROUND_POSITIONS = ['center', 'top', 'bottom'];
+export const THEME_ATMOSPHERE_CARD_STYLES = ['solid', 'glass'];
 
-export const DEFAULT_THEME_BACKGROUND = { type: 'preset' };
+export const DEFAULT_THEME_CTA = {
+  variant: 'solid',
+  size: 'default',
+  label_case: 'uppercase'
+};
+
+export const DEFAULT_THEME_ATMOSPHERE = {
+  grain: false,
+  grain_intensity: 0.12,
+  card_style: 'solid'
+};
+
+export const DEFAULT_THEME_BACKGROUND = {
+  type: 'solid',
+  color: '#0a0a0a',
+  overlay_color: '#000000',
+  overlay_opacity: 0
+};
 
 export const DEFAULT_THEME = {
   accent_color: '#c6f432',
+  secondary_color: '#3dd6b0',
+  surface_color: '#1a1a1a',
+  text_color: '#ffffff',
+  text_muted_color: '#8a8a8a',
   mode: 'auto',
   font_preset: 'sport',
   element_style: 'rounded',
+  cta: { ...DEFAULT_THEME_CTA },
+  atmosphere: { ...DEFAULT_THEME_ATMOSPHERE },
   background: { ...DEFAULT_THEME_BACKGROUND }
 };
 

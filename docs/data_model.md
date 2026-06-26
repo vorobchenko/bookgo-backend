@@ -28,7 +28,7 @@ erDiagram
 
 ### `page_themes` (1:1)
 
-`accent_color`, `mode`, `font_preset`, `element_style`, `background` (JSONB).
+`accent_color`, `secondary_color`, `surface_color`, `text_color`, `text_muted_color`, `mode`, `font_preset`, `element_style`, `cta` (JSONB), `atmosphere` (JSONB), `background` (JSONB).
 
 ### `page_availability` (1:1)
 
@@ -83,5 +83,6 @@ erDiagram
 | 014 | `page_themes` — `font_preset`, `element_style`, `background` |
 | 015 | `page_themes` — free `font_preset` |
 | 016 | `page_themes` — DROP `preset` |
+| 017 | `page_themes` — brand colors, `cta`, `atmosphere` |
 
 Workspaces, `page_views` — отложены.

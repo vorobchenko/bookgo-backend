@@ -22,6 +22,7 @@
 | [pages_services_api.md](./pages_services_api.md) | Контракт | Услуги: CRUD, архив, порядок, фото, категории |
 | [pages_availability_api.md](./pages_availability_api.md) | Контракт | Schedule: weekly hours, booking rules |
 | [pages_theme_api.md](./pages_theme_api.md) | Контракт | Theme: accent, fonts, element style, background |
+| [pages_theme_extension.md](./pages_theme_extension.md) | Контракт (ТЗ) | Theme v2: brand colors, CTA, atmosphere, background upload |
 | [pages_slots_api.md](./pages_slots_api.md) | Контракт | Computed booking slots |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
@@ -54,6 +55,7 @@ https://bookgo-backend.up.railway.app
 - `GET /pages/:id/services`, `POST/PATCH /pages/:id/services/:serviceId`
 - `GET /pages/:id/availability`, `PATCH /pages/:id/availability/weekly-hours|booking-rules`
 - `GET /pages/:id/theme`, `PATCH /pages/:id/theme`
+- `POST /pages/:id/background`, `DELETE /pages/:id/background`
 - `GET /pages/:id/slots`, `GET /public/pages/:slug/slots`
 - `PUT /pages/:id/services/order`, `POST .../archive|restore`
 - `POST/PATCH/DELETE /pages/:id/service-categories/:categoryId`

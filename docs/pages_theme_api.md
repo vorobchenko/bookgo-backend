@@ -1,171 +1,128 @@
-# Page theme API
+# Page theme API (v2)
 
-Управление блоком **Theme** в builder: accent, mode, шрифт, скругление элементов и фон страницы.
+Управление блоком **Theme**: бренд-цвета, CTA, фон, атмосфера.
 
 Данные в `page_themes` → `settings.theme` при `GET /pages/:id` и `GET /public/pages/:slug`.
-
-**Альтернатива:** полная замена через `PATCH /pages/:id` с `settings.theme`.
 
 Base URL: `https://bookgo-backend.up.railway.app`
 
 Общие правила: [API_CONVENTIONS.md](./API_CONVENTIONS.md)
 
-Все эндпоинты требуют `Authorization: Bearer <token>` и владение страницей.
+Полное ТЗ: [pages_theme_extension.md](./pages_theme_extension.md)
 
 ---
 
-## UI → API
+## Эндпоинты
 
-| Секция в UI | Поле API | Эндпоинт |
-|-------------|----------|----------|
-| Accent color | `accent_color` | `PATCH /pages/:id/theme` |
-| Light / dark | `mode` | `PATCH /pages/:id/theme` |
-| Font | `font_preset` | `PATCH /pages/:id/theme` |
-| Element corners (rounded / sharp / pill) | `element_style` | `PATCH /pages/:id/theme` |
-| Background | `background` | `PATCH /pages/:id/theme` |
+| Метод | Путь | Auth |
+|-------|------|------|
+| GET | `/pages/:id/theme` | Bearer, владелец |
+| PATCH | `/pages/:id/theme` | Bearer, владелец |
+| POST | `/pages/:id/background` | Bearer, multipart `background` |
+| DELETE | `/pages/:id/background` | Bearer, владелец |
+
+`settings.theme` в `GET /pages/:id` и `GET /public/pages/:slug` — та же схема.
 
 ---
 
-## Типы
-
-### `ThemeSettings`
+## `ThemeSettings`
 
 ```json
 {
   "accent_color": "#c6f432",
+  "secondary_color": "#3dd6b0",
+  "surface_color": "#1a1a1a",
+  "text_color": "#ffffff",
+  "text_muted_color": "#8a8a8a",
   "mode": "auto",
   "font_preset": "sport",
   "element_style": "rounded",
+  "cta": {
+    "variant": "solid",
+    "size": "default",
+    "label_case": "uppercase"
+  },
+  "atmosphere": {
+    "grain": false,
+    "grain_intensity": 0.12,
+    "card_style": "solid"
+  },
   "background": {
-    "type": "gradient",
-    "gradient_from": "#0a0a0a",
-    "gradient_to": "#1a1a2e",
-    "gradient_angle": 180
+    "type": "solid",
+    "color": "#0a0a0a",
+    "overlay_color": "#000000",
+    "overlay_opacity": 0
   }
 }
 ```
 
-| Поле | Тип | Значения | Описание |
-|------|-----|----------|----------|
-| `accent_color` | string | `#RRGGBB` | Акцент (кнопки, highlights) |
-| `mode` | string | `light`, `dark`, `auto` | Цветовая схема |
-| `font_preset` | string | произвольная строка | Идентификатор шрифта на фронте |
-| `element_style` | string | `rounded`, `sharp`, `pill` | Скругление кнопок, карточек и др. UI-элементов |
-| `background` | object | см. ниже | Фон страницы |
+### Бренд-цвета
 
-### `ThemeBackground`
+| Поле | Формат |
+|------|--------|
+| `accent_color`, `secondary_color`, `surface_color` | `#RRGGBB` |
+| `text_color`, `text_muted_color` | `#RRGGBB` |
 
-| `type` | Поля | Описание |
-|--------|------|----------|
-| `preset` | — | Дефолтный фон на фронте |
-| `solid` | `color` | Сплошной цвет `#RRGGBB` |
-| `gradient` | `gradient_from`, `gradient_to`, `gradient_angle` | Линейный градиент, угол `0–360` |
-| `image` | `image_url` | URL картинки в Supabase Storage (`pages/{pageId}/background/...`) |
+### `cta`
 
-**Загрузка фона:** `POST /pages/:id/background` — позже (сейчас только `image_url` после upload).
+| Поле | Значения |
+|------|----------|
+| `variant` | `solid`, `outline`, `ghost` |
+| `size` | `compact`, `default`, `large` |
+| `label_case` | `uppercase`, `capitalize`, `none` |
 
-Примеры:
+PATCH `cta` — shallow merge.
 
-```json
-{ "type": "preset" }
-```
+### `atmosphere`
 
-```json
-{ "type": "solid", "color": "#0a0a0a" }
-```
+| Поле | Тип | Значения |
+|------|-----|----------|
+| `grain` | boolean | |
+| `grain_intensity` | number | `0` … `1` |
+| `card_style` | string | `solid`, `glass` |
 
-```json
-{
-  "type": "gradient",
-  "gradient_from": "#0a0a0a",
-  "gradient_to": "#1a1a2e",
-  "gradient_angle": 180
-}
-```
+### `background`
 
-```json
-{
-  "type": "image",
-  "image_url": "https://xxx.supabase.co/storage/v1/object/public/files/pages/PAGE_ID/background/123.jpg"
-}
-```
+| `type` | Поля |
+|--------|------|
+| `solid` | `color`, `overlay_color`, `overlay_opacity` |
+| `gradient` | `gradient_from`, `gradient_to`, `gradient_angle`, overlay |
+| `image` | `image_url`, `position` (`center`/`top`/`bottom`), overlay |
+
+`background.type: preset` — **deprecated** (400 на write, migrate в `solid` на read).
+
+PATCH `background` — merge с текущим значением, затем валидация.
 
 ---
 
-## GET /pages/:id/theme
+## POST /pages/:id/background
 
-### Ответ 200
+`multipart/form-data`, поле `background` — JPEG/PNG/WebP, max **10 MB**.
+
+Ответ:
 
 ```json
 {
   "success": true,
-  "message": "Theme retrieved successfully",
   "data": {
-    "theme": {
-      "accent_color": "#c6f432",
-      "mode": "auto",
-      "font_preset": "sport",
-      "element_style": "rounded",
-      "background": { "type": "preset" }
-    }
+    "image_url": "https://.../pages/{id}/background/....jpg",
+    "theme": { }
   }
 }
 ```
 
----
+## DELETE /pages/:id/background
 
-## PATCH /pages/:id/theme
-
-Partial update — передаются только изменяемые поля.
-
-### Пример: font + element style
-
-```json
-{
-  "font_preset": "editorial",
-  "element_style": "pill"
-}
-```
-
-### Пример: gradient background
-
-```json
-{
-  "background": {
-    "type": "gradient",
-    "gradient_from": "#111111",
-    "gradient_to": "#222244",
-    "gradient_angle": 135
-  }
-}
-```
-
-### Ответ 200
-
-Тот же формат, что у GET — актуальный `theme` после сохранения.
-
-### Ошибки 400
-
-| Код | Когда |
-|-----|-------|
-| `BODY_INVALID` | Тело не JSON-объект |
-| `BODY_EMPTY` | Ни одного поля |
-| `ACCENT_COLOR_INVALID` | Не hex `#RRGGBB` |
-| `MODE_INVALID` | Неверный `mode` |
-| `FONT_PRESET_INVALID` | Пустой или слишком длинный `font_preset` |
-| `ELEMENT_STYLE_INVALID` | Неверный `element_style` |
-| `BACKGROUND_*` | Ошибки в объекте `background` |
+Удаляет файл из Storage, сбрасывает `background` на solid `#0a0a0a`.
 
 ---
 
 ## Defaults (новая страница)
 
-```json
-{
-  "accent_color": "#c6f432",
-  "mode": "auto",
-  "font_preset": "sport",
-  "element_style": "rounded",
-  "background": { "type": "preset" }
-}
-```
+См. [pages_theme_extension.md](./pages_theme_extension.md#defaults-новая-страница-mode-auto-тёмная-база).
+
+---
+
+## Интеграция фронта
+
+[frontend_theme_integration.md](./frontend_theme_integration.md)

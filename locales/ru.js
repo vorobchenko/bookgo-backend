@@ -98,6 +98,17 @@ export default {
       urlInvalid: 'URL фото должен указывать на хранилище Bookgo',
       storageNotConfigured: 'Хранилище фото не настроено на сервере'
     },
+    background: {
+      uploadSuccess: 'Фон успешно загружен',
+      deleteSuccess: 'Фон удалён',
+      fileRequired: 'Нужно выбрать файл фона',
+      fileTooLarge: 'Фон должен быть не больше 10 МБ',
+      fileTypeInvalid: 'Фон должен быть в формате JPEG, PNG или WebP',
+      uploadInvalid: 'Некорректная загрузка фона',
+      uploadError: 'Ошибка загрузки фона',
+      deleteError: 'Ошибка удаления фона',
+      storageNotConfigured: 'Хранилище не настроено на сервере'
+    },
     services: {
       listSuccess: 'Услуги успешно получены',
       listError: 'Ошибка получения услуг',
@@ -189,18 +200,32 @@ export default {
         BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
         BODY_EMPTY: 'Нужно передать хотя бы одно поле',
         ACCENT_COLOR_INVALID: 'Accent color — hex, например #c6f432',
+        SECONDARY_COLOR_INVALID: 'secondary_color — hex',
+        SURFACE_COLOR_INVALID: 'surface_color — hex',
+        TEXT_COLOR_INVALID: 'text_color — hex',
+        TEXT_MUTED_COLOR_INVALID: 'text_muted_color — hex',
         MODE_INVALID: 'Mode: light, dark или auto',
         FONT_PRESET_INVALID: 'font_preset — непустая строка до 64 символов',
         ELEMENT_STYLE_INVALID: 'element_style: rounded, sharp или pill',
+        CTA_INVALID: 'cta должен быть JSON-объектом',
+        CTA_VARIANT_INVALID: 'cta.variant: solid, outline или ghost',
+        CTA_SIZE_INVALID: 'cta.size: compact, default или large',
+        CTA_LABEL_CASE_INVALID: 'cta.label_case: uppercase, capitalize или none',
+        ATMOSPHERE_INVALID: 'atmosphere должен быть JSON-объектом',
+        ATMOSPHERE_GRAIN_INTENSITY_INVALID: 'grain_intensity от 0 до 1',
+        ATMOSPHERE_CARD_STYLE_INVALID: 'card_style: solid или glass',
         BACKGROUND_REQUIRED: 'Нужен объект background',
         BACKGROUND_INVALID: 'background должен быть JSON-объектом',
-        BACKGROUND_TYPE_INVALID: 'type: preset, solid, gradient или image',
+        BACKGROUND_TYPE_INVALID: 'type: solid, gradient или image',
         BACKGROUND_COLOR_INVALID: 'color — hex, например #0a0a0a',
+        BACKGROUND_GRADIENT_INVALID: 'Нужны gradient_from, gradient_to и gradient_angle',
         BACKGROUND_GRADIENT_FROM_INVALID: 'gradient_from — hex',
         BACKGROUND_GRADIENT_TO_INVALID: 'gradient_to — hex',
         BACKGROUND_GRADIENT_ANGLE_INVALID: 'gradient_angle — целое от 0 до 360',
         BACKGROUND_IMAGE_URL_REQUIRED: 'Нужен image_url',
-        BACKGROUND_IMAGE_URL_INVALID: 'image_url должен указывать на хранилище Bookgo'
+        BACKGROUND_IMAGE_URL_INVALID: 'image_url должен указывать на хранилище Bookgo',
+        BACKGROUND_OVERLAY_OPACITY_INVALID: 'overlay_opacity от 0 до 1',
+        BACKGROUND_POSITION_INVALID: 'position: center, top или bottom'
       }
     },
     slots: {

@@ -500,8 +500,10 @@
                   "pm.test('theme block', () => {",
                   "  pm.expect(json.data.theme.accent_color).to.match(/^#[0-9A-Fa-f]{6}$/);",
                   "  pm.expect(json.data.theme.font_preset).to.be.a('string');",
-                  "  pm.expect(json.data.theme.element_style).to.be.oneOf(['rounded', 'sharp', 'pill']);",
-                  "  pm.expect(json.data.theme.background.type).to.be.oneOf(['preset', 'solid', 'gradient', 'image']);",
+                  "  pm.expect(json.data.theme.secondary_color).to.match(/^#[0-9A-Fa-f]{6}$/);",
+                  "  pm.expect(json.data.theme.cta.variant).to.be.oneOf(['solid', 'outline', 'ghost']);",
+                  "  pm.expect(json.data.theme.atmosphere.card_style).to.be.oneOf(['solid', 'glass']);",
+                  "  pm.expect(json.data.theme.background.type).to.be.oneOf(['solid', 'gradient', 'image']);",
                   "});"
                 ]
               }
@@ -519,7 +521,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"font_preset\": \"editorial\",\n  \"element_style\": \"pill\",\n  \"background\": {\n    \"type\": \"gradient\",\n    \"gradient_from\": \"#0a0a0a\",\n    \"gradient_to\": \"#1a1a2e\",\n    \"gradient_angle\": 180\n  }\n}"
+              "raw": "{\n  \"secondary_color\": \"#f472b6\",\n  \"cta\": { \"variant\": \"outline\", \"size\": \"large\" },\n  \"atmosphere\": { \"card_style\": \"glass\" },\n  \"background\": {\n    \"type\": \"gradient\",\n    \"gradient_from\": \"#0a0a0a\",\n    \"gradient_to\": \"#1a1a2e\",\n    \"gradient_angle\": 180,\n    \"overlay_opacity\": 0.2\n  }\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}/theme"
           },
@@ -532,8 +534,8 @@
                   "pm.test('status 200', () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
                   "pm.test('theme updated', () => {",
-                  "  pm.expect(json.data.theme.font_preset).to.eql('editorial');",
-                  "  pm.expect(json.data.theme.element_style).to.eql('pill');",
+                  "  pm.expect(json.data.theme.cta.variant).to.eql('outline');",
+                  "  pm.expect(json.data.theme.atmosphere.card_style).to.eql('glass');",
                   "  pm.expect(json.data.theme.background.type).to.eql('gradient');",
                   "});"
                 ]

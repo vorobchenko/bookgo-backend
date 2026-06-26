@@ -133,14 +133,21 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
 
     await client.query(
       `INSERT INTO page_themes (
-         page_id, accent_color, mode, font_preset, element_style, background
-       ) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
+         page_id, accent_color, secondary_color, surface_color, text_color, text_muted_color,
+         mode, font_preset, element_style, cta, atmosphere, background
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11::jsonb, $12::jsonb)`,
       [
         page.id,
         DEFAULT_THEME.accent_color,
+        DEFAULT_THEME.secondary_color,
+        DEFAULT_THEME.surface_color,
+        DEFAULT_THEME.text_color,
+        DEFAULT_THEME.text_muted_color,
         DEFAULT_THEME.mode,
         DEFAULT_THEME.font_preset,
         DEFAULT_THEME.element_style,
+        JSON.stringify(DEFAULT_THEME.cta),
+        JSON.stringify(DEFAULT_THEME.atmosphere),
         JSON.stringify(DEFAULT_THEME.background)
       ]
     );
@@ -280,21 +287,34 @@ async function upsertTheme(client, pageId, fields) {
   if (!fields) return;
   await client.query(
     `INSERT INTO page_themes (
-       page_id, accent_color, mode, font_preset, element_style, background
-     ) VALUES ($1, $2, $3, $4, $5, $6::jsonb)
+       page_id, accent_color, secondary_color, surface_color, text_color, text_muted_color,
+       mode, font_preset, element_style, cta, atmosphere, background
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11::jsonb, $12::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
        accent_color = EXCLUDED.accent_color,
+       secondary_color = EXCLUDED.secondary_color,
+       surface_color = EXCLUDED.surface_color,
+       text_color = EXCLUDED.text_color,
+       text_muted_color = EXCLUDED.text_muted_color,
        mode = EXCLUDED.mode,
        font_preset = EXCLUDED.font_preset,
        element_style = EXCLUDED.element_style,
+       cta = EXCLUDED.cta,
+       atmosphere = EXCLUDED.atmosphere,
        background = EXCLUDED.background,
        updated_at = now()`,
     [
       pageId,
       fields.accent_color,
+      fields.secondary_color ?? DEFAULT_THEME.secondary_color,
+      fields.surface_color ?? DEFAULT_THEME.surface_color,
+      fields.text_color ?? DEFAULT_THEME.text_color,
+      fields.text_muted_color ?? DEFAULT_THEME.text_muted_color,
       fields.mode,
       fields.font_preset ?? DEFAULT_THEME.font_preset,
       fields.element_style ?? DEFAULT_THEME.element_style,
+      JSON.stringify(fields.cta ?? DEFAULT_THEME.cta),
+      JSON.stringify(fields.atmosphere ?? DEFAULT_THEME.atmosphere),
       JSON.stringify(fields.background ?? DEFAULT_THEME.background)
     ]
   );

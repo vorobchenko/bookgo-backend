@@ -49,12 +49,17 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 
 | Колонка | Тип | Значения |
 |---------|-----|----------|
-| `preset` | varchar | удалено (миграция 016) |
 | `accent_color` | varchar | `#RRGGBB` |
+| `secondary_color` | varchar | `#RRGGBB` |
+| `surface_color` | varchar | `#RRGGBB` |
+| `text_color` | varchar | `#RRGGBB` |
+| `text_muted_color` | varchar | `#RRGGBB` |
 | `mode` | varchar | `light`, `dark`, `auto` |
-| `font_preset` | varchar | `neutral`, `sport`, `editorial` |
+| `font_preset` | varchar | произвольная строка |
 | `element_style` | varchar | `rounded`, `sharp`, `pill` |
-| `background` | jsonb | `{ type: preset \| solid \| gradient \| image, ... }` |
+| `cta` | jsonb | `{ variant, size, label_case }` |
+| `atmosphere` | jsonb | `{ grain, grain_intensity, card_style }` |
+| `background` | jsonb | `{ type: solid \| gradient \| image, ... }` |
 
 ---
 

@@ -52,10 +52,21 @@ Full page with assembled `settings` (`PageSettings`).
     "faq": [],
     "theme": {
       "accent_color": "#c6f432",
+      "secondary_color": "#3dd6b0",
+      "surface_color": "#1a1a1a",
+      "text_color": "#ffffff",
+      "text_muted_color": "#8a8a8a",
       "mode": "auto",
       "font_preset": "sport",
       "element_style": "rounded",
-      "background": { "type": "preset" }
+      "cta": { "variant": "solid", "size": "default", "label_case": "uppercase" },
+      "atmosphere": { "grain": false, "grain_intensity": 0.12, "card_style": "solid" },
+      "background": {
+        "type": "solid",
+        "color": "#0a0a0a",
+        "overlay_color": "#000000",
+        "overlay_opacity": 0
+      }
     }
   }
 }

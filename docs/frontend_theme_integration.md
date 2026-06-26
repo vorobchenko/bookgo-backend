@@ -1,8 +1,6 @@
-# Frontend: Theme API
+# Frontend: Theme API (v2)
 
-Интеграция блока **Theme** (`bookgo-app` → `bookgo-backend`).
-
-Контракт: [pages_theme_api.md](./pages_theme_api.md)
+Контракт: [pages_theme_api.md](./pages_theme_api.md) · ТЗ: [pages_theme_extension.md](./pages_theme_extension.md)
 
 ---
 
@@ -11,33 +9,65 @@
 ```typescript
 export type ThemeMode = 'light' | 'dark' | 'auto'
 export type ElementStyle = 'rounded' | 'sharp' | 'pill'
+export type CtaVariant = 'solid' | 'outline' | 'ghost'
+export type CtaSize = 'compact' | 'default' | 'large'
+export type CtaLabelCase = 'uppercase' | 'capitalize' | 'none'
+export type BackgroundPosition = 'center' | 'top' | 'bottom'
+export type CardStyle = 'solid' | 'glass'
 
-export type ThemeBackgroundPreset = { type: 'preset' }
-export type ThemeBackgroundSolid = { type: 'solid'; color: string }
+export type ThemeCta = {
+  variant: CtaVariant
+  size: CtaSize
+  label_case: CtaLabelCase
+}
+
+export type ThemeAtmosphere = {
+  grain: boolean
+  grain_intensity: number
+  card_style: CardStyle
+}
+
+export type ThemeBackgroundSolid = {
+  type: 'solid'
+  color: string
+  overlay_color: string
+  overlay_opacity: number
+}
+
 export type ThemeBackgroundGradient = {
   type: 'gradient'
   gradient_from: string
   gradient_to: string
   gradient_angle: number
+  overlay_color: string
+  overlay_opacity: number
 }
-export type ThemeBackgroundImage = { type: 'image'; image_url: string }
+
+export type ThemeBackgroundImage = {
+  type: 'image'
+  image_url: string
+  position: BackgroundPosition
+  overlay_color: string
+  overlay_opacity: number
+}
 
 export type ThemeBackground =
-  | ThemeBackgroundPreset
   | ThemeBackgroundSolid
   | ThemeBackgroundGradient
   | ThemeBackgroundImage
 
 export type ThemeSettings = {
   accent_color: string
+  secondary_color: string
+  surface_color: string
+  text_color: string
+  text_muted_color: string
   mode: ThemeMode
   font_preset: string
   element_style: ElementStyle
+  cta: ThemeCta
+  atmosphere: ThemeAtmosphere
   background: ThemeBackground
-}
-
-export type ThemeResponse = {
-  theme: ThemeSettings
 }
 ```
 
@@ -47,15 +77,42 @@ export type ThemeResponse = {
 
 ```typescript
 export async function getPageTheme(pageId: string) {
-  return apiRequest<ThemeResponse>(`/pages/${pageId}/theme`)
+  return apiRequest<{ theme: ThemeSettings }>(`/pages/${pageId}/theme`)
 }
 
-export type ThemePatch = Partial<ThemeSettings>
+export type ThemePatch = Partial<{
+  accent_color: string
+  secondary_color: string
+  surface_color: string
+  text_color: string
+  text_muted_color: string
+  mode: ThemeMode
+  font_preset: string
+  element_style: ElementStyle
+  cta: Partial<ThemeCta>
+  atmosphere: Partial<ThemeAtmosphere>
+  background: Partial<ThemeBackground>
+}>
 
 export async function patchPageTheme(pageId: string, body: ThemePatch) {
-  return apiRequest<ThemeResponse>(`/pages/${pageId}/theme`, {
+  return apiRequest<{ theme: ThemeSettings }>(`/pages/${pageId}/theme`, {
     method: 'PATCH',
     body: JSON.stringify(body)
+  })
+}
+
+export async function uploadPageBackground(pageId: string, file: File) {
+  const formData = new FormData()
+  formData.append('background', file)
+  return apiRequest<{ image_url: string; theme: ThemeSettings }>(
+    `/pages/${pageId}/background`,
+    { method: 'POST', body: formData }
+  )
+}
+
+export async function deletePageBackground(pageId: string) {
+  return apiRequest<{ theme: ThemeSettings }>(`/pages/${pageId}/background`, {
+    method: 'DELETE'
   })
 }
 ```
@@ -64,66 +121,37 @@ export async function patchPageTheme(pageId: string, body: ThemePatch) {
 
 ## UI mapping
 
-| UI control | API field | Notes |
-|------------|-----------|-------|
-| Color picker | `accent_color` | `#RRGGBB` |
-| Light / Dark / System | `mode` | `auto` = system |
-| Font | `font_preset` | произвольный идентификатор |
-| Corners: Rounded / Sharp / Pill | `element_style` | Кнопки, инпуты, карточки |
-| Background: From preset | `background: { type: 'preset' }` | |
-| Background: Solid | `background: { type: 'solid', color }` | |
-| Background: Gradient | `background: { type: 'gradient', ... }` | |
-| Background: Image | `background: { type: 'image', image_url }` | Upload — позже |
+| Секция билдера | API |
+|----------------|-----|
+| Accent | `accent_color` |
+| Secondary | `secondary_color` |
+| Surface / cards | `surface_color` |
+| Text | `text_color`, `text_muted_color` |
+| Color mode | `mode` |
+| Font | `font_preset` |
+| Corners | `element_style` |
+| CTA style | `cta` |
+| Background | `background` |
+| Grain / glass | `atmosphere` |
+| Background file | `POST /pages/:id/background` |
+
+Style presets на фронте → развёрнутый `PATCH /theme` со всеми полями.
 
 ---
 
-## Рендер на публичной странице
+## CSS variables (page-renderer)
 
-`GET /public/pages/:slug` возвращает тот же `settings.theme`.
-
-```typescript
-function pageBackgroundCss(background: ThemeBackground): React.CSSProperties {
-  switch (background.type) {
-    case 'solid':
-      return { backgroundColor: background.color }
-    case 'gradient':
-      return {
-        background: `linear-gradient(${background.gradient_angle}deg, ${background.gradient_from}, ${background.gradient_to})`
-      }
-    case 'image':
-      return {
-        backgroundImage: `url(${background.image_url})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }
-    default:
-      return {} // type: preset — дефолтный фон на фронте
-  }
-}
-```
-
-`element_style` — CSS variables или классы:
-
-```typescript
-const elementRadius: Record<ElementStyle, string> = {
-  rounded: '12px',
-  sharp: '0',
-  pill: '9999px'
-}
-```
+| API | CSS variable |
+|-----|----------------|
+| `accent_color` | `--lime` |
+| `secondary_color` | `--accent-secondary` |
+| `surface_color` | `--surface` |
+| `text_color` | `--text` |
+| `text_muted_color` | `--muted` |
+| `atmosphere.card_style` | `data-card-style="glass"` |
 
 ---
 
-## Синхронизация с builder
+## Fallback на старом бэкенде
 
-1. При открытии Theme tab: `GET /pages/:id/theme` (или взять из `GET /pages/:id` → `settings.theme`).
-2. При изменении одного поля: `PATCH /pages/:id/theme` с partial body.
-3. Не отправлять camelCase — только **snake_case** (`font_preset`, `element_style`, `gradient_from`).
-
----
-
-## Загрузка фона (позже)
-
-Планируется `POST /pages/:id/background` (multipart), аналогично [pages_avatar_api.md](./pages_avatar_api.md).
-
-До этого `type: 'image'` можно задать только с URL из Bookgo Storage.
+Если поля отсутствуют в GET — подставлять дефолты из [pages_theme_extension.md](./pages_theme_extension.md).

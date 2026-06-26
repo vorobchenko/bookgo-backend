@@ -15,6 +15,8 @@ import { isAllowedPageAvatarUrl } from '../utils/avatar.js';
 import { blockTypeFromApi, blockTypeToApi } from '../utils/block-types.js';
 import { jsonField } from '../utils/json-field.js';
 import { normalizeThemeBackground } from '../utils/theme-background.js';
+import { normalizeThemeAtmosphere } from '../utils/theme-atmosphere.js';
+import { normalizeThemeCta } from '../utils/theme-cta.js';
 
 function weekdayMeta(weekday) {
   return WEEKDAY_META.find((d) => d.weekday === weekday) ?? {
@@ -89,15 +91,23 @@ export function mapThemeRow(row) {
   if (!row) {
     return {
       ...DEFAULT_THEME,
+      cta: { ...DEFAULT_THEME.cta },
+      atmosphere: { ...DEFAULT_THEME.atmosphere },
       background: { ...DEFAULT_THEME.background }
     };
   }
 
   return {
     accent_color: row.accent_color ?? DEFAULT_THEME.accent_color,
+    secondary_color: row.secondary_color ?? DEFAULT_THEME.secondary_color,
+    surface_color: row.surface_color ?? DEFAULT_THEME.surface_color,
+    text_color: row.text_color ?? DEFAULT_THEME.text_color,
+    text_muted_color: row.text_muted_color ?? DEFAULT_THEME.text_muted_color,
     mode: row.mode ?? DEFAULT_THEME.mode,
     font_preset: row.font_preset ?? DEFAULT_THEME.font_preset,
     element_style: row.element_style ?? DEFAULT_THEME.element_style,
+    cta: normalizeThemeCta(row.cta),
+    atmosphere: normalizeThemeAtmosphere(row.atmosphere),
     background: normalizeThemeBackground(row.background)
   };
 }
@@ -513,9 +523,15 @@ export function disassemblePagePatch(settingsPatch) {
     const t = settingsPatch.theme;
     result.themeFields = {
       accent_color: t.accent_color ?? DEFAULT_THEME.accent_color,
+      secondary_color: t.secondary_color ?? DEFAULT_THEME.secondary_color,
+      surface_color: t.surface_color ?? DEFAULT_THEME.surface_color,
+      text_color: t.text_color ?? DEFAULT_THEME.text_color,
+      text_muted_color: t.text_muted_color ?? DEFAULT_THEME.text_muted_color,
       mode: t.mode ?? DEFAULT_THEME.mode,
       font_preset: t.font_preset ?? DEFAULT_THEME.font_preset,
       element_style: t.element_style ?? DEFAULT_THEME.element_style,
+      cta: normalizeThemeCta(t.cta),
+      atmosphere: normalizeThemeAtmosphere(t.atmosphere),
       background: normalizeThemeBackground(t.background)
     };
   }
