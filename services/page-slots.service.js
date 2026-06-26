@@ -13,8 +13,6 @@ import {
   zonedLocalToUtcMs
 } from '../utils/zoned-time.js';
 
-const DEFAULT_HORIZON_DAYS = 14;
-
 function minDateIso(a, b) {
   return a <= b ? a : b;
 }
@@ -26,10 +24,9 @@ function maxDateIso(a, b) {
 function resolveDateRange({ from, to, timeZone, maxDaysAhead }) {
   const today = todayInTimeZone(timeZone);
   const horizonEnd = addDaysToDateIso(today, maxDaysAhead);
-  const defaultEnd = addDaysToDateIso(today, Math.min(DEFAULT_HORIZON_DAYS, maxDaysAhead));
 
   const resolvedFrom = from && isValidDateOnly(from) ? maxDateIso(from, today) : today;
-  let resolvedTo = to && isValidDateOnly(to) ? minDateIso(to, horizonEnd) : defaultEnd;
+  let resolvedTo = to && isValidDateOnly(to) ? minDateIso(to, horizonEnd) : horizonEnd;
 
   if (resolvedTo < resolvedFrom) {
     resolvedTo = resolvedFrom;

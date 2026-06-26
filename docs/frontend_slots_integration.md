@@ -124,7 +124,7 @@ function mapDay(day: DayAvailability) {
 | Шаг = `durationMinutes` | Шаг = `slot_interval_minutes`, длительность услуги влияет на последний слот дня |
 | Фиксированные часы 08–19 | Часы из `availability.days[].ranges` |
 | Случайный `available` | `min_notice_hours` + в будущем bookings |
-| 14 дней hardcoded | 14 по умолчанию, cap `max_days_ahead` |
+| 14 дней hardcoded | По умолчанию весь горизонт `max_days_ahead` (можно сузить через `to`) |
 
 ---
 
