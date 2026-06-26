@@ -418,6 +418,83 @@
       ]
     },
     {
+      "name": "Page Availability",
+      "description": "Schedule: weekly hours, booking days, rules. Контракт: docs/pages_availability_api.md",
+      "item": [
+        {
+          "name": "GET /pages/:id/availability",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept-Language", "value": "{{acceptLanguage}}" }],
+            "url": "{{baseUrl}}/pages/{{pageId}}/availability"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('availability block', () => pm.expect(json.data.availability.days).to.have.lengthOf(7));",
+                  "pm.test('meta', () => pm.expect(json.data.meta.has_bookable_hours).to.be.a('boolean'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id/availability/weekly-hours",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"timezone\": \"Europe/Warsaw\",\n  \"days\": [\n    {\n      \"weekday\": 1,\n      \"working\": true,\n      \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n    },\n    {\n      \"weekday\": 2,\n      \"working\": true,\n      \"ranges\": [{ \"id\": \"rng-2\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n    },\n    {\n      \"weekday\": 3,\n      \"working\": true,\n      \"ranges\": [{ \"id\": \"rng-3\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n    },\n    {\n      \"weekday\": 4,\n      \"working\": true,\n      \"ranges\": [{ \"id\": \"rng-4\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n    },\n    {\n      \"weekday\": 5,\n      \"working\": true,\n      \"ranges\": [{ \"id\": \"rng-5\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/availability/weekly-hours"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id/availability/booking-days",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"days\": [\n    { \"weekday\": 0, \"bookable\": false },\n    { \"weekday\": 1, \"bookable\": true },\n    { \"weekday\": 2, \"bookable\": true },\n    { \"weekday\": 3, \"bookable\": true },\n    { \"weekday\": 4, \"bookable\": true },\n    { \"weekday\": 5, \"bookable\": true },\n    { \"weekday\": 6, \"bookable\": false }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/availability/booking-days"
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /pages/:id/availability/booking-rules",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept-Language", "value": "{{acceptLanguage}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buffer_before_minutes\": 0,\n  \"buffer_after_minutes\": 15,\n  \"min_notice_hours\": 4,\n  \"max_days_ahead\": 60\n}"
+            },
+            "url": "{{baseUrl}}/pages/{{pageId}}/availability/booking-rules"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Page Services",
       "description": "CRUD услуг и категорий. Контракт: docs/pages_services_api.md",
       "item": [

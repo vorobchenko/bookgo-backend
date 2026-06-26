@@ -151,6 +151,32 @@ export default {
         ORDER_DUPLICATE: 'Service order must not contain duplicate IDs',
         ORDER_INCOMPLETE: 'Service order must include every service on the page'
       }
+    },
+    availability: {
+      getSuccess: 'Availability retrieved successfully',
+      getError: 'Error fetching availability',
+      updateSuccess: 'Availability updated successfully',
+      updateError: 'Error updating availability',
+      weeklyHoursSuccess: 'Weekly hours updated successfully',
+      bookingDaysSuccess: 'Booking days updated successfully',
+      bookingRulesSuccess: 'Booking rules updated successfully',
+      validation: {
+        invalid: 'Invalid availability data',
+        BODY_INVALID: 'Request body must be a JSON object',
+        BODY_EMPTY: 'At least one field is required',
+        TIMEZONE_INVALID: 'Timezone must be a non-empty string up to 64 characters',
+        BUFFER_BEFORE_INVALID: 'Buffer before must be a non-negative integer',
+        BUFFER_AFTER_INVALID: 'Buffer after must be a non-negative integer',
+        MIN_NOTICE_INVALID: 'Minimum notice must be a non-negative integer',
+        MAX_DAYS_AHEAD_INVALID: 'Book ahead days must be a non-negative integer',
+        DAYS_REQUIRED: 'Days array is required and must not be empty',
+        DAY_INVALID: 'Each day must be a JSON object',
+        WEEKDAY_INVALID: 'Weekday must be an integer from 0 (Sunday) to 6 (Saturday)',
+        RANGES_INVALID: 'Ranges must be an array',
+        RANGE_INVALID: 'Each range must be an object with start and end times',
+        RANGE_TIME_INVALID: 'Range times must use HH:MM format (24-hour)',
+        RANGE_ORDER_INVALID: 'Range start time must be before end time'
+      }
     }
   },
   errors: {

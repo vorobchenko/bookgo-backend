@@ -30,6 +30,13 @@ import {
   deleteServicePhotoHandler,
   uploadServicePhotoHandler
 } from '../pages/service-photo.js';
+import {
+  getPageAvailabilityHandler,
+  patchPageAvailabilityHandler,
+  patchPageBookingDaysHandler,
+  patchPageBookingRulesHandler,
+  patchPageWeeklyHoursHandler
+} from '../pages/availability-handlers.js';
 
 export default function registerPageRoutes(router) {
   router.get('/pages', authenticateToken, listPages);
@@ -38,6 +45,24 @@ export default function registerPageRoutes(router) {
   router.patch('/pages/:id', authenticateToken, patchPage);
   router.post('/pages/:id/avatar', authenticateToken, handleAvatarUpload, uploadPageAvatarHandler);
   router.delete('/pages/:id/avatar', authenticateToken, deletePageAvatarHandler);
+
+  router.get('/pages/:id/availability', authenticateToken, getPageAvailabilityHandler);
+  router.patch(
+    '/pages/:id/availability/weekly-hours',
+    authenticateToken,
+    patchPageWeeklyHoursHandler
+  );
+  router.patch(
+    '/pages/:id/availability/booking-days',
+    authenticateToken,
+    patchPageBookingDaysHandler
+  );
+  router.patch(
+    '/pages/:id/availability/booking-rules',
+    authenticateToken,
+    patchPageBookingRulesHandler
+  );
+  router.patch('/pages/:id/availability', authenticateToken, patchPageAvailabilityHandler);
 
   router.get('/pages/:id/services', authenticateToken, listPageServicesHandler);
   router.patch('/pages/:id/services/settings', authenticateToken, patchPageServicesSettingsHandler);

@@ -151,6 +151,32 @@ export default {
         ORDER_DUPLICATE: 'В order не должно быть повторяющихся ID',
         ORDER_INCOMPLETE: 'В order должны быть все услуги страницы'
       }
+    },
+    availability: {
+      getSuccess: 'Расписание успешно получено',
+      getError: 'Ошибка получения расписания',
+      updateSuccess: 'Расписание обновлено',
+      updateError: 'Ошибка обновления расписания',
+      weeklyHoursSuccess: 'Рабочие часы обновлены',
+      bookingDaysSuccess: 'Дни для бронирования обновлены',
+      bookingRulesSuccess: 'Правила бронирования обновлены',
+      validation: {
+        invalid: 'Некорректные данные расписания',
+        BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
+        BODY_EMPTY: 'Нужно передать хотя бы одно поле',
+        TIMEZONE_INVALID: 'Timezone — непустая строка до 64 символов',
+        BUFFER_BEFORE_INVALID: 'Буфер до — неотрицательное целое',
+        BUFFER_AFTER_INVALID: 'Буфер после — неотрицательное целое',
+        MIN_NOTICE_INVALID: 'Мин. уведомление — неотрицательное целое',
+        MAX_DAYS_AHEAD_INVALID: 'Горизонт бронирования — неотрицательное целое',
+        DAYS_REQUIRED: 'Нужен непустой массив days',
+        DAY_INVALID: 'Каждый день — JSON-объект',
+        WEEKDAY_INVALID: 'weekday — целое от 0 (воскресенье) до 6 (суббота)',
+        RANGES_INVALID: 'ranges должен быть массивом',
+        RANGE_INVALID: 'Каждый диапазон — объект со start и end',
+        RANGE_TIME_INVALID: 'Время в формате HH:MM (24 часа)',
+        RANGE_ORDER_INVALID: 'start должен быть раньше end'
+      }
     }
   },
   errors: {

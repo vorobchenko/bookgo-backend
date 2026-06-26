@@ -94,7 +94,7 @@ function mapThemeRow(row) {
   };
 }
 
-function mapAvailabilityRow(row) {
+export function mapAvailabilityRow(row) {
   if (!row) {
     return {
       timezone: 'UTC',
