@@ -1,6 +1,6 @@
 # Page availability API (Schedule)
 
-Управление блоком **Schedule** в builder: рабочие часы, дни для бронирования, правила бронирования.
+Управление блоком **Schedule** в builder: рабочие часы и правила бронирования.
 
 Данные в `page_availability` → `settings.availability` при `GET /pages/:id`.
 
@@ -19,7 +19,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | Секция в UI | Эндпоинт |
 |-------------|----------|
 | Weekly hours + timezone | `PATCH /pages/:id/availability/weekly-hours` |
-| Booking days | `PATCH /pages/:id/availability/booking-days` |
 | Booking rules | `PATCH /pages/:id/availability/booking-rules` |
 | Всё сразу | `PATCH /pages/:id/availability` |
 
@@ -34,11 +33,10 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `weekday` | integer | `0` = Sunday … `6` = Saturday |
 | `label` | string | Только в ответе (не хранится в БД) |
 | `letter` | string | Только в ответе |
-| `working` | boolean | Есть рабочие часы в этот день |
-| `bookable` | boolean | Клиент может бронировать в этот день |
+| `working` | boolean | Рабочий день с интервалами времени |
 | `ranges` | array | Интервалы `{ id, start, end }`, время `HH:MM` |
 
-`working` и `bookable` независимы: можно работать в субботу, но не принимать брони.
+Если `working: false` или `ranges` пустой — бронирование в этот день недоступно.
 
 ### `AvailabilitySettings`
 
@@ -58,8 +56,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | Поле | Тип | Описание |
 |------|-----|----------|
 | `working_days_count` | integer | Дней с `working: true` |
-| `bookable_days_count` | integer | Дней с `bookable: true` |
-| `has_bookable_hours` | boolean | Есть ли день с `bookable` и хотя бы одним `range` |
+| `has_working_hours` | boolean | Есть ли день с `working: true` и хотя бы одним `range` |
 
 ---
 
@@ -84,7 +81,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
           "label": "Sunday",
           "letter": "S",
           "working": false,
-          "bookable": false,
           "ranges": []
         },
         {
@@ -92,15 +88,13 @@ Base URL: `https://bookgo-backend.up.railway.app`
           "label": "Monday",
           "letter": "M",
           "working": true,
-          "bookable": true,
           "ranges": [{ "id": "rng-1", "start": "09:00", "end": "17:00" }]
         }
       ]
     },
     "meta": {
       "working_days_count": 5,
-      "bookable_days_count": 5,
-      "has_bookable_hours": true
+      "has_working_hours": true
     }
   }
 }
@@ -143,29 +137,8 @@ Base URL: `https://bookgo-backend.up.railway.app`
 ```
 
 - `days` обязателен, не пустой
-- Обновляет только переданные `weekday`; `bookable` у существующих дней сохраняется
+- Обновляет только переданные `weekday`
 - `timezone` опционален
-
----
-
-## PATCH /pages/:id/availability/booking-days
-
-Секция **Booking days** (переключатели Sun–Sat).
-
-### Тело
-
-```json
-{
-  "days": [
-    { "weekday": 0, "bookable": false },
-    { "weekday": 1, "bookable": true },
-    { "weekday": 6, "bookable": false }
-  ]
-}
-```
-
-- Обновляет только `bookable` для указанных дней
-- `working` и `ranges` не меняются
 
 ---
 

@@ -31,7 +31,6 @@ function mergeDaysByWeekday(storedDays, patchDays, keys) {
       {
         weekday: day.weekday,
         working: Boolean(day.working),
-        bookable: Boolean(day.bookable),
         ranges: Array.isArray(day.ranges) ? day.ranges : []
       }
     ])
@@ -41,7 +40,6 @@ function mergeDaysByWeekday(storedDays, patchDays, keys) {
     const existing = byWeekday.get(day.weekday) ?? {
       weekday: day.weekday,
       working: false,
-      bookable: false,
       ranges: []
     };
 
@@ -60,15 +58,13 @@ function mergeDaysByWeekday(storedDays, patchDays, keys) {
 function availabilityMeta(availability) {
   const days = availability?.days ?? [];
   const workingDaysCount = days.filter((day) => day.working).length;
-  const bookableDaysCount = days.filter((day) => day.bookable).length;
-  const hasBookableHours = days.some(
-    (day) => day.bookable && Array.isArray(day.ranges) && day.ranges.length > 0
+  const hasWorkingHours = days.some(
+    (day) => day.working && Array.isArray(day.ranges) && day.ranges.length > 0
   );
 
   return {
     working_days_count: workingDaysCount,
-    bookable_days_count: bookableDaysCount,
-    has_bookable_hours: hasBookableHours
+    has_working_hours: hasWorkingHours
   };
 }
 
@@ -185,10 +181,6 @@ export async function updatePageAvailability(pageId, patch) {
 
 export async function updatePageWeeklyHours(pageId, patch) {
   return updateAvailability(pageId, patch, ['working', 'ranges']);
-}
-
-export async function updatePageBookingDays(pageId, patch) {
-  return updateAvailability(pageId, patch, ['bookable']);
 }
 
 export async function updatePageBookingRules(pageId, patch) {

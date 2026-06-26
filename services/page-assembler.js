@@ -27,7 +27,6 @@ export function stripDayLabels(days) {
   return days.map((day) => ({
     weekday: day.weekday,
     working: Boolean(day.working),
-    bookable: Boolean(day.bookable),
     ranges: Array.isArray(day.ranges)
       ? day.ranges.map((range) => ({
           id: range.id,
@@ -50,7 +49,6 @@ export function enrichAvailabilityDays(storedDays) {
       label,
       letter,
       working: Boolean(stored?.working),
-      bookable: Boolean(stored?.bookable),
       ranges: Array.isArray(stored?.ranges) ? stored.ranges : []
     };
   });
@@ -278,7 +276,7 @@ function syncBlockStatuses(settings) {
         return settings.services.services.some((s) => s.is_active) ? 'filled' : 'empty';
       case 'availability': {
         const hasBookable = settings.availability.days.some(
-          (d) => d.bookable && d.ranges.length > 0
+          (d) => d.working && d.ranges.length > 0
         );
         return hasBookable ? 'filled' : 'empty';
       }
@@ -419,10 +417,10 @@ export function validatePublish(settings) {
   }
 
   const hasBookable = settings.availability.days.some(
-    (d) => d.bookable && d.ranges.length > 0
+    (d) => d.working && d.ranges.length > 0
   );
   if (!hasBookable) {
-    errors.push('Set bookable hours in Schedule');
+    errors.push('Set working hours in Schedule');
   }
 
   const aboutOn = isAboutBlockEnabled(settings.blocks);

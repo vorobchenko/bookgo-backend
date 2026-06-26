@@ -198,7 +198,6 @@ export function emptyAvailabilityDays() {
     label,
     letter,
     working: false,
-    bookable: false,
     ranges: []
   }));
 }
@@ -208,7 +207,6 @@ export function defaultAvailabilityDaysStored() {
   return [1, 2, 3, 4, 5].map((weekday) => ({
     weekday,
     working: true,
-    bookable: true,
     ranges: [{ id: `rng-${weekday}`, start: '09:00', end: '17:00' }]
   }));
 }

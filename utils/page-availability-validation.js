@@ -50,10 +50,6 @@ function parseDayPatch(day, allowedKeys) {
     parsed.working = Boolean(day.working);
   }
 
-  if (allowedKeys.includes('bookable') && day.bookable !== undefined) {
-    parsed.bookable = Boolean(day.bookable);
-  }
-
   if (allowedKeys.includes('ranges') && day.ranges !== undefined) {
     if (!Array.isArray(day.ranges)) {
       return { ok: false, code: 'RANGES_INVALID' };
@@ -175,7 +171,7 @@ export function parseAvailabilityPatchBody(body) {
         break;
       }
       case 'days': {
-        const parsed = parseDaysArray(body, ['working', 'bookable', 'ranges']);
+        const parsed = parseDaysArray(body, ['working', 'ranges']);
         if (!parsed.ok) return parsed;
         patch.days = parsed.value;
         break;
@@ -214,19 +210,6 @@ export function parseWeeklyHoursPatchBody(body) {
   patch.days = parsedDays.value;
 
   return { ok: true, value: patch };
-}
-
-export function parseBookingDaysPatchBody(body) {
-  if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    return { ok: false, code: 'BODY_INVALID' };
-  }
-
-  const parsedDays = parseDaysArray(body, ['bookable']);
-  if (!parsedDays.ok) {
-    return parsedDays;
-  }
-
-  return { ok: true, value: { days: parsedDays.value } };
 }
 
 export function parseBookingRulesPatchBody(body) {

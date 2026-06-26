@@ -158,7 +158,6 @@ export default {
       updateSuccess: 'Availability updated successfully',
       updateError: 'Error updating availability',
       weeklyHoursSuccess: 'Weekly hours updated successfully',
-      bookingDaysSuccess: 'Booking days updated successfully',
       bookingRulesSuccess: 'Booking rules updated successfully',
       validation: {
         invalid: 'Invalid availability data',

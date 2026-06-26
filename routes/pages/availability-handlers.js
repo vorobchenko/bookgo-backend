@@ -2,13 +2,11 @@ import { getPageOwnedByUser } from '../../services/pages.repository.js';
 import {
   getPageAvailability,
   updatePageAvailability,
-  updatePageBookingDays,
   updatePageBookingRules,
   updatePageWeeklyHours
 } from '../../services/page-availability.repository.js';
 import {
   parseAvailabilityPatchBody,
-  parseBookingDaysPatchBody,
   parseBookingRulesPatchBody,
   parseWeeklyHoursPatchBody
 } from '../../utils/page-availability-validation.js';
@@ -120,37 +118,6 @@ export async function patchPageWeeklyHoursHandler(req, res) {
     return res.status(200).json({
       success: true,
       message: req.t('pages.availability.weeklyHoursSuccess'),
-      data: result
-    });
-  } catch (error) {
-    return handleError(req, res, error, 'pages.availability.updateError');
-  }
-}
-
-export async function patchPageBookingDaysHandler(req, res) {
-  try {
-    const page = await requireOwnedPage(req, res);
-    if (!page) return;
-
-    const parsed = parseBookingDaysPatchBody(req.body);
-    if (!parsed.ok) {
-      return res.status(400).json({
-        success: false,
-        message: validationMessage(req, parsed.code)
-      });
-    }
-
-    const result = await updatePageBookingDays(page.id, parsed.value);
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: req.t('pages.get.notFound')
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: req.t('pages.availability.bookingDaysSuccess'),
       data: result
     });
   } catch (error) {

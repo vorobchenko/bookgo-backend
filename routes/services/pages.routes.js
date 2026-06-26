@@ -33,7 +33,6 @@ import {
 import {
   getPageAvailabilityHandler,
   patchPageAvailabilityHandler,
-  patchPageBookingDaysHandler,
   patchPageBookingRulesHandler,
   patchPageWeeklyHoursHandler
 } from '../pages/availability-handlers.js';
@@ -51,11 +50,6 @@ export default function registerPageRoutes(router) {
     '/pages/:id/availability/weekly-hours',
     authenticateToken,
     patchPageWeeklyHoursHandler
-  );
-  router.patch(
-    '/pages/:id/availability/booking-days',
-    authenticateToken,
-    patchPageBookingDaysHandler
   );
   router.patch(
     '/pages/:id/availability/booking-rules',

@@ -58,7 +58,7 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 `days` JSONB — массив без `label`/`letter` (добавляются API при чтении):
 
 ```json
-[{ "weekday": 1, "working": true, "bookable": true, "ranges": [{ "id": "...", "start": "09:00", "end": "17:00" }] }]
+[{ "weekday": 1, "working": true, "ranges": [{ "id": "...", "start": "09:00", "end": "17:00" }] }]
 ```
 
 ---

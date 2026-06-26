@@ -11,14 +11,14 @@
 | [frontend_auth_integration.md](./frontend_auth_integration.md) | **bookgo-app** | Auth, profile, AuthContext |
 | [frontend_pages_integration.md](./frontend_pages_integration.md) | **bookgo-app** | Pages API, PageSettings, builder |
 | [frontend_services_integration.md](./frontend_services_integration.md) | **bookgo-app** | Your services: архив, порядок, фото |
-| [frontend_availability_integration.md](./frontend_availability_integration.md) | **bookgo-app** | Schedule: weekly hours, booking days, rules |
+| [frontend_availability_integration.md](./frontend_availability_integration.md) | **bookgo-app** | Schedule: weekly hours, booking rules |
 | [frontend_profile_copy_integration.md](./frontend_profile_copy_integration.md) | **bookgo-app** | Hero headline (`headline_line1` / `headline_line2`) |
 | [auth_api.md](./auth_api.md) | Контракт | Login, logout |
 | [profile_api.md](./profile_api.md) | Контракт | Info, edit, change-password |
 | [pages_api.md](./pages_api.md) | Контракт | CRUD pages, publish, public slug |
 | [pages_avatar_api.md](./pages_avatar_api.md) | Контракт | Фото профиля страницы (upload/delete) |
 | [pages_services_api.md](./pages_services_api.md) | Контракт | Услуги: CRUD, архив, порядок, фото, категории |
-| [pages_availability_api.md](./pages_availability_api.md) | Контракт | Schedule: weekly hours, booking days, rules |
+| [pages_availability_api.md](./pages_availability_api.md) | Контракт | Schedule: weekly hours, booking rules |
 | [pages_schema_draft.md](./pages_schema_draft.md) | БД | Гибридная схема таблиц |
 | [data_model.md](./data_model.md) | Архитектура | Фазы, связи, миграции |
 | [supabase_setup.md](./supabase_setup.md) | DevOps | Supabase, GitHub auto-migrations, Railway |
@@ -48,7 +48,7 @@ https://bookgo-backend.up.railway.app
 - `GET /pages`, `POST /pages`
 - `GET /pages/:id`, `PATCH /pages/:id`
 - `GET /pages/:id/services`, `POST/PATCH /pages/:id/services/:serviceId`
-- `GET /pages/:id/availability`, `PATCH /pages/:id/availability/weekly-hours|booking-days|booking-rules`
+- `GET /pages/:id/availability`, `PATCH /pages/:id/availability/weekly-hours|booking-rules`
 - `PUT /pages/:id/services/order`, `POST .../archive|restore`
 - `POST/PATCH/DELETE /pages/:id/service-categories/:categoryId`
 - `PATCH /pages/:id/services/settings`

@@ -255,7 +255,7 @@ await patchPage(token, pageId, {
 4. При 200 — обновить settings из data.page
 ```
 
-Валидация на бэке совпадает с `validatePublish` на фронте (имя, язык, активная услуга, bookable hours).
+Валидация на бэке совпадает с `validatePublish` на фронте (имя, язык, активная услуга, working hours).
 
 ### 4. Публичная страница `bookgo.app/t/:slug`
 

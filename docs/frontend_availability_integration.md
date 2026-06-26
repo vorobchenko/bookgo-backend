@@ -20,7 +20,6 @@ export type AvailabilityDay = {
   label: string
   letter: string
   working: boolean
-  bookable: boolean
   ranges: AvailabilityRange[]
 }
 
@@ -35,8 +34,7 @@ export type AvailabilitySettings = {
 
 export type AvailabilityMeta = {
   working_days_count: number
-  bookable_days_count: number
-  has_bookable_hours: boolean
+  has_working_hours: boolean
 }
 
 export type AvailabilityResponse = {
@@ -60,16 +58,6 @@ export async function patchPageWeeklyHours(
 ) {
   return apiRequest<AvailabilityResponse>(
     `/pages/${pageId}/availability/weekly-hours`,
-    { method: 'PATCH', body: JSON.stringify(body) }
-  )
-}
-
-export async function patchPageBookingDays(
-  pageId: string,
-  body: { days: Array<Pick<AvailabilityDay, 'weekday' | 'bookable'>> }
-) {
-  return apiRequest<AvailabilityResponse>(
-    `/pages/${pageId}/availability/booking-days`,
     { method: 'PATCH', body: JSON.stringify(body) }
   )
 }
@@ -103,10 +91,7 @@ export async function patchPageBookingRules(
 2. `PATCH .../weekly-hours` с изменёнными `days` (только затронутые `weekday`)
 3. `setAvailability(data.availability)` в store
 
-### Booking days
-
-1. Toggle Sun–Sat
-2. `PATCH .../booking-days` с `{ weekday, bookable }` для изменённых дней
+День без слотов: `{ weekday, working: false, ranges: [] }`.
 
 ### Booking rules
 
@@ -115,7 +100,7 @@ export async function patchPageBookingRules(
 
 ### Публикация
 
-`meta.has_bookable_hours` совпадает с проверкой publish: нужен хотя бы один `bookable` день с `ranges.length > 0`.
+`meta.has_working_hours` совпадает с проверкой publish: нужен хотя бы один `working` день с `ranges.length > 0`.
 
 ---
 
@@ -132,3 +117,5 @@ export async function patchPageBookingRules(
 Теперь предпочтительно dedicated API — меньше payload, не затрагивает другие блоки.
 
 `GET /pages/:id` по-прежнему возвращает `settings.availability` для полной загрузки builder.
+
+Поле `bookable` удалено — используй только `working` + `ranges`.

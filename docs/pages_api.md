@@ -83,7 +83,7 @@ Remove page profile photo from storage and clear `avatar_url`.
 
 ## POST /pages/:id/publish
 
-Runs publish validation (name, language, active service, bookable hours). Returns `400` with `data.validation.errors` if invalid.
+Runs publish validation (name, language, active service, working hours). Returns `400` with `data.validation.errors` if invalid.
 
 ---
 

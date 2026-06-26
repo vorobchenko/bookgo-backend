@@ -158,7 +158,6 @@ export default {
       updateSuccess: 'Расписание обновлено',
       updateError: 'Ошибка обновления расписания',
       weeklyHoursSuccess: 'Рабочие часы обновлены',
-      bookingDaysSuccess: 'Дни для бронирования обновлены',
       bookingRulesSuccess: 'Правила бронирования обновлены',
       validation: {
         invalid: 'Некорректные данные расписания',
