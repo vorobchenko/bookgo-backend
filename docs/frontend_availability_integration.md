@@ -28,6 +28,8 @@ export type AvailabilitySettings = {
   buffer_after_minutes: number
   min_notice_hours: number
   max_days_ahead: number
+  slot_interval_minutes: number
+  max_bookings_per_day: number // 0 = без лимита
   days: AvailabilityDay[]
 }
 
@@ -69,6 +71,8 @@ export async function patchPageBookingRules(
       | 'buffer_after_minutes'
       | 'min_notice_hours'
       | 'max_days_ahead'
+      | 'slot_interval_minutes'
+      | 'max_bookings_per_day'
     >
   >
 ) {
@@ -93,8 +97,16 @@ export async function patchPageBookingRules(
 
 ### Booking rules
 
-1. Debounce полей buffer / notice / book ahead
+1. Debounce полей buffer / slot interval / notice / book ahead / max per day
 2. `PATCH .../booking-rules`
+
+| Поле | UI | Значение по умолчанию |
+|------|-----|----------------------|
+| `buffer_after_minutes` | Buffer after (min) | 15 |
+| `slot_interval_minutes` | Шаг слота (min) | 15 |
+| `min_notice_hours` | Min. notice (hours) | 4 |
+| `max_days_ahead` | Book ahead (days) | 60 |
+| `max_bookings_per_day` | Max bookings / day | 0 (без лимита) |
 
 ### Публикация
 
@@ -117,5 +129,3 @@ export async function patchPageBookingRules(
 `GET /pages/:id` по-прежнему возвращает `settings.availability` для полной загрузки builder.
 
 Поле `bookable` удалено — используй только `working` + `ranges`.
-
-Поле `buffer_before_minutes` удалено — используй только `buffer_after_minutes`.

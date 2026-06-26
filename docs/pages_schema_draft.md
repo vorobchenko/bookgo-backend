@@ -53,7 +53,7 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 
 ## `page_availability`
 
-Скаляры: `timezone`, `buffer_after_minutes`, `min_notice_hours`, `max_days_ahead`
+Скаляры: `timezone`, `buffer_after_minutes`, `min_notice_hours`, `max_days_ahead`, `slot_interval_minutes`, `max_bookings_per_day`
 
 `days` JSONB — массив без `label`/`letter` (добавляются API при чтении):
 

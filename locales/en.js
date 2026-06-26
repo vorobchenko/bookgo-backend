@@ -167,6 +167,9 @@ export default {
         BUFFER_AFTER_INVALID: 'Buffer after must be a non-negative integer',
         MIN_NOTICE_INVALID: 'Minimum notice must be a non-negative integer',
         MAX_DAYS_AHEAD_INVALID: 'Book ahead days must be a non-negative integer',
+        SLOT_INTERVAL_INVALID: 'Slot interval must be a positive integer number of minutes',
+        MAX_BOOKINGS_PER_DAY_INVALID:
+          'Max bookings per day must be a non-negative integer (0 = unlimited)',
         DAYS_REQUIRED: 'Days array is required and must not be empty',
         DAY_INVALID: 'Each day must be a JSON object',
         WEEKDAY_INVALID: 'Weekday must be an integer from 0 (Sunday) to 6 (Saturday)',

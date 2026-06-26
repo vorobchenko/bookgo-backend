@@ -326,6 +326,8 @@ export async function uploadPageAvatar(token: string, pageId: string, file: File
 | `profile.headline_line2` | колонка `headline_line2` |
 | `theme.accent_color` | колонка `accent_color` |
 | `availability.buffer_after_minutes` | `buffer_after_minutes` |
+| `availability.slot_interval_minutes` | `slot_interval_minutes` |
+| `availability.max_bookings_per_day` | `max_bookings_per_day` |
 | `availability.days[].label/letter` | **не хранятся в БД**, бэкенд добавляет при чтении |
 | `services.use_categories` | `pages.services_use_categories` |
 | `blocks` | `pages.section_layout` + пересчёт `status` на бэке |

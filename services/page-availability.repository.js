@@ -6,6 +6,11 @@ import {
 import { DEFAULT_AVAILABILITY_SCALARS } from './page-defaults.js';
 import { query, withTransaction } from '../utils/db.js';
 
+const AVAILABILITY_COLUMNS = `
+  page_id, timezone, buffer_after_minutes, min_notice_hours, max_days_ahead,
+  slot_interval_minutes, max_bookings_per_day, days
+`;
+
 async function touchPage(pageId, client) {
   await client.query(`UPDATE pages SET updated_at = now() WHERE id = $1`, [pageId]);
 }
@@ -76,29 +81,32 @@ function buildAvailabilityResponse(row) {
   };
 }
 
+function availabilityValues(fields) {
+  return [
+    fields.timezone,
+    fields.buffer_after_minutes,
+    fields.min_notice_hours,
+    fields.max_days_ahead,
+    fields.slot_interval_minutes,
+    fields.max_bookings_per_day,
+    JSON.stringify(fields.days ?? [])
+  ];
+}
+
 async function saveAvailability(client, pageId, fields) {
   await client.query(
-    `INSERT INTO page_availability (
-       page_id, timezone, buffer_before_minutes, buffer_after_minutes,
-       min_notice_hours, max_days_ahead, days
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+    `INSERT INTO page_availability (${AVAILABILITY_COLUMNS})
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
        timezone = EXCLUDED.timezone,
-       buffer_before_minutes = EXCLUDED.buffer_before_minutes,
        buffer_after_minutes = EXCLUDED.buffer_after_minutes,
        min_notice_hours = EXCLUDED.min_notice_hours,
        max_days_ahead = EXCLUDED.max_days_ahead,
+       slot_interval_minutes = EXCLUDED.slot_interval_minutes,
+       max_bookings_per_day = EXCLUDED.max_bookings_per_day,
        days = EXCLUDED.days,
        updated_at = now()`,
-    [
-      pageId,
-      fields.timezone,
-      0,
-      fields.buffer_after_minutes,
-      fields.min_notice_hours,
-      fields.max_days_ahead,
-      JSON.stringify(fields.days ?? [])
-    ]
+    [pageId, ...availabilityValues(fields)]
   );
 }
 
@@ -109,6 +117,10 @@ function defaultStoredFields(row) {
       row?.buffer_after_minutes ?? DEFAULT_AVAILABILITY_SCALARS.buffer_after_minutes,
     min_notice_hours: row?.min_notice_hours ?? DEFAULT_AVAILABILITY_SCALARS.min_notice_hours,
     max_days_ahead: row?.max_days_ahead ?? DEFAULT_AVAILABILITY_SCALARS.max_days_ahead,
+    slot_interval_minutes:
+      row?.slot_interval_minutes ?? DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+    max_bookings_per_day:
+      row?.max_bookings_per_day ?? DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
     days: storedDaysArray(row)
   };
 }
@@ -128,6 +140,12 @@ function mergePatchFields(row, patch, dayMergeKeys) {
   }
   if (patch.max_days_ahead !== undefined) {
     next.max_days_ahead = patch.max_days_ahead;
+  }
+  if (patch.slot_interval_minutes !== undefined) {
+    next.slot_interval_minutes = patch.slot_interval_minutes;
+  }
+  if (patch.max_bookings_per_day !== undefined) {
+    next.max_bookings_per_day = patch.max_bookings_per_day;
   }
 
   if (patch.days !== undefined) {

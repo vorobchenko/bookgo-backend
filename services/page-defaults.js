@@ -138,7 +138,9 @@ export const DEFAULT_AVAILABILITY_SCALARS = {
   timezone: 'UTC',
   buffer_after_minutes: 15,
   min_notice_hours: 4,
-  max_days_ahead: 60
+  max_days_ahead: 60,
+  slot_interval_minutes: 15,
+  max_bookings_per_day: 0
 };
 
 export const DEFAULT_BLOCK_CONTENT = {

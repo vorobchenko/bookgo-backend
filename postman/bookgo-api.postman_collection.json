@@ -269,7 +269,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"settings\": {\n    \"profile\": {\n      \"name\": \"Max Volkov\",\n      \"role\": \"Strength Coach\",\n      \"bio\": \"Certified coach.\",\n      \"city\": \"Warsaw\",\n      \"lang\": \"en\",\n      \"avatar_url\": \"\",\n      \"email\": \"coach@example.com\",\n      \"phone\": \"+48123456789\"\n    },\n    \"availability\": {\n      \"timezone\": \"Europe/Warsaw\",\n      \"buffer_after_minutes\": 15,\n      \"min_notice_hours\": 4,\n      \"max_days_ahead\": 60,\n      \"days\": [\n        {\n          \"weekday\": 1,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 2,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-2\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 3,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-3\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 4,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-4\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 5,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-5\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        }\n      ]\n    }\n  }\n}"
+              "raw": "{\n  \"settings\": {\n    \"profile\": {\n      \"name\": \"Max Volkov\",\n      \"role\": \"Strength Coach\",\n      \"bio\": \"Certified coach.\",\n      \"city\": \"Warsaw\",\n      \"lang\": \"en\",\n      \"avatar_url\": \"\",\n      \"email\": \"coach@example.com\",\n      \"phone\": \"+48123456789\"\n    },\n    \"availability\": {\n      \"timezone\": \"Europe/Warsaw\",\n      \"buffer_after_minutes\": 15,\n      \"min_notice_hours\": 4,\n      \"max_days_ahead\": 60,\n      \"slot_interval_minutes\": 15,\n      \"max_bookings_per_day\": 0,\n      \"days\": [\n        {\n          \"weekday\": 1,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-1\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 2,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-2\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 3,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-3\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 4,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-4\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        },\n        {\n          \"weekday\": 5,\n          \"working\": true,\n          \"ranges\": [{ \"id\": \"rng-5\", \"start\": \"09:00\", \"end\": \"17:00\" }]\n        }\n      ]\n    }\n  }\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}"
           },
@@ -470,7 +470,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"buffer_after_minutes\": 15,\n  \"min_notice_hours\": 4,\n  \"max_days_ahead\": 60\n}"
+              "raw": "{\n  \"buffer_after_minutes\": 15,\n  \"slot_interval_minutes\": 15,\n  \"min_notice_hours\": 4,\n  \"max_days_ahead\": 60,\n  \"max_bookings_per_day\": 0\n}"
             },
             "url": "{{baseUrl}}/pages/{{pageId}}/availability/booking-rules"
           },

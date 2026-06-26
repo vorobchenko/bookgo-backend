@@ -141,16 +141,17 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
 
     await client.query(
       `INSERT INTO page_availability (
-         page_id, timezone, buffer_before_minutes, buffer_after_minutes,
-         min_notice_hours, max_days_ahead, days
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)`,
+         page_id, timezone, buffer_after_minutes, min_notice_hours, max_days_ahead,
+         slot_interval_minutes, max_bookings_per_day, days
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)`,
       [
         page.id,
         availabilityTimezone,
-        0,
         DEFAULT_AVAILABILITY_SCALARS.buffer_after_minutes,
         DEFAULT_AVAILABILITY_SCALARS.min_notice_hours,
         DEFAULT_AVAILABILITY_SCALARS.max_days_ahead,
+        DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+        DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
         JSON.stringify(defaultAvailabilityDaysStored())
       ]
     );
@@ -285,24 +286,26 @@ async function upsertAvailability(client, pageId, fields) {
   if (!fields) return;
   await client.query(
     `INSERT INTO page_availability (
-       page_id, timezone, buffer_before_minutes, buffer_after_minutes,
-       min_notice_hours, max_days_ahead, days
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+       page_id, timezone, buffer_after_minutes, min_notice_hours, max_days_ahead,
+       slot_interval_minutes, max_bookings_per_day, days
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
        timezone = EXCLUDED.timezone,
-       buffer_before_minutes = EXCLUDED.buffer_before_minutes,
        buffer_after_minutes = EXCLUDED.buffer_after_minutes,
        min_notice_hours = EXCLUDED.min_notice_hours,
        max_days_ahead = EXCLUDED.max_days_ahead,
+       slot_interval_minutes = EXCLUDED.slot_interval_minutes,
+       max_bookings_per_day = EXCLUDED.max_bookings_per_day,
        days = EXCLUDED.days,
        updated_at = now()`,
     [
       pageId,
       fields.timezone,
-      0,
       fields.buffer_after_minutes,
       fields.min_notice_hours,
       fields.max_days_ahead,
+      fields.slot_interval_minutes ?? DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+      fields.max_bookings_per_day ?? DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
       JSON.stringify(fields.days ?? [])
     ]
   );

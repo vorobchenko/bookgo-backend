@@ -167,6 +167,9 @@ export default {
         BUFFER_AFTER_INVALID: 'Буфер после — неотрицательное целое',
         MIN_NOTICE_INVALID: 'Мин. уведомление — неотрицательное целое',
         MAX_DAYS_AHEAD_INVALID: 'Горизонт бронирования — неотрицательное целое',
+        SLOT_INTERVAL_INVALID: 'Интервал слота — целое число минут больше 0',
+        MAX_BOOKINGS_PER_DAY_INVALID:
+          'Макс. записей в день — неотрицательное целое (0 = без лимита)',
         DAYS_REQUIRED: 'Нужен непустой массив days',
         DAY_INVALID: 'Каждый день — JSON-объект',
         WEEKDAY_INVALID: 'weekday — целое от 0 (воскресенье) до 6 (суббота)',

@@ -1,5 +1,6 @@
 import {
   BLOCK_TYPES,
+  DEFAULT_AVAILABILITY_SCALARS,
   DEFAULT_BLOCK_CONTENT,
   DEFAULT_PROFILE_HEADLINE,
   DEFAULT_SECTION_LAYOUT,
@@ -99,6 +100,8 @@ export function mapAvailabilityRow(row) {
       buffer_after_minutes: 15,
       min_notice_hours: 4,
       max_days_ahead: 60,
+      slot_interval_minutes: DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+      max_bookings_per_day: DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
       days: enrichAvailabilityDays([])
     };
   }
@@ -108,6 +111,10 @@ export function mapAvailabilityRow(row) {
     buffer_after_minutes: row.buffer_after_minutes ?? 0,
     min_notice_hours: row.min_notice_hours ?? 0,
     max_days_ahead: row.max_days_ahead ?? 60,
+    slot_interval_minutes:
+      row.slot_interval_minutes ?? DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+    max_bookings_per_day:
+      row.max_bookings_per_day ?? DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
     days: enrichAvailabilityDays(row.days)
   };
 }
@@ -509,6 +516,10 @@ export function disassemblePagePatch(settingsPatch) {
       buffer_after_minutes: a.buffer_after_minutes ?? 0,
       min_notice_hours: a.min_notice_hours ?? 0,
       max_days_ahead: a.max_days_ahead ?? 60,
+      slot_interval_minutes:
+        a.slot_interval_minutes ?? DEFAULT_AVAILABILITY_SCALARS.slot_interval_minutes,
+      max_bookings_per_day:
+        a.max_bookings_per_day ?? DEFAULT_AVAILABILITY_SCALARS.max_bookings_per_day,
       days: stripDayLabels(a.days)
     };
   }

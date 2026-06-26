@@ -46,6 +46,8 @@ Base URL: `https://bookgo-backend.up.railway.app`
   "buffer_after_minutes": 15,
   "min_notice_hours": 4,
   "max_days_ahead": 60,
+  "slot_interval_minutes": 15,
+  "max_bookings_per_day": 0,
   "days": [ /* AvailabilityDay[] — всегда 7 дней */ ]
 }
 ```
@@ -73,6 +75,8 @@ Base URL: `https://bookgo-backend.up.railway.app`
       "buffer_after_minutes": 15,
       "min_notice_hours": 4,
       "max_days_ahead": 60,
+      "slot_interval_minutes": 15,
+      "max_bookings_per_day": 0,
       "days": [
         {
           "weekday": 0,
@@ -149,8 +153,10 @@ Base URL: `https://bookgo-backend.up.railway.app`
 ```json
 {
   "buffer_after_minutes": 15,
+  "slot_interval_minutes": 15,
   "min_notice_hours": 4,
-  "max_days_ahead": 60
+  "max_days_ahead": 60,
+  "max_bookings_per_day": 8
 }
 ```
 
@@ -185,7 +191,8 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | `RANGE_TIME_INVALID` | время не `HH:MM` |
 | `RANGE_ORDER_INVALID` | start ≥ end |
 | `DAYS_REQUIRED` | пустой или отсутствующий `days` |
-| `BODY_EMPTY` | нет полей для обновления |
+| `SLOT_INTERVAL_INVALID` | slot_interval_minutes ≤ 0 |
+| `MAX_BOOKINGS_PER_DAY_INVALID` | max_bookings_per_day < 0 |
 
 ---
 

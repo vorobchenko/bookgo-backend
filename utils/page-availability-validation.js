@@ -95,6 +95,14 @@ function parseNonNegativeInt(value, code) {
   return { ok: true, value: number };
 }
 
+function parsePositiveInt(value, code) {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number <= 0) {
+    return { ok: false, code };
+  }
+  return { ok: true, value: number };
+}
+
 function parseTimezone(value) {
   const timezone = typeof value === 'string' ? value.trim() : '';
   if (!timezone || timezone.length > TIMEZONE_MAX) {
@@ -114,6 +122,8 @@ export function parseAvailabilityPatchBody(body) {
     'buffer_after_minutes',
     'min_notice_hours',
     'max_days_ahead',
+    'slot_interval_minutes',
+    'max_bookings_per_day',
     'days'
   ];
 
@@ -125,7 +135,11 @@ export function parseAvailabilityPatchBody(body) {
           ? 'minNoticeHours'
           : key === 'max_days_ahead'
             ? 'maxDaysAhead'
-            : null;
+            : key === 'slot_interval_minutes'
+              ? 'slotIntervalMinutes'
+              : key === 'max_bookings_per_day'
+                ? 'maxBookingsPerDay'
+                : null;
 
     if (
       !Object.prototype.hasOwnProperty.call(body, key) &&
@@ -159,6 +173,18 @@ export function parseAvailabilityPatchBody(body) {
         const parsed = parseNonNegativeInt(raw, 'MAX_DAYS_AHEAD_INVALID');
         if (!parsed.ok) return parsed;
         patch.max_days_ahead = parsed.value;
+        break;
+      }
+      case 'slot_interval_minutes': {
+        const parsed = parsePositiveInt(raw, 'SLOT_INTERVAL_INVALID');
+        if (!parsed.ok) return parsed;
+        patch.slot_interval_minutes = parsed.value;
+        break;
+      }
+      case 'max_bookings_per_day': {
+        const parsed = parseNonNegativeInt(raw, 'MAX_BOOKINGS_PER_DAY_INVALID');
+        if (!parsed.ok) return parsed;
+        patch.max_bookings_per_day = parsed.value;
         break;
       }
       case 'days': {
@@ -210,12 +236,19 @@ export function parseBookingRulesPatchBody(body) {
 
   const patch = {};
   const fields = [
-    ['buffer_after_minutes', 'bufferAfterMinutes', 'BUFFER_AFTER_INVALID'],
-    ['min_notice_hours', 'minNoticeHours', 'MIN_NOTICE_INVALID'],
-    ['max_days_ahead', 'maxDaysAhead', 'MAX_DAYS_AHEAD_INVALID']
+    ['buffer_after_minutes', 'bufferAfterMinutes', 'BUFFER_AFTER_INVALID', parseNonNegativeInt],
+    ['min_notice_hours', 'minNoticeHours', 'MIN_NOTICE_INVALID', parseNonNegativeInt],
+    ['max_days_ahead', 'maxDaysAhead', 'MAX_DAYS_AHEAD_INVALID', parseNonNegativeInt],
+    ['slot_interval_minutes', 'slotIntervalMinutes', 'SLOT_INTERVAL_INVALID', parsePositiveInt],
+    [
+      'max_bookings_per_day',
+      'maxBookingsPerDay',
+      'MAX_BOOKINGS_PER_DAY_INVALID',
+      parseNonNegativeInt
+    ]
   ];
 
-  for (const [key, legacyKey, code] of fields) {
+  for (const [key, legacyKey, code, parser] of fields) {
     if (
       !Object.prototype.hasOwnProperty.call(body, key) &&
       !Object.prototype.hasOwnProperty.call(body, legacyKey)
@@ -223,7 +256,7 @@ export function parseBookingRulesPatchBody(body) {
       continue;
     }
 
-    const parsed = parseNonNegativeInt(jsonField(body, key, legacyKey), code);
+    const parsed = parser(jsonField(body, key, legacyKey), code);
     if (!parsed.ok) {
       return parsed;
     }
