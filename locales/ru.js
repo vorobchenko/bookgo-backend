@@ -164,7 +164,6 @@ export default {
         BODY_INVALID: 'Тело запроса должно быть JSON-объектом',
         BODY_EMPTY: 'Нужно передать хотя бы одно поле',
         TIMEZONE_INVALID: 'Timezone — непустая строка до 64 символов',
-        BUFFER_BEFORE_INVALID: 'Буфер до — неотрицательное целое',
         BUFFER_AFTER_INVALID: 'Буфер после — неотрицательное целое',
         MIN_NOTICE_INVALID: 'Мин. уведомление — неотрицательное целое',
         MAX_DAYS_AHEAD_INVALID: 'Горизонт бронирования — неотрицательное целое',

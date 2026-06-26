@@ -93,7 +93,7 @@ async function saveAvailability(client, pageId, fields) {
     [
       pageId,
       fields.timezone,
-      fields.buffer_before_minutes,
+      0,
       fields.buffer_after_minutes,
       fields.min_notice_hours,
       fields.max_days_ahead,
@@ -105,8 +105,6 @@ async function saveAvailability(client, pageId, fields) {
 function defaultStoredFields(row) {
   return {
     timezone: row?.timezone ?? DEFAULT_AVAILABILITY_SCALARS.timezone,
-    buffer_before_minutes:
-      row?.buffer_before_minutes ?? DEFAULT_AVAILABILITY_SCALARS.buffer_before_minutes,
     buffer_after_minutes:
       row?.buffer_after_minutes ?? DEFAULT_AVAILABILITY_SCALARS.buffer_after_minutes,
     min_notice_hours: row?.min_notice_hours ?? DEFAULT_AVAILABILITY_SCALARS.min_notice_hours,
@@ -121,9 +119,6 @@ function mergePatchFields(row, patch, dayMergeKeys) {
 
   if (patch.timezone !== undefined) {
     next.timezone = patch.timezone;
-  }
-  if (patch.buffer_before_minutes !== undefined) {
-    next.buffer_before_minutes = patch.buffer_before_minutes;
   }
   if (patch.buffer_after_minutes !== undefined) {
     next.buffer_after_minutes = patch.buffer_after_minutes;

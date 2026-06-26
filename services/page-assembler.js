@@ -96,7 +96,6 @@ export function mapAvailabilityRow(row) {
   if (!row) {
     return {
       timezone: 'UTC',
-      buffer_before_minutes: 0,
       buffer_after_minutes: 15,
       min_notice_hours: 4,
       max_days_ahead: 60,
@@ -106,7 +105,6 @@ export function mapAvailabilityRow(row) {
 
   return {
     timezone: row.timezone ?? 'UTC',
-    buffer_before_minutes: row.buffer_before_minutes ?? 0,
     buffer_after_minutes: row.buffer_after_minutes ?? 0,
     min_notice_hours: row.min_notice_hours ?? 0,
     max_days_ahead: row.max_days_ahead ?? 60,
@@ -508,7 +506,6 @@ export function disassemblePagePatch(settingsPatch) {
     const a = settingsPatch.availability;
     result.availabilityFields = {
       timezone: a.timezone ?? 'UTC',
-      buffer_before_minutes: a.buffer_before_minutes ?? 0,
       buffer_after_minutes: a.buffer_after_minutes ?? 0,
       min_notice_hours: a.min_notice_hours ?? 0,
       max_days_ahead: a.max_days_ahead ?? 60,

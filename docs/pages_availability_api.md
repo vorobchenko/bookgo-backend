@@ -43,7 +43,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
 ```json
 {
   "timezone": "Europe/Warsaw",
-  "buffer_before_minutes": 0,
   "buffer_after_minutes": 15,
   "min_notice_hours": 4,
   "max_days_ahead": 60,
@@ -71,7 +70,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
   "data": {
     "availability": {
       "timezone": "UTC",
-      "buffer_before_minutes": 0,
       "buffer_after_minutes": 15,
       "min_notice_hours": 4,
       "max_days_ahead": 60,
@@ -150,7 +148,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 ```json
 {
-  "buffer_before_minutes": 0,
   "buffer_after_minutes": 15,
   "min_notice_hours": 4,
   "max_days_ahead": 60

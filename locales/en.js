@@ -164,7 +164,6 @@ export default {
         BODY_INVALID: 'Request body must be a JSON object',
         BODY_EMPTY: 'At least one field is required',
         TIMEZONE_INVALID: 'Timezone must be a non-empty string up to 64 characters',
-        BUFFER_BEFORE_INVALID: 'Buffer before must be a non-negative integer',
         BUFFER_AFTER_INVALID: 'Buffer after must be a non-negative integer',
         MIN_NOTICE_INVALID: 'Minimum notice must be a non-negative integer',
         MAX_DAYS_AHEAD_INVALID: 'Book ahead days must be a non-negative integer',

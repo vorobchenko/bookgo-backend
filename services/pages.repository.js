@@ -147,7 +147,7 @@ export async function createPageForUser(user, { slug, isDefault = false }) {
       [
         page.id,
         availabilityTimezone,
-        DEFAULT_AVAILABILITY_SCALARS.buffer_before_minutes,
+        0,
         DEFAULT_AVAILABILITY_SCALARS.buffer_after_minutes,
         DEFAULT_AVAILABILITY_SCALARS.min_notice_hours,
         DEFAULT_AVAILABILITY_SCALARS.max_days_ahead,
@@ -299,7 +299,7 @@ async function upsertAvailability(client, pageId, fields) {
     [
       pageId,
       fields.timezone,
-      fields.buffer_before_minutes,
+      0,
       fields.buffer_after_minutes,
       fields.min_notice_hours,
       fields.max_days_ahead,

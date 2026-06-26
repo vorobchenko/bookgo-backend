@@ -136,7 +136,6 @@ export const DEFAULT_THEME = {
 
 export const DEFAULT_AVAILABILITY_SCALARS = {
   timezone: 'UTC',
-  buffer_before_minutes: 0,
   buffer_after_minutes: 15,
   min_notice_hours: 4,
   max_days_ahead: 60

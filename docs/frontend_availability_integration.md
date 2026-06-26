@@ -25,7 +25,6 @@ export type AvailabilityDay = {
 
 export type AvailabilitySettings = {
   timezone: string
-  buffer_before_minutes: number
   buffer_after_minutes: number
   min_notice_hours: number
   max_days_ahead: number
@@ -67,7 +66,6 @@ export async function patchPageBookingRules(
   body: Partial<
     Pick<
       AvailabilitySettings,
-      | 'buffer_before_minutes'
       | 'buffer_after_minutes'
       | 'min_notice_hours'
       | 'max_days_ahead'
@@ -119,3 +117,5 @@ export async function patchPageBookingRules(
 `GET /pages/:id` по-прежнему возвращает `settings.availability` для полной загрузки builder.
 
 Поле `bookable` удалено — используй только `working` + `ranges`.
+
+Поле `buffer_before_minutes` удалено — используй только `buffer_after_minutes`.

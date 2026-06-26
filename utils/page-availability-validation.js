@@ -111,7 +111,6 @@ export function parseAvailabilityPatchBody(body) {
   const patch = {};
   const allowed = [
     'timezone',
-    'buffer_before_minutes',
     'buffer_after_minutes',
     'min_notice_hours',
     'max_days_ahead',
@@ -120,15 +119,13 @@ export function parseAvailabilityPatchBody(body) {
 
   for (const key of allowed) {
     const legacyKey =
-      key === 'buffer_before_minutes'
-        ? 'bufferBeforeMinutes'
-        : key === 'buffer_after_minutes'
-          ? 'bufferAfterMinutes'
-          : key === 'min_notice_hours'
-            ? 'minNoticeHours'
-            : key === 'max_days_ahead'
-              ? 'maxDaysAhead'
-              : null;
+      key === 'buffer_after_minutes'
+        ? 'bufferAfterMinutes'
+        : key === 'min_notice_hours'
+          ? 'minNoticeHours'
+          : key === 'max_days_ahead'
+            ? 'maxDaysAhead'
+            : null;
 
     if (
       !Object.prototype.hasOwnProperty.call(body, key) &&
@@ -144,12 +141,6 @@ export function parseAvailabilityPatchBody(body) {
         const parsed = parseTimezone(raw);
         if (!parsed.ok) return parsed;
         patch.timezone = parsed.value;
-        break;
-      }
-      case 'buffer_before_minutes': {
-        const parsed = parseNonNegativeInt(raw, 'BUFFER_BEFORE_INVALID');
-        if (!parsed.ok) return parsed;
-        patch.buffer_before_minutes = parsed.value;
         break;
       }
       case 'buffer_after_minutes': {
@@ -219,7 +210,6 @@ export function parseBookingRulesPatchBody(body) {
 
   const patch = {};
   const fields = [
-    ['buffer_before_minutes', 'bufferBeforeMinutes', 'BUFFER_BEFORE_INVALID'],
     ['buffer_after_minutes', 'bufferAfterMinutes', 'BUFFER_AFTER_INVALID'],
     ['min_notice_hours', 'minNoticeHours', 'MIN_NOTICE_INVALID'],
     ['max_days_ahead', 'maxDaysAhead', 'MAX_DAYS_AHEAD_INVALID']
