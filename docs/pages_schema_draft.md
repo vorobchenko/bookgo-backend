@@ -54,7 +54,6 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 | `surface_color` | varchar | `#RRGGBB` |
 | `text_color` | varchar | `#RRGGBB` |
 | `text_muted_color` | varchar | `#RRGGBB` |
-| `mode` | varchar | `light`, `dark`, `auto` |
 | `font_preset` | varchar | произвольная строка |
 | `element_style` | varchar | `rounded`, `sharp`, `pill` |
 | `cta` | jsonb | `{ variant, size, label_case }` |

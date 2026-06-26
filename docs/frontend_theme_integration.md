@@ -7,7 +7,6 @@
 ## TypeScript типы
 
 ```typescript
-export type ThemeMode = 'light' | 'dark' | 'auto'
 export type ElementStyle = 'rounded' | 'sharp' | 'pill'
 export type CtaVariant = 'solid' | 'outline' | 'ghost'
 export type CtaSize = 'compact' | 'default' | 'large'
@@ -60,7 +59,6 @@ export type ThemeSettings = {
   surface_color: string
   text_color: string
   text_muted_color: string
-  mode: ThemeMode
   font_preset: string
   element_style: ElementStyle
   cta: ThemeCta
@@ -84,7 +82,6 @@ export type ThemePatch = Partial<{
   surface_color: string
   text_color: string
   text_muted_color: string
-  mode: ThemeMode
   font_preset: string
   element_style: ElementStyle
   cta: Partial<ThemeCta>
@@ -125,7 +122,6 @@ export async function deletePageBackground(pageId: string) {
 | Secondary | `secondary_color` |
 | Surface / cards | `surface_color` |
 | Text | `text_color`, `text_muted_color` |
-| Color mode | `mode` |
 | Font | `font_preset` |
 | Corners | `element_style` |
 | CTA style | `cta` |

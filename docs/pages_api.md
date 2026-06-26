@@ -56,7 +56,6 @@ Full page with assembled `settings` (`PageSettings`).
       "surface_color": "#1a1a1a",
       "text_color": "#ffffff",
       "text_muted_color": "#8a8a8a",
-      "mode": "auto",
       "font_preset": "sport",
       "element_style": "rounded",
       "cta": { "variant": "solid", "size": "default", "label_case": "uppercase" },

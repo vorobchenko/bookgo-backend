@@ -1,5 +1,5 @@
 import { jsonField } from './json-field.js';
-import { THEME_ELEMENT_STYLES, THEME_MODES } from '../services/page-defaults.js';
+import { THEME_ELEMENT_STYLES } from '../services/page-defaults.js';
 import { parseThemeAtmospherePatch } from './theme-atmosphere.js';
 import { parseThemeBackgroundPatch } from './theme-background.js';
 import { parseThemeCtaPatch } from './theme-cta.js';
@@ -18,7 +18,6 @@ const THEME_PATCH_KEYS = new Set([
   'textColor',
   'text_muted_color',
   'textMutedColor',
-  'mode',
   'font_preset',
   'fontPreset',
   'element_style',
@@ -81,10 +80,7 @@ export function parseThemePatchBody(body, currentTheme = null) {
     patch[key] = parsed.value;
   }
 
-  const enumFields = [
-    ['mode', null, 'MODE_INVALID', THEME_MODES],
-    ['element_style', 'elementStyle', 'ELEMENT_STYLE_INVALID', THEME_ELEMENT_STYLES]
-  ];
+  const enumFields = [['element_style', 'elementStyle', 'ELEMENT_STYLE_INVALID', THEME_ELEMENT_STYLES]];
 
   for (const [key, legacyKey, code, allowed] of enumFields) {
     if (

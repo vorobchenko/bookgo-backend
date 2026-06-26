@@ -128,7 +128,6 @@ export const DEFAULT_SECTION_LAYOUT = [
   }
 ];
 
-export const THEME_MODES = ['light', 'dark', 'auto'];
 export const THEME_ELEMENT_STYLES = ['rounded', 'sharp', 'pill'];
 export const THEME_BACKGROUND_TYPES = ['solid', 'gradient', 'image'];
 export const THEME_CTA_VARIANTS = ['solid', 'outline', 'ghost'];
@@ -160,7 +159,6 @@ export const DEFAULT_THEME = {
   surface_color: '#1a1a1a',
   text_color: '#ffffff',
   text_muted_color: '#8a8a8a',
-  mode: 'auto',
   font_preset: 'sport',
   element_style: 'rounded',
   cta: { ...DEFAULT_THEME_CTA },

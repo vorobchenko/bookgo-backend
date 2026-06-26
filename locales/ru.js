@@ -204,7 +204,6 @@ export default {
         SURFACE_COLOR_INVALID: 'surface_color — hex',
         TEXT_COLOR_INVALID: 'text_color — hex',
         TEXT_MUTED_COLOR_INVALID: 'text_muted_color — hex',
-        MODE_INVALID: 'Mode: light, dark или auto',
         FONT_PRESET_INVALID: 'font_preset — непустая строка до 64 символов',
         ELEMENT_STYLE_INVALID: 'element_style: rounded, sharp или pill',
         CTA_INVALID: 'cta должен быть JSON-объектом',

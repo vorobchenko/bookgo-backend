@@ -34,7 +34,6 @@ Base URL: `https://bookgo-backend.up.railway.app`
   "surface_color": "#1a1a1a",
   "text_color": "#ffffff",
   "text_muted_color": "#8a8a8a",
-  "mode": "auto",
   "font_preset": "sport",
   "element_style": "rounded",
   "cta": {
@@ -117,7 +116,7 @@ PATCH `background` — merge с текущим значением, затем в
 
 ## Defaults (новая страница)
 
-См. [pages_theme_extension.md](./pages_theme_extension.md#defaults-новая-страница-mode-auto-тёмная-база).
+См. [pages_theme_extension.md](./pages_theme_extension.md#defaults-новая-страница).
 
 ---
 

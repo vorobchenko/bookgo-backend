@@ -22,7 +22,6 @@
 | Поле | Где хранится | Назначение |
 |------|--------------|------------|
 | `accent_color` | `page_themes` | Один акцент на всю страницу |
-| `mode` | `page_themes` | `light` / `dark` / `auto` |
 | `font_preset` | `page_themes` | Строковый id шрифта (фронт-реестр) |
 | `element_style` | `page_themes` | `rounded` / `sharp` / `pill` — скругление UI |
 | `background` | `page_themes.background` (JSONB) | `solid` / `gradient` / `image` |
@@ -30,6 +29,7 @@
 ### Что убираем / не возвращаем
 
 - `preset` (style preset) — **только UI билдера**, в API не хранится (migration `016`).
+- `mode` (color mode) — **удалён** (migration `019`).
 - `background.type: preset` — **deprecated**; при чтении мигрировать в `solid` с дефолтным цветом, при записи отклонять `400`.
 
 ### Принцип v2
@@ -75,7 +75,6 @@ ALTER TABLE page_themes
   "surface_color": "#1a1a1a",
   "text_color": "#ffffff",
   "text_muted_color": "#8a8a8a",
-  "mode": "auto",
   "font_preset": "sport",
   "element_style": "rounded",
   "cta": {
@@ -109,23 +108,15 @@ ALTER TABLE page_themes
 | `accent_color` | string | да | Primary accent — CTA, highlights, calendar selection |
 | `secondary_color` | string | да | Второй акцент — бейджи категорий, ссылки, вторичные chip |
 | `surface_color` | string | да | Фон карточек / инпутов / календаря поверх page background |
-| `text_color` | string | нет* | Основной текст. Если `null` — фронт выводит из `mode` |
-| `text_muted_color` | string | нет* | Вторичный текст. Если `null` — фронт выводит из `mode` |
-
-\*В GET всегда возвращать значение: либо сохранённое, либо вычисленный дефолт для текущего `mode` (см. Defaults).
+| `text_color` | string | да | Основной текст |
+| `text_muted_color` | string | да | Вторичный текст |
 
 ### Валидация
 
 - Формат: `#RRGGBB` (6 hex, uppercase на выходе опционально).
 - Ошибка: `ACCENT_COLOR_INVALID`, `SECONDARY_COLOR_INVALID`, `SURFACE_COLOR_INVALID`, `TEXT_COLOR_INVALID`, `TEXT_MUTED_COLOR_INVALID`.
 
-### Семантика `mode`
-
-`mode` по-прежнему управляет light/dark/auto на фронте. Бренд-цвета — **явные override**, которые пользователь задал в билдере. Фронт не пересчитывает их при смене `mode`, если они сохранены.
-
-Рекомендация UI: при смене `light` ↔ `dark` предлагать обновить surface/text (фронт), бэкенд это не делает автоматически.
-
-### Defaults (новая страница, `mode: auto`, тёмная база)
+### Defaults (новая страница)
 
 | Поле | Значение |
 |------|----------|
@@ -134,8 +125,6 @@ ALTER TABLE page_themes
 | `surface_color` | `#1a1a1a` |
 | `text_color` | `#ffffff` |
 | `text_muted_color` | `#8a8a8a` |
-
-Для `mode: light` дефолты фронт может подставлять при создании страницы; бэкенд при отсутствии значений в БД отдаёт дефолты тёмной темы (как сейчас с accent).
 
 ---
 
@@ -377,7 +366,6 @@ Partial update внутри `cta`: при передаче объекта `cta` 
       "surface_color": "#1a1a1a",
       "text_color": "#ffffff",
       "text_muted_color": "#8a8a8a",
-      "mode": "dark",
       "font_preset": "sport",
       "element_style": "pill",
       "cta": {
@@ -410,7 +398,6 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 | Secondary color | `secondary_color` |
 | Card / surface color | `surface_color` |
 | Text colors | `text_color`, `text_muted_color` |
-| Color mode | `mode` |
 | Font | `font_preset` |
 | Element corners | `element_style` |
 | CTA style | `cta` |

@@ -204,7 +204,6 @@ export default {
         SURFACE_COLOR_INVALID: 'Surface color must be a hex value like #1a1a1a',
         TEXT_COLOR_INVALID: 'Text color must be a hex value like #ffffff',
         TEXT_MUTED_COLOR_INVALID: 'Muted text color must be a hex value like #8a8a8a',
-        MODE_INVALID: 'Mode must be light, dark, or auto',
         FONT_PRESET_INVALID: 'font_preset must be a non-empty string up to 64 characters',
         ELEMENT_STYLE_INVALID: 'Element style must be rounded, sharp, or pill',
         CTA_INVALID: 'cta must be a JSON object',

@@ -6,7 +6,7 @@ import { mergeThemeCta } from '../utils/theme-cta.js';
 
 const THEME_COLUMNS = `
   page_id, accent_color, secondary_color, surface_color, text_color, text_muted_color,
-  mode, font_preset, element_style, cta, atmosphere, background
+  font_preset, element_style, cta, atmosphere, background
 `;
 
 function themeValues(fields) {
@@ -16,7 +16,6 @@ function themeValues(fields) {
     fields.surface_color,
     fields.text_color,
     fields.text_muted_color,
-    fields.mode,
     fields.font_preset,
     fields.element_style,
     JSON.stringify(fields.cta ?? DEFAULT_THEME.cta),
@@ -47,7 +46,6 @@ function mergeThemeFields(row, patch) {
     surface_color: patch.surface_color ?? current.surface_color,
     text_color: patch.text_color ?? current.text_color,
     text_muted_color: patch.text_muted_color ?? current.text_muted_color,
-    mode: patch.mode ?? current.mode,
     font_preset: patch.font_preset ?? current.font_preset,
     element_style: patch.element_style ?? current.element_style,
     cta: patch.cta !== undefined ? mergeThemeCta(current.cta, patch.cta) : current.cta,
@@ -62,14 +60,13 @@ function mergeThemeFields(row, patch) {
 async function saveTheme(client, pageId, fields) {
   await client.query(
     `INSERT INTO page_themes (${THEME_COLUMNS})
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11::jsonb, $12::jsonb)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11::jsonb)
      ON CONFLICT (page_id) DO UPDATE SET
        accent_color = EXCLUDED.accent_color,
        secondary_color = EXCLUDED.secondary_color,
        surface_color = EXCLUDED.surface_color,
        text_color = EXCLUDED.text_color,
        text_muted_color = EXCLUDED.text_muted_color,
-       mode = EXCLUDED.mode,
        font_preset = EXCLUDED.font_preset,
        element_style = EXCLUDED.element_style,
        cta = EXCLUDED.cta,
