@@ -58,7 +58,7 @@ Hero-заголовок: `headline_line1`, `headline_line2` → `profile.headlin
 | `font_preset` | varchar | произвольная строка |
 | `element_style` | varchar | `rounded`, `sharp`, `pill` |
 | `cta` | jsonb | `{ variant, size, label_case }` |
-| `atmosphere` | jsonb | `{ grain, grain_intensity, card_style }` |
+| `atmosphere` | jsonb | `{ grain, grain_intensity }` |
 | `background` | jsonb | `{ type: solid \| gradient \| image, ... }` |
 
 ---

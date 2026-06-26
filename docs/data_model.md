@@ -84,5 +84,6 @@ erDiagram
 | 015 | `page_themes` — free `font_preset` |
 | 016 | `page_themes` — DROP `preset` |
 | 017 | `page_themes` — brand colors, `cta`, `atmosphere` |
+| 018 | `page_themes` — remove `atmosphere.card_style` |
 
 Workspaces, `page_views` — отложены.

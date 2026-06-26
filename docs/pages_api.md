@@ -60,7 +60,7 @@ Full page with assembled `settings` (`PageSettings`).
       "font_preset": "sport",
       "element_style": "rounded",
       "cta": { "variant": "solid", "size": "default", "label_case": "uppercase" },
-      "atmosphere": { "grain": false, "grain_intensity": 0.12, "card_style": "solid" },
+      "atmosphere": { "grain": false, "grain_intensity": 0.12 },
       "background": {
         "type": "solid",
         "color": "#0a0a0a",

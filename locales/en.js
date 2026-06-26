@@ -213,7 +213,6 @@ export default {
         CTA_LABEL_CASE_INVALID: 'cta.label_case must be uppercase, capitalize, or none',
         ATMOSPHERE_INVALID: 'atmosphere must be a JSON object',
         ATMOSPHERE_GRAIN_INTENSITY_INVALID: 'atmosphere.grain_intensity must be between 0 and 1',
-        ATMOSPHERE_CARD_STYLE_INVALID: 'atmosphere.card_style must be solid or glass',
         BACKGROUND_REQUIRED: 'Background object is required',
         BACKGROUND_INVALID: 'Background must be a JSON object',
         BACKGROUND_TYPE_INVALID: 'Background type must be solid, gradient, or image',

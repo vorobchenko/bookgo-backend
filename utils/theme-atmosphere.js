@@ -1,7 +1,4 @@
-import {
-  DEFAULT_THEME_ATMOSPHERE,
-  THEME_ATMOSPHERE_CARD_STYLES
-} from '../services/page-defaults.js';
+import { DEFAULT_THEME_ATMOSPHERE } from '../services/page-defaults.js';
 
 function parseUnitInterval(value, code) {
   const number = Number(value);
@@ -25,15 +22,9 @@ export function normalizeThemeAtmosphere(input) {
     ? intensityParsed.value
     : DEFAULT_THEME_ATMOSPHERE.grain_intensity;
 
-  const cardStyle = input.card_style ?? DEFAULT_THEME_ATMOSPHERE.card_style;
-  const card_style = THEME_ATMOSPHERE_CARD_STYLES.includes(cardStyle)
-    ? cardStyle
-    : DEFAULT_THEME_ATMOSPHERE.card_style;
-
   return {
     grain,
-    grain_intensity: grain ? intensity : DEFAULT_THEME_ATMOSPHERE.grain_intensity,
-    card_style
+    grain_intensity: grain ? intensity : DEFAULT_THEME_ATMOSPHERE.grain_intensity
   };
 }
 
@@ -64,13 +55,6 @@ export function parseThemeAtmospherePatch(atmosphere) {
       return parsed;
     }
     patch.grain_intensity = parsed.value;
-  }
-
-  if (Object.prototype.hasOwnProperty.call(atmosphere, 'card_style')) {
-    if (!THEME_ATMOSPHERE_CARD_STYLES.includes(atmosphere.card_style)) {
-      return { ok: false, code: 'ATMOSPHERE_CARD_STYLE_INVALID' };
-    }
-    patch.card_style = atmosphere.card_style;
   }
 
   return { ok: true, value: patch };

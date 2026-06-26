@@ -135,7 +135,6 @@ export const THEME_CTA_VARIANTS = ['solid', 'outline', 'ghost'];
 export const THEME_CTA_SIZES = ['compact', 'default', 'large'];
 export const THEME_CTA_LABEL_CASES = ['uppercase', 'capitalize', 'none'];
 export const THEME_BACKGROUND_POSITIONS = ['center', 'top', 'bottom'];
-export const THEME_ATMOSPHERE_CARD_STYLES = ['solid', 'glass'];
 
 export const DEFAULT_THEME_CTA = {
   variant: 'solid',
@@ -145,8 +144,7 @@ export const DEFAULT_THEME_CTA = {
 
 export const DEFAULT_THEME_ATMOSPHERE = {
   grain: false,
-  grain_intensity: 0.12,
-  card_style: 'solid'
+  grain_intensity: 0.12
 };
 
 export const DEFAULT_THEME_BACKGROUND = {

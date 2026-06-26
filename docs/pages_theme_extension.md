@@ -4,7 +4,7 @@
 
 1. **Контроль бренда** — не только accent
 2. **CTA / кнопки** — отдельные настройки
-3. **Фон и атмосфера** — image, overlay, grain, glass-карточки
+3. **Фон и атмосфера** — image, overlay, grain
 
 Связанные документы:
 
@@ -53,7 +53,7 @@ ALTER TABLE page_themes
   ADD COLUMN text_color        varchar(7),
   ADD COLUMN text_muted_color  varchar(7),
   ADD COLUMN cta               jsonb NOT NULL DEFAULT '{"variant":"solid","size":"default","label_case":"uppercase"}'::jsonb,
-  ADD COLUMN atmosphere        jsonb NOT NULL DEFAULT '{"grain":false,"grain_intensity":0.12,"card_style":"solid"}'::jsonb;
+  ADD COLUMN atmosphere        jsonb NOT NULL DEFAULT '{"grain":false,"grain_intensity":0.12}'::jsonb;
 ```
 
 `background` (JSONB) **расширяется** новыми полями для `type: image` и общими overlay-полями (см. ниже). Отдельная колонка не нужна.
@@ -85,8 +85,7 @@ ALTER TABLE page_themes
   },
   "atmosphere": {
     "grain": false,
-    "grain_intensity": 0.12,
-    "card_style": "solid"
+    "grain_intensity": 0.12
   },
   "background": {
     "type": "gradient",
@@ -247,7 +246,6 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 |------|-----|---------|----------|
 | `grain` | boolean | `false` | Лёгкий noise-текстура |
 | `grain_intensity` | number | `0.12` | `0.0` … `1.0`, только если `grain: true` |
-| `card_style` | string | `solid` | `solid` — непрозрачные карточки; `glass` — полупрозрачные с blur |
 
 ### Валидация `background` / `atmosphere`
 
@@ -262,7 +260,6 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 | `BACKGROUND_POSITION_INVALID` | неверный `position` |
 | `ATMOSPHERE_INVALID` | не объект |
 | `ATMOSPHERE_GRAIN_INTENSITY_INVALID` | вне 0…1 |
-| `ATMOSPHERE_CARD_STYLE_INVALID` | не `solid` \| `glass` |
 
 ---
 
@@ -347,7 +344,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 ```json
 {
   "cta": { "variant": "outline", "size": "large" },
-  "atmosphere": { "grain": true, "grain_intensity": 0.08, "card_style": "glass" }
+  "atmosphere": { "grain": true, "grain_intensity": 0.08 }
 }
 ```
 
@@ -390,8 +387,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
       },
       "atmosphere": {
         "grain": false,
-        "grain_intensity": 0.12,
-        "card_style": "solid"
+        "grain_intensity": 0.12
       },
       "background": {
         "type": "solid",
@@ -419,7 +415,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 | Element corners | `element_style` |
 | CTA style | `cta` |
 | Page background | `background` |
-| Grain / glass cards | `atmosphere` |
+| Grain | `atmosphere` |
 | Background upload | `POST /pages/:id/background` |
 
 ---
@@ -436,7 +432,6 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 | `text_color` | `--text` |
 | `text_muted_color` | `--muted` |
 | `cta.*` | классы / vars `--cta-*` |
-| `atmosphere.card_style` | `data-card-style="glass"` |
 | `background` + overlay | слои на `.bs` |
 
 ---
@@ -458,7 +453,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 
 - [ ] Типы `ThemeSettings` + `mapFromApi` / `mapToApi`
 - [ ] UI: Brand colors, CTA, Atmosphere в Theme tab
-- [ ] `page-renderer`: CSS variables, overlay, grain, glass
+- [ ] `page-renderer`: CSS variables, overlay, grain
 - [ ] Style presets: разворачивать новые поля в PATCH
 - [ ] Background upload в `ThemeBackgroundCard`
 

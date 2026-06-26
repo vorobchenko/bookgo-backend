@@ -13,7 +13,6 @@ export type CtaVariant = 'solid' | 'outline' | 'ghost'
 export type CtaSize = 'compact' | 'default' | 'large'
 export type CtaLabelCase = 'uppercase' | 'capitalize' | 'none'
 export type BackgroundPosition = 'center' | 'top' | 'bottom'
-export type CardStyle = 'solid' | 'glass'
 
 export type ThemeCta = {
   variant: CtaVariant
@@ -24,7 +23,6 @@ export type ThemeCta = {
 export type ThemeAtmosphere = {
   grain: boolean
   grain_intensity: number
-  card_style: CardStyle
 }
 
 export type ThemeBackgroundSolid = {
@@ -132,7 +130,7 @@ export async function deletePageBackground(pageId: string) {
 | Corners | `element_style` |
 | CTA style | `cta` |
 | Background | `background` |
-| Grain / glass | `atmosphere` |
+| Grain | `atmosphere` |
 | Background file | `POST /pages/:id/background` |
 
 Style presets на фронте → развёрнутый `PATCH /theme` со всеми полями.
@@ -148,7 +146,6 @@ Style presets на фронте → развёрнутый `PATCH /theme` со �
 | `surface_color` | `--surface` |
 | `text_color` | `--text` |
 | `text_muted_color` | `--muted` |
-| `atmosphere.card_style` | `data-card-style="glass"` |
 
 ---
 

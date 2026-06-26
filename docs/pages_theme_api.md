@@ -44,8 +44,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
   },
   "atmosphere": {
     "grain": false,
-    "grain_intensity": 0.12,
-    "card_style": "solid"
+    "grain_intensity": 0.12
   },
   "background": {
     "type": "solid",
@@ -79,7 +78,6 @@ PATCH `cta` — shallow merge.
 |------|-----|----------|
 | `grain` | boolean | |
 | `grain_intensity` | number | `0` … `1` |
-| `card_style` | string | `solid`, `glass` |
 
 ### `background`
 
