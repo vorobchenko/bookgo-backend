@@ -499,7 +499,7 @@
                   "const json = pm.response.json();",
                   "pm.test('theme block', () => {",
                   "  pm.expect(json.data.theme.preset).to.be.oneOf(['neon', 'pastel', 'bold']);",
-                  "  pm.expect(json.data.theme.font_preset).to.be.oneOf(['neutral', 'sport', 'editorial']);",
+                  "  pm.expect(json.data.theme.font_preset).to.be.a('string');",
                   "  pm.expect(json.data.theme.element_style).to.be.oneOf(['rounded', 'sharp', 'pill']);",
                   "  pm.expect(json.data.theme.background.type).to.be.oneOf(['preset', 'solid', 'gradient', 'image']);",
                   "});"

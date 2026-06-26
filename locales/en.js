@@ -191,7 +191,7 @@ export default {
         PRESET_INVALID: 'Preset must be neon, pastel, or bold',
         ACCENT_COLOR_INVALID: 'Accent color must be a hex value like #c6f432',
         MODE_INVALID: 'Mode must be light, dark, or auto',
-        FONT_PRESET_INVALID: 'Font preset must be neutral, sport, or editorial',
+        FONT_PRESET_INVALID: 'font_preset must be a non-empty string up to 64 characters',
         ELEMENT_STYLE_INVALID: 'Element style must be rounded, sharp, or pill',
         BACKGROUND_REQUIRED: 'Background object is required',
         BACKGROUND_INVALID: 'Background must be a JSON object',

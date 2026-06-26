@@ -1,13 +1,13 @@
 import { jsonField } from './json-field.js';
 import {
   THEME_ELEMENT_STYLES,
-  THEME_FONT_PRESETS,
   THEME_MODES,
   THEME_PRESETS
 } from '../services/page-defaults.js';
 import { parseThemeBackgroundBody } from './theme-background.js';
 
 const ACCENT_COLOR_RE = /^#[0-9A-Fa-f]{6}$/;
+const FONT_PRESET_MAX = 64;
 
 function parseAccentColor(value) {
   const color = typeof value === 'string' ? value.trim() : '';
@@ -15,6 +15,14 @@ function parseAccentColor(value) {
     return { ok: false, code: 'ACCENT_COLOR_INVALID' };
   }
   return { ok: true, value: color };
+}
+
+function parseFontPreset(value) {
+  const preset = typeof value === 'string' ? value.trim() : '';
+  if (!preset || preset.length > FONT_PRESET_MAX) {
+    return { ok: false, code: 'FONT_PRESET_INVALID' };
+  }
+  return { ok: true, value: preset };
 }
 
 export function parseThemePatchBody(body) {
@@ -27,7 +35,6 @@ export function parseThemePatchBody(body) {
     ['preset', null, 'PRESET_INVALID', THEME_PRESETS],
     ['accent_color', 'accentColor', 'ACCENT_COLOR_INVALID', null],
     ['mode', null, 'MODE_INVALID', THEME_MODES],
-    ['font_preset', 'fontPreset', 'FONT_PRESET_INVALID', THEME_FONT_PRESETS],
     ['element_style', 'elementStyle', 'ELEMENT_STYLE_INVALID', THEME_ELEMENT_STYLES]
   ];
 
@@ -54,6 +61,17 @@ export function parseThemePatchBody(body) {
       return { ok: false, code };
     }
     patch[key] = raw;
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(body, 'font_preset') ||
+    Object.prototype.hasOwnProperty.call(body, 'fontPreset')
+  ) {
+    const parsedFontPreset = parseFontPreset(jsonField(body, 'font_preset', 'fontPreset'));
+    if (!parsedFontPreset.ok) {
+      return parsedFontPreset;
+    }
+    patch.font_preset = parsedFontPreset.value;
   }
 
   if (Object.prototype.hasOwnProperty.call(body, 'background')) {

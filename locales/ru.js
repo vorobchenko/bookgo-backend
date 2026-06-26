@@ -191,7 +191,7 @@ export default {
         PRESET_INVALID: 'Preset: neon, pastel или bold',
         ACCENT_COLOR_INVALID: 'Accent color — hex, например #c6f432',
         MODE_INVALID: 'Mode: light, dark или auto',
-        FONT_PRESET_INVALID: 'font_preset: neutral, sport или editorial',
+        FONT_PRESET_INVALID: 'font_preset — непустая строка до 64 символов',
         ELEMENT_STYLE_INVALID: 'element_style: rounded, sharp или pill',
         BACKGROUND_REQUIRED: 'Нужен объект background',
         BACKGROUND_INVALID: 'background должен быть JSON-объектом',
