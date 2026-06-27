@@ -22,6 +22,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | DELETE | `/pages/:id/background` | Bearer, владелец |
 | POST | `/pages/:id/theme/ai-style` | Bearer, multipart `brand` — AI: генерирует и **сохраняет** dark + light в БД |
 | GET | `/pages/:id/theme/ai-styles` | Bearer — список сохранённых AI-стилей |
+| DELETE | `/pages/:id/theme/ai-styles/:styleId` | Bearer — удалить AI-стиль |
 | POST | `/pages/:id/theme/ai-style/apply` | Bearer — применить `style_id` к `page_themes` |
 
 Подробно: [pages_theme_ai_style_api.md](./pages_theme_ai_style_api.md)

@@ -200,6 +200,17 @@ export async function applyPageAiStyle(pageId, styleId) {
   });
 }
 
+export async function deletePageAiStyle(pageId, styleId) {
+  const result = await query(
+    `DELETE FROM page_ai_styles
+     WHERE id = $1 AND page_id = $2
+     RETURNING id`,
+    [styleId, pageId]
+  );
+
+  return result.rows[0]?.id ?? null;
+}
+
 export function newBatchId() {
   return crypto.randomUUID();
 }

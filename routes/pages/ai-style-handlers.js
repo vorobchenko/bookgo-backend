@@ -6,7 +6,8 @@ import {
   isValidStyleId,
   listPageAiStyles,
   newBatchId,
-  applyPageAiStyle
+  applyPageAiStyle,
+  deletePageAiStyle
 } from '../../services/page-ai-styles.repository.js';
 import { getPageOwnedByUser } from '../../services/pages.repository.js';
 import { isS3StorageConfigured } from '../../utils/s3-storage.js';
@@ -207,6 +208,41 @@ export async function applyPageAiStyleHandler(req, res) {
     return res.status(500).json({
       success: false,
       message: req.t('pages.theme.aiStyle.applyError')
+    });
+  }
+}
+
+export async function deletePageAiStyleHandler(req, res) {
+  try {
+    const page = await requireOwnedPage(req, res);
+    if (!page) return;
+
+    const styleId = req.params.styleId ?? req.params.style_id;
+    if (!isValidStyleId(styleId)) {
+      return res.status(400).json({
+        success: false,
+        message: validationMessage(req, 'STYLE_ID_INVALID')
+      });
+    }
+
+    const deletedId = await deletePageAiStyle(page.id, styleId.trim());
+    if (!deletedId) {
+      return res.status(404).json({
+        success: false,
+        message: validationMessage(req, 'STYLE_ID_INVALID')
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: req.t('pages.theme.aiStyle.deleteSuccess'),
+      data: { style_id: deletedId }
+    });
+  } catch (error) {
+    console.error('AI style delete error:', error);
+    return res.status(500).json({
+      success: false,
+      message: req.t('pages.theme.aiStyle.deleteError')
     });
   }
 }

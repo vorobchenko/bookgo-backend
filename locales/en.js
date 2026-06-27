@@ -232,6 +232,8 @@ export default {
         listError: 'Error fetching AI styles',
         applySuccess: 'AI style applied',
         applyError: 'Error applying AI style',
+        deleteSuccess: 'AI style deleted',
+        deleteError: 'Error deleting AI style',
         rateLimit: 'Too many AI style generations. Try again later.',
         providerUnavailable: 'AI service is temporarily unavailable',
         storageNotConfigured: 'File storage is not configured',

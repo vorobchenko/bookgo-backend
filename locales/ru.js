@@ -232,6 +232,8 @@ export default {
         listError: 'Ошибка получения AI-стилей',
         applySuccess: 'AI-стиль применён',
         applyError: 'Ошибка применения AI-стиля',
+        deleteSuccess: 'AI-стиль удалён',
+        deleteError: 'Ошибка удаления AI-стиля',
         rateLimit: 'Слишком много генераций. Попробуйте позже.',
         providerUnavailable: 'AI-сервис временно недоступен',
         storageNotConfigured: 'Хранилище файлов не настроено',

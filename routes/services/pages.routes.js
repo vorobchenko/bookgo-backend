@@ -38,6 +38,7 @@ import {
 } from '../pages/theme-handlers.js';
 import {
   applyPageAiStyleHandler,
+  deletePageAiStyleHandler,
   generatePageAiStyleHandler,
   listPageAiStylesHandler
 } from '../pages/ai-style-handlers.js';
@@ -66,6 +67,11 @@ export default function registerPageRoutes(router) {
     generatePageAiStyleHandler
   );
   router.get('/pages/:id/theme/ai-styles', authenticateToken, listPageAiStylesHandler);
+  router.delete(
+    '/pages/:id/theme/ai-styles/:styleId',
+    authenticateToken,
+    deletePageAiStyleHandler
+  );
   router.post('/pages/:id/theme/ai-style/apply', authenticateToken, applyPageAiStyleHandler);
   router.post(
     '/pages/:id/background',

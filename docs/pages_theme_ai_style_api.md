@@ -42,6 +42,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 |-------|------|------------|
 | `POST` | `/pages/:id/theme/ai-style` | Загрузить логотип, сгенерировать и **сохранить** 2 стиля |
 | `GET` | `/pages/:id/theme/ai-styles` | Список сохранённых AI-стилей страницы |
+| `DELETE` | `/pages/:id/theme/ai-styles/:styleId` | Удалить один сохранённый AI-стиль |
 | `POST` | `/pages/:id/theme/ai-style/apply` | Применить выбранный стиль к `page_themes` |
 
 ---
@@ -213,6 +214,40 @@ Base URL: `https://bookgo-backend.up.railway.app`
 
 ---
 
+## DELETE /pages/:id/theme/ai-styles/:styleId
+
+Удаляет **одну** сохранённую AI-генерацию (одну карточку dark или light).
+
+### Поведение
+
+1. Проверить владельца страницы.
+2. `DELETE` из `page_ai_styles` WHERE `id = styleId` AND `page_id = :id`.
+3. **`page_themes` не меняется** — если этот стиль был применён ранее, активная тема страницы остаётся как есть.
+4. Удаление **не** трогает файл логотипа в Storage (может быть общим для пары batch).
+
+Удалить обе карточки одной генерации — два отдельных DELETE (dark + light имеют разные `style_id`).
+
+### Ответ 200
+
+```json
+{
+  "success": true,
+  "message": "AI style deleted",
+  "data": {
+    "style_id": "11111111-1111-1111-1111-111111111111"
+  }
+}
+```
+
+### Ошибки
+
+| HTTP | Когда |
+|------|--------|
+| `400` | `styleId` не UUID |
+| `404` | Стиль не найден или чужая страница |
+
+---
+
 ## Хранение в БД (`page_ai_styles`)
 
 Каждый сгенерированный стиль — **отдельная постоянная строка**. TTL и временный кэш **не используются**.
@@ -318,6 +353,11 @@ await apiRequest(`/pages/${pageId}/theme/ai-style/apply`, {
 
 // 3. Later: reload list
 const saved = await apiRequest(`/pages/${pageId}/theme/ai-styles`)
+
+// 4. Remove unwanted style
+await apiRequest(`/pages/${pageId}/theme/ai-styles/${styleId}`, {
+  method: 'DELETE',
+})
 ```
 
 ---
@@ -328,6 +368,7 @@ const saved = await apiRequest(`/pages/${pageId}/theme/ai-styles`)
 - [ ] `POST /theme/ai-style` — AI + **2× INSERT**
 - [ ] `GET /theme/ai-styles`
 - [ ] `POST /theme/ai-style/apply` — copy `theme` → `page_themes`
+- [ ] `DELETE /theme/ai-styles/:styleId`
 - [ ] Storage `pages/{id}/brand/`
 - [ ] AI adapter + theme builder + `secondaryFromAccent`
 - [ ] Reuse `page-theme-validation.js`
@@ -338,5 +379,5 @@ const saved = await apiRequest(`/pages/${pageId}/theme/ai-styles`)
 ## Вне скоупа MVP
 
 - Авто-apply dark сразу после generate
-- Удаление отдельных AI-стилей пользователем
+- Удаление целого `batch_id` одним запросом
 - Больше 2 вариантов за одну генерацию
