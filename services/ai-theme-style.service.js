@@ -3,31 +3,17 @@ import { DEFAULT_THEME, DEFAULT_THEME_CTA, DEFAULT_THEME_ATMOSPHERE } from './pa
 import { isAllowedFontPreset } from '../utils/font-presets.js';
 import { secondaryFromAccent } from '../utils/theme-color.js';
 import { validateThemeSnapshot } from '../utils/page-theme-validation.js';
+import { buildAiThemeSystemPrompt } from '../utils/ai-theme-prompt.js';
+import {
+  harmonizeAtmosphere,
+  harmonizePageBackground,
+  harmonizeSurfaceColor
+} from '../utils/ai-theme-harmonize.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+/** Override via ANTHROPIC_MODEL — e.g. claude-opus-4-6 for higher quality (slower/costlier) */
 const DEFAULT_MODEL = 'claude-sonnet-4-6';
-const REQUEST_TIMEOUT_MS = 60_000;
-
-const FONT_PRESET_LIST = [
-  'neutral',
-  'sport',
-  'editorial',
-  'poppins',
-  'montserrat',
-  'playfair',
-  'nunito',
-  'raleway',
-  'lato',
-  'roboto',
-  'open-sans',
-  'oswald',
-  'inter',
-  'dm-sans',
-  'work-sans',
-  'rubik',
-  'merriweather',
-  'outfit'
-].join(', ');
+const REQUEST_TIMEOUT_MS = 90_000;
 
 function getAnthropicApiKey() {
   return process.env.ANTHROPIC_API_KEY?.trim() ?? '';
@@ -81,75 +67,23 @@ function normalizeCta(value) {
   };
 }
 
-function normalizeAtmosphere(value) {
-  if (!value || typeof value !== 'object') {
-    return { ...DEFAULT_THEME_ATMOSPHERE };
-  }
-
-  const intensity = Number(value.grain_intensity);
-  return {
-    grain: Boolean(value.grain),
-    grain_intensity:
-      Number.isFinite(intensity) && intensity >= 0 && intensity <= 1
-        ? intensity
-        : DEFAULT_THEME_ATMOSPHERE.grain_intensity
-  };
-}
-
-function normalizeBackground(value, tone) {
-  const fallback =
-    tone === 'light'
-      ? {
-          type: 'solid',
-          color: '#f5f5f5',
-          overlay_color: '#000000',
-          overlay_opacity: 0
-        }
-      : {
-          type: 'gradient',
-          gradient_from: '#0a0a0a',
-          gradient_to: '#141820',
-          gradient_angle: 160,
-          overlay_color: '#000000',
-          overlay_opacity: 0
-        };
-
-  if (!value || typeof value !== 'object') {
-    return fallback;
-  }
-
-  const type = value.type === 'gradient' ? 'gradient' : 'solid';
-
-  if (type === 'gradient') {
-    return {
-      type: 'gradient',
-      gradient_from: normalizeHex(value.gradient_from, fallback.gradient_from),
-      gradient_to: normalizeHex(value.gradient_to, fallback.gradient_to),
-      gradient_angle: Number.isInteger(Number(value.gradient_angle))
-        ? Number(value.gradient_angle)
-        : fallback.gradient_angle,
-      overlay_color: normalizeHex(value.overlay_color, '#000000'),
-      overlay_opacity: 0
-    };
-  }
-
-  return {
-    type: 'solid',
-    color: normalizeHex(value.color, fallback.color ?? '#0a0a0a'),
-    overlay_color: normalizeHex(value.overlay_color, '#000000'),
-    overlay_opacity: 0
-  };
+function normalizeAtmosphere(value, tone) {
+  return harmonizeAtmosphere(value, tone);
 }
 
 function buildThemeSnapshot(shared, toneVariant, tone) {
   const accent = normalizeHex(shared.accent_color, DEFAULT_THEME.accent_color);
 
+  const background = harmonizePageBackground(toneVariant.background, tone);
+  const surfaceFallback = tone === 'light' ? '#ffffff' : '#1a1a1a';
+
   const theme = {
     accent_color: accent,
     secondary_color: secondaryFromAccent(accent),
-    surface_color: normalizeHex(
-      toneVariant.surface_color,
-      tone === 'light' ? '#ffffff' : '#161616'
+    surface_color: harmonizeSurfaceColor(
+      normalizeHex(toneVariant.surface_color, surfaceFallback),
+      background,
+      tone
     ),
     text_color: normalizeHex(toneVariant.text_color, tone === 'light' ? '#111111' : '#ffffff'),
     text_muted_color: normalizeHex(
@@ -159,8 +93,8 @@ function buildThemeSnapshot(shared, toneVariant, tone) {
     font_preset: isAllowedFontPreset(shared.font_preset) ? shared.font_preset.trim() : 'sport',
     element_style: normalizeElementStyle(shared.element_style),
     cta: normalizeCta(toneVariant.cta),
-    atmosphere: normalizeAtmosphere(toneVariant.atmosphere),
-    background: normalizeBackground(toneVariant.background, tone)
+    atmosphere: normalizeAtmosphere(toneVariant.atmosphere, tone),
+    background
   };
 
   const validated = validateThemeSnapshot(theme);
@@ -195,31 +129,7 @@ function extractJsonFromText(text) {
 }
 
 function buildSystemPrompt() {
-  return `You are a brand design assistant for booking pages.
-Analyze the uploaded logo and return ONLY valid JSON (no markdown prose) with this shape:
-{
-  "accent_color": "#RRGGBB",
-  "font_preset": "one of: ${FONT_PRESET_LIST}",
-  "element_style": "rounded" | "sharp" | "pill",
-  "dark": {
-    "label": "short title max 80 chars",
-    "description": "max 200 chars",
-    "confidence": 0.0-1.0,
-    "surface_color": "#RRGGBB",
-    "text_color": "#RRGGBB",
-    "text_muted_color": "#RRGGBB",
-    "cta": { "variant": "solid"|"outline"|"ghost", "size": "compact"|"default"|"large", "label_case": "uppercase"|"capitalize"|"none" },
-    "atmosphere": { "grain": boolean, "grain_intensity": 0.0-1.0 },
-    "background": { "type": "solid"|"gradient", "color": "#RRGGBB", "gradient_from": "#RRGGBB", "gradient_to": "#RRGGBB", "gradient_angle": 0-360 }
-  },
-  "light": { same fields as dark }
-}
-Rules:
-- accent_color must come from the logo palette.
-- dark and light share accent_color, font_preset, element_style; differ in surface/background/text.
-- Ensure readable contrast between text and surface for each tone.
-- Prefer gradient backgrounds for dark and solid light backgrounds for light tone.
-- confidence reflects how well the logo informed the palette.`;
+  return buildAiThemeSystemPrompt();
 }
 
 export async function prepareVisionImage(file) {
@@ -280,7 +190,7 @@ async function callAnthropicVision({ buffer, mediaType }, hint) {
       },
       body: JSON.stringify({
         model: getAnthropicModel(),
-        max_tokens: 2048,
+        max_tokens: 3072,
         system: buildSystemPrompt(),
         messages: [{ role: 'user', content: userParts }]
       }),
