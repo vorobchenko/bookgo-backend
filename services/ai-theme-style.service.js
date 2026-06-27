@@ -5,6 +5,10 @@ import { secondaryFromAccent } from '../utils/theme-color.js';
 import { validateThemeSnapshot } from '../utils/page-theme-validation.js';
 import { buildAiThemeSystemPrompt } from '../utils/ai-theme-prompt.js';
 import {
+  normalizeAiStyleDescription,
+  normalizeAiStyleLabel
+} from '../utils/ai-theme-copy.js';
+import {
   harmonizeAtmosphere,
   harmonizePageBackground,
   harmonizeSurfaceColor
@@ -74,8 +78,8 @@ function normalizeAtmosphere(value, tone) {
 function buildThemeSnapshot(shared, toneVariant, tone) {
   const accent = normalizeHex(shared.accent_color, DEFAULT_THEME.accent_color);
 
-  const background = harmonizePageBackground(toneVariant.background, tone);
-  const surfaceFallback = tone === 'light' ? '#ffffff' : '#1a1a1a';
+  const background = harmonizePageBackground(toneVariant.background, tone, accent);
+  const surfaceFallback = tone === 'light' ? '#ffffff' : '#1e1e1e';
 
   const theme = {
     accent_color: accent,
@@ -83,7 +87,8 @@ function buildThemeSnapshot(shared, toneVariant, tone) {
     surface_color: harmonizeSurfaceColor(
       normalizeHex(toneVariant.surface_color, surfaceFallback),
       background,
-      tone
+      tone,
+      accent
     ),
     text_color: normalizeHex(toneVariant.text_color, tone === 'light' ? '#111111' : '#ffffff'),
     text_muted_color: normalizeHex(
@@ -191,6 +196,7 @@ async function callAnthropicVision({ buffer, mediaType }, hint) {
       body: JSON.stringify({
         model: getAnthropicModel(),
         max_tokens: 3072,
+        temperature: 0.75,
         system: buildSystemPrompt(),
         messages: [{ role: 'user', content: userParts }]
       }),
@@ -241,15 +247,15 @@ export async function generateAiThemeStyles(file, hint) {
   const styles = [
     {
       tone: 'dark',
-      label: String(aiPayload.dark.label ?? 'Night brand').slice(0, 80),
-      description: String(aiPayload.dark.description ?? 'Dark theme from your brand').slice(0, 200),
+      label: normalizeAiStyleLabel(aiPayload.dark.label, 'dark'),
+      description: normalizeAiStyleDescription(aiPayload.dark.description, 'dark'),
       confidence: clampConfidence(aiPayload.dark.confidence),
       theme: buildThemeSnapshot(aiPayload, aiPayload.dark, 'dark')
     },
     {
       tone: 'light',
-      label: String(aiPayload.light.label ?? 'Day brand').slice(0, 80),
-      description: String(aiPayload.light.description ?? 'Light theme from your brand').slice(0, 200),
+      label: normalizeAiStyleLabel(aiPayload.light.label, 'light'),
+      description: normalizeAiStyleDescription(aiPayload.light.description, 'light'),
       confidence: clampConfidence(aiPayload.light.confidence),
       theme: buildThemeSnapshot(aiPayload, aiPayload.light, 'light')
     }

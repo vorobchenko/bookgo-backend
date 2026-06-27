@@ -134,6 +134,8 @@ Base URL: `https://bookgo-backend.up.railway.app`
 |------|----------|
 | `batch_id` | Связка пары dark+light из одной загрузки |
 | `style_id` | PK строки в `page_ai_styles` — передаётся в apply |
+| `label` | Название карточки, **8–48** символов (без длинного подзаголовка) |
+| `description` | Описание, **50–140** символов |
 | `is_active` | `true` если этот стиль сейчас в `page_themes` (после generate всегда `false`) |
 | `theme` | Полный `ThemeSettings` v2 из БД |
 

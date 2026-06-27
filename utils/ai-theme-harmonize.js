@@ -1,3 +1,12 @@
+const OVERLAY = { overlay_color: '#000000', overlay_opacity: 0 };
+
+/** Max luminance gap between gradient stops (subtle, not dramatic) */
+const MAX_GRADIENT_LUM_DIFF = 0.16;
+/** Max RGB distance between stops — allows visible but calm gradients */
+const MAX_GRADIENT_COLOR_DIST = 48;
+/** Background colors above this chroma get softened (not flattened) */
+const MAX_BACKGROUND_CHROMA = 28;
+
 function hexToRgb(hex) {
   const normalized = hex.trim().replace(/^#/, '');
   if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
@@ -22,21 +31,15 @@ function luminance({ r, g, b }) {
   return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 }
 
-/** Neutral gray — no visible hue cast (blocks burgundy/brown page backgrounds) */
-function isNeutralColor(hex) {
+function colorChroma(hex) {
   const rgb = hexToRgb(hex);
   if (!rgb) {
-    return false;
+    return Infinity;
   }
 
-  const avg = (rgb.r + rgb.g + rgb.b) / 3;
-  const maxDev = Math.max(
-    Math.abs(rgb.r - avg),
-    Math.abs(rgb.g - avg),
-    Math.abs(rgb.b - avg)
-  );
-
-  return maxDev <= 10;
+  const max = Math.max(rgb.r, rgb.g, rgb.b);
+  const min = Math.min(rgb.r, rgb.g, rgb.b);
+  return max - min;
 }
 
 function colorDistance(a, b) {
@@ -51,83 +54,156 @@ function colorDistance(a, b) {
   );
 }
 
-function clampNeutralDark(hex, fallback = '#101010') {
-  if (isNeutralColor(hex) && luminance(hexToRgb(hex)) < 0.22) {
-    return hex;
+function mixHex(a, b, weightB) {
+  const rgbA = hexToRgb(a);
+  const rgbB = hexToRgb(b);
+  if (!rgbA || !rgbB) {
+    return a;
   }
-  return fallback;
+
+  const w = Math.max(0, Math.min(1, weightB));
+  return rgbToHex(
+    rgbA.r * (1 - w) + rgbB.r * w,
+    rgbA.g * (1 - w) + rgbB.g * w,
+    rgbA.b * (1 - w) + rgbB.b * w
+  );
 }
 
-function clampNeutralLight(hex, fallback = '#f7f7f5') {
-  if (isNeutralColor(hex) && luminance(hexToRgb(hex)) > 0.88) {
-    return hex;
-  }
-  return fallback;
+function grayAtLuminance(targetLum) {
+  const channel = Math.round(Math.max(0, Math.min(255, targetLum * 255)));
+  return rgbToHex(channel, channel, channel);
 }
 
-const OVERLAY = { overlay_color: '#000000', overlay_opacity: 0 };
+function softenBackgroundColor(hex, tone, fallback, accent = null) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) {
+    return accent ? tintFromAccent(accent, tone, 'mid') : fallback;
+  }
 
-export function harmonizePageBackground(background, tone) {
-  const input = background && typeof background === 'object' ? background : {};
+  let lum = luminance(rgb);
+  const chroma = colorChroma(hex);
 
   if (tone === 'dark') {
-    if (input.type === 'gradient') {
-      const from = clampNeutralDark(input.gradient_from, '#0c0c0c');
-      const to = clampNeutralDark(input.gradient_to, '#121212');
-
-      if (!isNeutralColor(from) || !isNeutralColor(to) || colorDistance(from, to) > 20) {
-        return { type: 'solid', color: '#101010', ...OVERLAY };
-      }
-
-      const lumFrom = luminance(hexToRgb(from));
-      const lumTo = luminance(hexToRgb(to));
-      if (Math.abs(lumFrom - lumTo) > 0.06) {
-        return { type: 'solid', color: from, ...OVERLAY };
-      }
-
-      return {
-        type: 'gradient',
-        gradient_from: from,
-        gradient_to: to,
-        gradient_angle: Number.isInteger(Number(input.gradient_angle))
-          ? Number(input.gradient_angle)
-          : 180,
-        ...OVERLAY
-      };
-    }
-
-    return {
-      type: 'solid',
-      color: clampNeutralDark(input.color, '#101010'),
-      ...OVERLAY
-    };
+    lum = Math.max(0.02, Math.min(0.24, lum));
+  } else {
+    lum = Math.max(0.86, Math.min(0.995, lum));
   }
 
-  if (input.type === 'gradient') {
-    const from = clampNeutralLight(input.gradient_from, '#f7f7f5');
-    const to = clampNeutralLight(input.gradient_to, '#ffffff');
+  const neutral = grayAtLuminance(lum);
+  let softened;
 
-    if (colorDistance(from, to) > 16) {
-      return { type: 'solid', color: '#f7f7f5', ...OVERLAY };
-    }
+  if (chroma <= MAX_BACKGROUND_CHROMA) {
+    const mix =
+      chroma <= 8 ? 0.62 : chroma <= 16 ? 0.48 : chroma <= 22 ? 0.32 : 0.2;
+    softened = mixHex(neutral, hex, mix);
+  } else {
+    softened = mixHex(neutral, hex, 0.14);
+  }
 
-    return {
-      type: 'gradient',
-      gradient_from: from,
-      gradient_to: to,
-      gradient_angle: 180,
-      ...OVERLAY
-    };
+  if (accent && colorChroma(softened) < 8) {
+    softened = mixHex(softened, tintFromAccent(accent, tone, 'whisper'), 0.35);
+  }
+
+  return softened;
+}
+
+function tintFromAccent(accent, tone, strength = 'mid') {
+  const accentRgb = hexToRgb(accent);
+  if (!accentRgb) {
+    return tone === 'dark' ? '#101010' : '#f7f7f5';
+  }
+
+  const weights = {
+    dark: { whisper: 0.06, mid: 0.1, lift: 0.14 },
+    light: { whisper: 0.04, mid: 0.07, lift: 0.1 }
+  };
+  const w = weights[tone][strength] ?? weights[tone].mid;
+  const baseLum = tone === 'dark' ? 0.06 : 0.94;
+  const base = grayAtLuminance(baseLum);
+  const liftLum = tone === 'dark' ? 0.11 : 0.98;
+  const target = strength === 'lift' ? grayAtLuminance(liftLum) : base;
+
+  return mixHex(target, accent, w);
+}
+
+function normalizeAngle(angle) {
+  const value = Number(angle);
+  if (!Number.isFinite(value)) {
+    return 180;
+  }
+  return Math.round(((value % 360) + 360) % 360);
+}
+
+function buildSubtleGradient(fromInput, toInput, angle, tone, accent = null) {
+  const fallbackFrom =
+    accent != null ? tintFromAccent(accent, tone, 'mid') : tone === 'dark' ? '#0c0c0c' : '#f5f5f2';
+  const fallbackTo =
+    accent != null ? tintFromAccent(accent, tone, 'lift') : tone === 'dark' ? '#181818' : '#fafafa';
+
+  let from = softenBackgroundColor(fromInput, tone, fallbackFrom, accent);
+  let to = softenBackgroundColor(toInput, tone, fallbackTo, accent);
+
+  const lumFrom = luminance(hexToRgb(from));
+  let lumTo = luminance(hexToRgb(to));
+  const lumDiff = Math.abs(lumFrom - lumTo);
+
+  if (lumDiff > MAX_GRADIENT_LUM_DIFF) {
+    const targetLum =
+      lumTo > lumFrom
+        ? Math.min(lumFrom + MAX_GRADIENT_LUM_DIFF, tone === 'dark' ? 0.2 : 0.995)
+        : Math.max(lumFrom - MAX_GRADIENT_LUM_DIFF, tone === 'dark' ? 0.03 : 0.88);
+    const anchor = grayAtLuminance(targetLum);
+    to = mixHex(to, anchor, 0.65);
+  }
+
+  const dist = colorDistance(from, to);
+  if (dist > MAX_GRADIENT_COLOR_DIST) {
+    to = mixHex(from, to, MAX_GRADIENT_COLOR_DIST / dist);
+  }
+
+  if (colorDistance(from, to) < 10) {
+    to =
+      tone === 'dark'
+        ? mixHex(from, '#1a1a1a', 0.55)
+        : mixHex(from, '#ffffff', 0.45);
   }
 
   return {
-    type: 'solid',
-    color: clampNeutralLight(input.color, '#f7f7f5'),
+    type: 'gradient',
+    gradient_from: from,
+    gradient_to: to,
+    gradient_angle: normalizeAngle(angle),
     ...OVERLAY
   };
 }
 
-export function harmonizeSurfaceColor(surfaceColor, background, tone) {
+export function harmonizePageBackground(background, tone, accent = null) {
+  const input = background && typeof background === 'object' ? background : {};
+
+  if (input.type === 'gradient') {
+    return buildSubtleGradient(
+      input.gradient_from ?? input.color,
+      input.gradient_to ?? input.gradient_from,
+      input.gradient_angle,
+      tone,
+      accent
+    );
+  }
+
+  const fallback = accent
+    ? tintFromAccent(accent, tone, 'mid')
+    : tone === 'dark'
+      ? '#101010'
+      : '#f7f7f5';
+
+  return {
+    type: 'solid',
+    color: softenBackgroundColor(input.color, tone, fallback, accent),
+    ...OVERLAY
+  };
+}
+
+export function harmonizeSurfaceColor(surfaceColor, background, tone, accent = null) {
   const bg =
     background.type === 'solid'
       ? background.color
@@ -140,19 +216,28 @@ export function harmonizeSurfaceColor(surfaceColor, background, tone) {
     return tone === 'light' ? '#ffffff' : '#1a1a1a';
   }
 
-  if (!surfaceRgb || !isNeutralColor(surfaceColor)) {
-    return tone === 'light' ? '#ffffff' : '#1a1a1a';
+  if (!surfaceRgb || colorChroma(surfaceColor) > MAX_BACKGROUND_CHROMA + 10) {
+    surfaceColor = accent ? mixHex(bg, tintFromAccent(accent, tone, 'whisper'), 0.12) : bg;
+    const derived = hexToRgb(surfaceColor);
+    if (tone === 'dark' && derived) {
+      return rgbToHex(
+        Math.min(derived.r + 24, 52),
+        Math.min(derived.g + 24, 52),
+        Math.min(derived.b + 24, 52)
+      );
+    }
+    return tone === 'light' ? '#ffffff' : '#1e1e1e';
   }
 
   const bgLum = luminance(bgRgb);
   const surfaceLum = luminance(surfaceRgb);
 
   if (tone === 'dark') {
-    if (surfaceLum <= bgLum || surfaceLum > 0.28) {
+    if (surfaceLum <= bgLum || surfaceLum > 0.3) {
       return rgbToHex(
-        Math.min(bgRgb.r + 18, 42),
-        Math.min(bgRgb.g + 18, 42),
-        Math.min(bgRgb.b + 18, 42)
+        Math.min(bgRgb.r + 24, 52),
+        Math.min(bgRgb.g + 24, 52),
+        Math.min(bgRgb.b + 24, 52)
       );
     }
     return surfaceColor;

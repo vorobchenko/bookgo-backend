@@ -27,21 +27,33 @@ The UI is layered:
 
 ${formatFontPresetGuide()}
 
-Match font to logo personality: serif presets (editorial, playfair, merriweather) for luxury/editorial marks; sport/oswald for athletic; inter/neutral/work-sans for tech/SaaS.
+Match font to logo personality — **do not default to sport/inter every time**. Serif for luxury/editorial; oswald/sport for athletic; outfit/dm-sans for startups; playfair/merriweather for premium services.
 
-## Background rules (CRITICAL — fixes "drifting" backgrounds)
+## Variety (avoid same-looking presets)
+
+Each logo is unique. Do NOT reuse the same template for every brand:
+- Pick \`font_preset\` and \`element_style\` from logo shape and industry (not always rounded + inter).
+- Vary \`cta\`: e.g. uppercase solid for sport, capitalize outline for editorial, ghost for minimal marks.
+- Dark vs light should feel like a **designed pair**, not only inverted brightness — different background angle, optional grain on one tone only.
+- Use different neutral families when appropriate: cool blue-gray, warm graphite, green-gray, violet-gray (always desaturated on page bg).
+- \`gradient_angle\`: vary 140–220, not always 180.
+
+## Background rules (subtle gradients OK — no aggressive color drift)
 
 **Dark tone:**
-- Default to \`type: "solid"\` with neutral charcoal (#0a0a0a – #141414). NOT burgundy, NOT brown, NOT logo hue on the page background.
-- If gradient: ONLY micro-gradient between two NEUTRAL grays within 6% luminance difference (e.g. #0c0c0c → #121212). Same hue family. angle: 160 or 180.
-- NEVER put accent/logo red, orange, purple, or blue into page background or gradient.
-- Logo color → accent_color only.
+- Use \`type: "gradient"\` with a **soft** neutral gradient. Pick a family that matches logo temperature:
+  - Cool: #0a0a10 → #121820
+  - Warm: #100e0c → #1a1612
+  - Violet-gray: #0e0c12 → #16141c
+- \`type: "solid"\` for ultra-minimal marks.
+- Low contrast between stops (~10–15% luminance). Barely perceptible brand tint OK; saturated accent only in \`accent_color\`.
 
 **Light tone:**
-- Default to \`type: "solid"\` warm/cool off-white (#f5f5f2 – #fafafa). Subtle tint OK but must stay neutral (not saturated).
-- Avoid gradients on light unless extremely subtle (#f7f7f5 → #ffffff).
+- Solid off-white OR soft gradient (#f4f2ee → #ffffff warm, #f2f4f7 → #ffffff cool).
 
-**Both tones:** overlay_color always #000000, overlay_opacity always 0 (no overlay in AI presets).
+**Avoid:** high-contrast hue shifts, full logo color washing the page background.
+
+**Both tones:** overlay_color #000000, overlay_opacity 0.
 
 ## Dark vs light pair
 
@@ -57,6 +69,24 @@ Match font to logo personality: serif presets (editorial, playfair, merriweather
 - rounded — default professional (most logos)
 - sharp — editorial, luxury, architecture, law
 
+## Copy limits (label & description)
+
+**label** — short card title only:
+- Length: **8–48 characters** (strict)
+- Format: brand or mood name + tone, e.g. "Orbit Dark", "Dodo Tap Light", "Padel Nights"
+- Do NOT put subtitles or explanations in label (no em dash taglines like "Orbit Dark — Clean tech clarity…")
+- Do NOT use one-word labels under 8 chars — add context ("Volt Dark", not just "Volt")
+
+**description** — one compact blurb under the title:
+- Length: **50–140 characters** (strict)
+- 1–2 short sentences: mood + where accent shows (CTA, highlights)
+- No bullet lists, no marketing fluff, no repetition of the full label
+
+Bad label: "Orbit Dark — Clean tech clarity with a vibrant blue pulse" (too long)
+Good label: "Orbit Dark"
+Bad description: 3+ sentences or under 50 chars
+Good description: "Charcoal base with a bright blue accent on CTAs. Clean, app-like booking UI."
+
 ## Output JSON shape
 
 {
@@ -64,8 +94,8 @@ Match font to logo personality: serif presets (editorial, playfair, merriweather
   "font_preset": "<id from list>",
   "element_style": "rounded" | "sharp" | "pill",
   "dark": {
-    "label": "max 80 chars",
-    "description": "max 200 chars",
+    "label": "8-48 chars",
+    "description": "50-140 chars",
     "confidence": 0.0-1.0,
     "surface_color": "#RRGGBB",
     "text_color": "#RRGGBB",
