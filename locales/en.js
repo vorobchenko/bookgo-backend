@@ -224,26 +224,26 @@ export default {
         BACKGROUND_IMAGE_URL_INVALID: 'Background image URL must point to Bookgo storage',
         BACKGROUND_OVERLAY_OPACITY_INVALID: 'overlay_opacity must be between 0 and 1',
         BACKGROUND_POSITION_INVALID: 'position must be center, top, or bottom'
-      }
-    },
-    aiStyle: {
-      generateSuccess: 'AI styles generated and saved',
-      generateError: 'Error generating AI styles',
-      generateFailed: 'Could not generate themes from this image',
-      listError: 'Error fetching AI styles',
-      applySuccess: 'AI style applied',
-      applyError: 'Error applying AI style',
-      rateLimit: 'Too many AI style generations. Try again later.',
-      providerUnavailable: 'AI service is temporarily unavailable',
-      storageNotConfigured: 'File storage is not configured',
-      brandFileRequired: 'Brand image file is required',
-      brandFileInvalid: 'Brand file must be JPEG, PNG, WebP, or SVG',
-      brandFileTooLarge: 'Brand file must be 5 MB or smaller',
-      brandUploadInvalid: 'Invalid brand upload',
-      validation: {
-        invalid: 'Invalid AI style request',
-        HINT_TOO_LONG: 'Hint must be 200 characters or fewer',
-        STYLE_ID_INVALID: 'style_id is invalid or does not belong to this page'
+      },
+      aiStyle: {
+        generateSuccess: 'AI styles generated and saved',
+        generateError: 'Error generating AI styles',
+        generateFailed: 'Could not generate themes from this image',
+        listError: 'Error fetching AI styles',
+        applySuccess: 'AI style applied',
+        applyError: 'Error applying AI style',
+        rateLimit: 'Too many AI style generations. Try again later.',
+        providerUnavailable: 'AI service is temporarily unavailable',
+        storageNotConfigured: 'File storage is not configured',
+        brandFileRequired: 'Brand image file is required',
+        brandFileInvalid: 'Brand file must be JPEG, PNG, WebP, or SVG',
+        brandFileTooLarge: 'Brand file must be 5 MB or smaller',
+        brandUploadInvalid: 'Invalid brand upload',
+        validation: {
+          invalid: 'Invalid AI style request',
+          HINT_TOO_LONG: 'Hint must be 200 characters or fewer',
+          STYLE_ID_INVALID: 'style_id is invalid or does not belong to this page'
+        }
       }
     },
     slots: {

@@ -5,7 +5,7 @@ import { secondaryFromAccent } from '../utils/theme-color.js';
 import { validateThemeSnapshot } from '../utils/page-theme-validation.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
+const DEFAULT_MODEL = 'claude-sonnet-4-6';
 const REQUEST_TIMEOUT_MS = 60_000;
 
 const FONT_PRESET_LIST = [
