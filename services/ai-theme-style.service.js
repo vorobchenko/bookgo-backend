@@ -11,8 +11,8 @@ import {
 } from '../utils/ai-theme-harmonize.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-/** Override via ANTHROPIC_MODEL — e.g. claude-opus-4-6 for higher quality (slower/costlier) */
-const DEFAULT_MODEL = 'claude-sonnet-4-6';
+/** Override via ANTHROPIC_MODEL */
+const DEFAULT_MODEL = 'claude-opus-4-6';
 const REQUEST_TIMEOUT_MS = 90_000;
 
 function getAnthropicApiKey() {
