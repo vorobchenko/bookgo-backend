@@ -20,6 +20,11 @@ Base URL: `https://bookgo-backend.up.railway.app`
 | PATCH | `/pages/:id/theme` | Bearer, владелец |
 | POST | `/pages/:id/background` | Bearer, multipart `background` |
 | DELETE | `/pages/:id/background` | Bearer, владелец |
+| POST | `/pages/:id/theme/ai-style` | Bearer, multipart `brand` — AI: генерирует и **сохраняет** dark + light в БД |
+| GET | `/pages/:id/theme/ai-styles` | Bearer — список сохранённых AI-стилей |
+| POST | `/pages/:id/theme/ai-style/apply` | Bearer — применить `style_id` к `page_themes` |
+
+Подробно: [pages_theme_ai_style_api.md](./pages_theme_ai_style_api.md)
 
 `settings.theme` в `GET /pages/:id` и `GET /public/pages/:slug` — та же схема.
 
@@ -30,7 +35,7 @@ Base URL: `https://bookgo-backend.up.railway.app`
 ```json
 {
   "accent_color": "#c6f432",
-  "secondary_color": "#3dd6b0",
+  "secondary_color": "#b4dd2f",
   "surface_color": "#1a1a1a",
   "text_color": "#ffffff",
   "text_muted_color": "#8a8a8a",

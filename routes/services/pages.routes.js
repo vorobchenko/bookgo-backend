@@ -1,5 +1,5 @@
 import { authenticateToken } from '../../middleware/auth.js';
-import { handleAvatarUpload, handleBackgroundUpload, handleServicePhotoUpload } from '../../middleware/upload-avatar.js';
+import { handleAvatarUpload, handleBackgroundUpload, handleBrandUpload, handleServicePhotoUpload } from '../../middleware/upload-avatar.js';
 import {
   createPage,
   deletePageHandler,
@@ -37,6 +37,11 @@ import {
   patchPageThemeHandler
 } from '../pages/theme-handlers.js';
 import {
+  applyPageAiStyleHandler,
+  generatePageAiStyleHandler,
+  listPageAiStylesHandler
+} from '../pages/ai-style-handlers.js';
+import {
   getPageAvailabilityHandler,
   patchPageAvailabilityHandler,
   patchPageBookingRulesHandler,
@@ -54,6 +59,14 @@ export default function registerPageRoutes(router) {
 
   router.get('/pages/:id/theme', authenticateToken, getPageThemeHandler);
   router.patch('/pages/:id/theme', authenticateToken, patchPageThemeHandler);
+  router.post(
+    '/pages/:id/theme/ai-style',
+    authenticateToken,
+    handleBrandUpload,
+    generatePageAiStyleHandler
+  );
+  router.get('/pages/:id/theme/ai-styles', authenticateToken, listPageAiStylesHandler);
+  router.post('/pages/:id/theme/ai-style/apply', authenticateToken, applyPageAiStyleHandler);
   router.post(
     '/pages/:id/background',
     authenticateToken,

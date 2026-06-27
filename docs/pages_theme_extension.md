@@ -35,6 +35,7 @@
 ### Принцип v2
 
 - **Style presets** остаются на фронте: при выборе пресета билдер шлёт развёрнутый snapshot полей theme.
+- `secondary_color` в пресетах — **90% accent** (лёгкий сдвиг к чёрному/белому в той же гамме), не отдельный контрастный hue.
 - Бэкенд хранит **атомарные настройки**, валидирует и отдаёт их в `GET /pages/:id` и `GET /public/pages/:slug` → `settings.theme`.
 - Все новые поля — **optional в PATCH**, но всегда присутствуют в GET (с дефолтами).
 
@@ -71,7 +72,7 @@ ALTER TABLE page_themes
 ```json
 {
   "accent_color": "#c6f432",
-  "secondary_color": "#8b5cf6",
+  "secondary_color": "#b4dd2f",
   "surface_color": "#1a1a1a",
   "text_color": "#ffffff",
   "text_muted_color": "#8a8a8a",
@@ -106,7 +107,7 @@ ALTER TABLE page_themes
 | Поле | Тип | Обязательно | Описание |
 |------|-----|-------------|----------|
 | `accent_color` | string | да | Primary accent — CTA, highlights, calendar selection |
-| `secondary_color` | string | да | Второй акцент — бейджи категорий, ссылки, вторичные chip |
+| `secondary_color` | string | да | Второй акцент — бейджи категорий, ссылки, вторичные chip. В style presets — ~90% от `accent_color` |
 | `surface_color` | string | да | Фон карточек / инпутов / календаря поверх page background |
 | `text_color` | string | да | Основной текст |
 | `text_muted_color` | string | да | Вторичный текст |
@@ -121,7 +122,7 @@ ALTER TABLE page_themes
 | Поле | Значение |
 |------|----------|
 | `accent_color` | `#c6f432` |
-| `secondary_color` | `#3dd6b0` |
+| `secondary_color` | `#b4dd2f` |
 | `surface_color` | `#1a1a1a` |
 | `text_color` | `#ffffff` |
 | `text_muted_color` | `#8a8a8a` |
@@ -322,7 +323,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
 
 ```json
 {
-  "secondary_color": "#f472b6",
+  "secondary_color": "#b4dd2f",
   "surface_color": "#141414",
   "text_muted_color": "#6a6a6a"
 }
@@ -362,7 +363,7 @@ Partial update внутри `cta`: при передаче объекта `cta` 
   "data": {
     "theme": {
       "accent_color": "#c6f432",
-      "secondary_color": "#3dd6b0",
+      "secondary_color": "#b4dd2f",
       "surface_color": "#1a1a1a",
       "text_color": "#ffffff",
       "text_muted_color": "#8a8a8a",

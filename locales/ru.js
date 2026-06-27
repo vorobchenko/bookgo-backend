@@ -226,6 +226,26 @@ export default {
         BACKGROUND_POSITION_INVALID: 'position: center, top или bottom'
       }
     },
+    aiStyle: {
+      generateSuccess: 'AI-стили сгенерированы и сохранены',
+      generateError: 'Ошибка генерации AI-стилей',
+      generateFailed: 'Не удалось создать темы по этому изображению',
+      listError: 'Ошибка получения AI-стилей',
+      applySuccess: 'AI-стиль применён',
+      applyError: 'Ошибка применения AI-стиля',
+      rateLimit: 'Слишком много генераций. Попробуйте позже.',
+      providerUnavailable: 'AI-сервис временно недоступен',
+      storageNotConfigured: 'Хранилище файлов не настроено',
+      brandFileRequired: 'Нужен файл бренда',
+      brandFileInvalid: 'Файл: JPEG, PNG, WebP или SVG',
+      brandFileTooLarge: 'Файл бренда — не больше 5 МБ',
+      brandUploadInvalid: 'Некорректная загрузка бренда',
+      validation: {
+        invalid: 'Некорректный запрос AI-стиля',
+        HINT_TOO_LONG: 'hint — не больше 200 символов',
+        STYLE_ID_INVALID: 'style_id невалиден или не принадлежит странице'
+      }
+    },
     slots: {
       getSuccess: 'Слоты успешно получены',
       getError: 'Ошибка получения слотов',

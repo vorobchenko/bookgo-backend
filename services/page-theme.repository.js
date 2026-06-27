@@ -107,3 +107,18 @@ export async function updatePageTheme(pageId, patch) {
 export async function setPageThemeBackground(pageId, background) {
   return updatePageTheme(pageId, { background });
 }
+
+export async function replacePageTheme(pageId, theme) {
+  return withTransaction(async (client) => {
+    const page = await loadPageRow(client, pageId);
+    if (!page) {
+      return null;
+    }
+
+    await saveTheme(client, pageId, theme);
+    await touchPage(pageId, client);
+
+    const saved = await getThemeRow(client, pageId);
+    return { theme: mapThemeRow(saved) };
+  });
+}

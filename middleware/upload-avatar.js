@@ -108,3 +108,51 @@ export function handleBackgroundUpload(req, res, next) {
     });
   });
 }
+
+const brandUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 1
+  },
+  fileFilter(req, file, cb) {
+    if (
+      ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(file.mimetype)
+    ) {
+      cb(null, true);
+      return;
+    }
+
+    const error = new Error('INVALID_FILE_TYPE');
+    error.code = 'INVALID_FILE_TYPE';
+    cb(error);
+  }
+});
+
+export function handleBrandUpload(req, res, next) {
+  brandUpload.single('brand')(req, res, (error) => {
+    if (!error) {
+      next();
+      return;
+    }
+
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: req.t('pages.theme.aiStyle.brandFileTooLarge')
+      });
+    }
+
+    if (error.code === 'INVALID_FILE_TYPE') {
+      return res.status(400).json({
+        success: false,
+        message: req.t('pages.theme.aiStyle.brandFileInvalid')
+      });
+    }
+
+    return res.status(400).json({
+      success: false,
+      message: req.t('pages.theme.aiStyle.brandUploadInvalid')
+    });
+  });
+}

@@ -129,7 +129,21 @@ export async function deletePageBackground(pageId: string) {
 | Grain | `atmosphere` |
 | Background file | `POST /pages/:id/background` |
 
-Style presets на фронте → развёрнутый `PATCH /theme` со всеми полями.
+Style presets на фронте → развёрнутый `PATCH /theme` со всеми полями. `secondary_color` в пресете = ~90% `accent_color` (та же гамма, лёгкий light/dark shift).
+
+### Style presets (фронт, `STYLE_PRESETS`)
+
+| Preset | `accent_color` | `secondary_color` |
+|--------|----------------|-------------------|
+| Volt | `#c6f432` | `#b4dd2f` |
+| Aurora | `#a78bfa` | `#987fe3` |
+| Ember | `#f5a623` | `#de9721` |
+| Ocean | `#60a5fa` | `#5896e3` |
+| Forest | `#4ade80` | `#44c975` |
+| Ruby | `#f43f5e` | `#dd3a56` |
+| Cloud | `#3dd6b0` | `#39c2a0` |
+| Sakura | `#f472b6` | `#dd68a5` |
+| Pearl | `#c9a227` | `#b79325` |
 
 ---
 

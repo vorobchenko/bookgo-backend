@@ -7,12 +7,26 @@ import {
   servicePhotoObjectPath
 } from '../utils/avatar.js';
 import { pageBackgroundObjectPath } from '../utils/theme-background.js';
+import { pageBrandObjectPath } from '../utils/avatar.js';
 import { getS3Client, getStorageBucket } from '../utils/s3-storage.js';
 
 const BACKGROUND_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const BRAND_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/svg+xml'
+]);
 
 function extensionForBackgroundMime(mimetype) {
   if (!BACKGROUND_MIME_TYPES.has(mimetype)) {
+    return null;
+  }
+  return extensionForMime(mimetype);
+}
+
+function extensionForBrandMime(mimetype) {
+  if (!BRAND_MIME_TYPES.has(mimetype)) {
     return null;
   }
   return extensionForMime(mimetype);
@@ -64,6 +78,17 @@ export async function uploadPageBackground(pageId, file) {
   }
 
   return uploadObject(pageBackgroundObjectPath(pageId, extension), file);
+}
+
+export async function uploadPageBrand(pageId, file) {
+  const extension = extensionForBrandMime(file.mimetype);
+  if (!extension) {
+    const error = new Error('INVALID_FILE_TYPE');
+    error.code = 'INVALID_FILE_TYPE';
+    throw error;
+  }
+
+  return uploadObject(pageBrandObjectPath(pageId, extension), file);
 }
 
 export async function uploadServicePhoto(pageId, serviceId, file) {

@@ -155,7 +155,7 @@ export const DEFAULT_THEME_BACKGROUND = {
 
 export const DEFAULT_THEME = {
   accent_color: '#c6f432',
-  secondary_color: '#3dd6b0',
+  secondary_color: '#b4dd2f',
   surface_color: '#1a1a1a',
   text_color: '#ffffff',
   text_muted_color: '#8a8a8a',

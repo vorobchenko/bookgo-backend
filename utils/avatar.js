@@ -87,6 +87,11 @@ export function pageAvatarObjectPath(pageId, extension) {
   return `pages/${pageId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
 }
 
+export function pageBrandObjectPath(pageId, extension) {
+  const safeExt = extension.replace(/^\./, '').toLowerCase();
+  return `pages/${pageId}/brand/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
+}
+
 export function servicePhotoObjectPath(pageId, serviceId, extension) {
   const safeExt = extension.replace(/^\./, '').toLowerCase();
   return `pages/${pageId}/services/${serviceId}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${safeExt}`;
@@ -127,6 +132,8 @@ export function extensionForMime(mimeType) {
       return 'webp';
     case 'image/gif':
       return 'gif';
+    case 'image/svg+xml':
+      return 'svg';
     default:
       return null;
   }

@@ -1,7 +1,7 @@
 import { jsonField } from './json-field.js';
 import { THEME_ELEMENT_STYLES } from '../services/page-defaults.js';
 import { parseThemeAtmospherePatch } from './theme-atmosphere.js';
-import { parseThemeBackgroundPatch } from './theme-background.js';
+import { parseThemeBackgroundBody, parseThemeBackgroundPatch } from './theme-background.js';
 import { parseThemeCtaPatch } from './theme-cta.js';
 
 const HEX_COLOR_RE = /^#[0-9A-Fa-f]{6}$/;
@@ -149,4 +149,78 @@ export function parseThemePatchBody(body, currentTheme = null) {
   }
 
   return { ok: true, value: patch };
+}
+
+const THEME_SNAPSHOT_KEYS = new Set([
+  'accent_color',
+  'secondary_color',
+  'surface_color',
+  'text_color',
+  'text_muted_color',
+  'font_preset',
+  'element_style',
+  'cta',
+  'atmosphere',
+  'background'
+]);
+
+export function validateThemeSnapshot(theme) {
+  if (!theme || typeof theme !== 'object' || Array.isArray(theme)) {
+    return { ok: false, code: 'BODY_INVALID' };
+  }
+
+  for (const key of Object.keys(theme)) {
+    if (!THEME_SNAPSHOT_KEYS.has(key)) {
+      return { ok: false, code: 'BODY_INVALID' };
+    }
+  }
+
+  for (const key of THEME_SNAPSHOT_KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(theme, key)) {
+      return { ok: false, code: 'BODY_INVALID' };
+    }
+  }
+
+  const parsed = parseThemePatchBody(theme, null);
+  if (!parsed.ok) {
+    return parsed;
+  }
+
+  const ctaParsed = parseThemeCtaPatch(theme.cta);
+  if (!ctaParsed.ok || Object.keys(ctaParsed.value).length !== 3) {
+    return { ok: false, code: 'CTA_INVALID' };
+  }
+
+  const atmosphereParsed = parseThemeAtmospherePatch(theme.atmosphere);
+  if (!atmosphereParsed.ok) {
+    return atmosphereParsed;
+  }
+
+  const backgroundParsed = parseThemeBackgroundBody(theme.background);
+  if (!backgroundParsed.ok) {
+    return backgroundParsed;
+  }
+
+  return {
+    ok: true,
+    value: {
+      accent_color: parsed.value.accent_color,
+      secondary_color: parsed.value.secondary_color,
+      surface_color: parsed.value.surface_color,
+      text_color: parsed.value.text_color,
+      text_muted_color: parsed.value.text_muted_color,
+      font_preset: parsed.value.font_preset,
+      element_style: parsed.value.element_style,
+      cta: {
+        variant: theme.cta.variant,
+        size: theme.cta.size,
+        label_case: theme.cta.label_case
+      },
+      atmosphere: {
+        grain: Boolean(theme.atmosphere.grain),
+        grain_intensity: Number(theme.atmosphere.grain_intensity)
+      },
+      background: backgroundParsed.value
+    }
+  };
 }

@@ -1,7 +1,7 @@
 -- Theme v2: brand colors, CTA, atmosphere.
 
 ALTER TABLE page_themes
-  ADD COLUMN IF NOT EXISTS secondary_color varchar(7) NOT NULL DEFAULT '#3dd6b0',
+  ADD COLUMN IF NOT EXISTS secondary_color varchar(7) NOT NULL DEFAULT '#b4dd2f',
   ADD COLUMN IF NOT EXISTS surface_color varchar(7) NOT NULL DEFAULT '#1a1a1a',
   ADD COLUMN IF NOT EXISTS text_color varchar(7) NOT NULL DEFAULT '#ffffff',
   ADD COLUMN IF NOT EXISTS text_muted_color varchar(7) NOT NULL DEFAULT '#8a8a8a',

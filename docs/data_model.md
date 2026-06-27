@@ -86,5 +86,6 @@ erDiagram
 | 017 | `page_themes` — brand colors, `cta`, `atmosphere` |
 | 018 | `page_themes` — remove `atmosphere.card_style` |
 | 019 | `page_themes` — DROP `mode` |
+| 020 | `page_ai_styles` — AI-generated theme presets |
 
 Workspaces, `page_views` — отложены.
